@@ -1,14 +1,14 @@
 {
 	"id": "{2D4C75B7-A445-9A25-6669-FB391DDF35CF}",
 	"name": "DysonConfig",
-	"type": 1,
+	"type": 4,
 	"vendor": "Dyson",
 	"aliases": [
 		"Dyson Konfigurator"
 	],
 	"parentRequirements": [],
 	"childRequirements": [],
-	"implemented": ["{97AE0D47-9459-A97E-76EA-D2E5883A13DD}"],
+	"implemented": [],
 	"prefix": "Dyson",
 	"url": "https://github.com/demel42/IPSymconDyson/blob/master/README.md"
 }
