@@ -1,10 +1,10 @@
 {
 	"id": "{2D4C75B7-A445-9A25-6669-FB391DDF35CF}",
-	"name": "DysonIO",
+	"name": "DysonConfig",
 	"type": 1,
 	"vendor": "Dyson",
 	"aliases": [
-		"Dyson I/O"
+		"Dyson Konfigurator"
 	],
 	"parentRequirements": [],
 	"childRequirements": [],

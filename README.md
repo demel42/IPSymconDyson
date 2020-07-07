@@ -50,17 +50,13 @@ Anschließend erscheint ein Eintrag für das Modul in der Liste der Instanz _Mod
 
 ### b. Einrichtung in IPS
 
-#### DysonIO
+#### DysoConfig
 
-In IP-Symcon nun unterhalb von _I/O Instanzen_ die Funktion _Instanz hinzufügen_ (_CTRL+1_) auswählen, als Hersteller _Dyson_ und als Gerät _Dyson I/O_ auswählen.
+In IP-Symcon nun unterhalb von _Konfigurator Instanzen_ die Funktion _Instanz hinzufügen_ (_CTRL+1_) auswählen, als Hersteller _Dyson_ und als Gerät _Dyson Konfigurator_ auswählen.
 
 In dem Konfigurationsdialog die Dyson-Zugangsdaten eintragen.
 
-#### DysonConfig
-
-Dann unter _Konfigurator Instanzen_ analog den Konfigurator _Dyson Konfigurator_ hinzufügen.
-
-Hier werden alle Aircare-Produkte, die mit dem, in der I/O-Instanz angegebenen, Dyson-Konto verknüpft sind, angeboten; aus denen wählt man ein Produkt aus.
+Hier werden alle Dyson-Produkte, die mit dem angegebenen Dyson-Konto verknüpft sind, angeboten; aus denen wählt man ein Produkt aus.
 
 Mit den Schaltflächen _Erstellen_ bzw. _Alle erstellen_ werden das/die gewählte Produkt anlegt.
 
@@ -81,11 +77,8 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 GUIDs
 - Modul: `{20E34F64-7545-2129-AF26-58F098F3ECC5}`
 - Instanzen:
-  - DysonIO: `{2D4C75B7-A445-9A25-6669-FB391DDF35CF}`
-  - DysonConfig: `{BC5AAE3B-AE21-CE30-13A8-01ABF5CEB31B}`
+  - DysonConfig: `{2D4C75B7-A445-9A25-6669-FB391DDF35CF}`
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
-- Nachrichten:
-  - `{97AE0D47-9459-A97E-76EA-D2E5883A13DD}`: an DysonIO
 
 ## 7. Versions-Historie
 
