@@ -19,6 +19,8 @@ class DysonConfig extends IPSModule
         $this->RegisterPropertyString('user', '');
         $this->RegisterPropertyString('password', '');
         $this->RegisterPropertyString('country', '');
+
+        $this->RegisterAttributeString('Auth', '');
     }
 
     public function ApplyChanges()
@@ -100,6 +102,7 @@ class DysonConfig extends IPSModule
             }
             $tree_position = array_reverse($tree_position);
         }
+        $this->SendDebug(__FUNCTION__, 'tree_position=' . print_r($tree_position, true), 0);
         return $tree_position;
     }
 
@@ -110,6 +113,8 @@ class DysonConfig extends IPSModule
         $country = $this->ReadPropertyString('country');
 
         $config_list = [];
+
+        $this->SetStatus(IS_ACTIVE);
 
         $devices = $this->getDeviceList();
         $this->SendDebug(__FUNCTION__, 'devices=' . print_r($devices, true), 0);
@@ -126,50 +131,43 @@ class DysonConfig extends IPSModule
                 $instanceID = 0;
                 foreach ($instIDs as $instID) {
                     if (IPS_GetProperty($instID, 'serial') == $serial) {
-                        $this->SendDebug(__FUNCTION__, 'controller found: ' . utf8_decode(IPS_GetName($instID)) . ' (' . $instID . ')', 0);
+                        $this->SendDebug(__FUNCTION__, 'device found: ' . utf8_decode(IPS_GetName($instID)) . ' (' . $instID . ')', 0);
                         $instanceID = $instID;
                         break;
                     }
                 }
 
-                $create = [];
-                $create[] = [
-                    'moduleID'      => $guid,
-                    'location'      => $this->SetLocation(),
-                    'info'			       => 'Dyson ' . $product_type . ' (#' . $serial . ')',
-                    'configuration' => [
-                        'user'          => $user,
-                        'password'      => $password,
-                        'country'       => $country,
-                        'serial'        => $serial,
-                        'product_type'  => $product_type,
+                $create = [
+                    [
+                        'moduleID'      => $guid,
+                        'location'      => $this->SetLocation(),
+                        'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
+                        'configuration' => [
+                            'user'          => $user,
+                            'password'      => $password,
+                            'country'       => $country,
+                            'serial'        => $serial,
+                            'product_type'  => $product_type,
+                        ]
+                    ],
+                    [
+                        'moduleID'      => '{EE0D345A-CF31-428A-A613-33CE98E752DD}', // MQTTClient
+                        'configuration' => [
+                            'User'          => $serial,
+                            'Password'      => $local_password,
+                            'ModuleType'    => 2,
+                            'script'        => 0,
+                            'TLS'           => false,
+                            'AutoSubscribe' => false,
+                            'MQTTVersion'   => 2
+                        ],
+                    ],
+                    [
+                        'moduleID'      => '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}', // Client Socket
+                        'configuration' => [
+                            'Port' => 1883
+                        ],
                     ]
-                ];
-
-                // MQTTClient = {EE0D345A-CF31-428A-A613-33CE98E752DD}
-                // {"ClientID":"symcon","User":"VS9-EU-NAB1633A","Password":"Pn/BjnRz1Fedh2ARhj6BY/8NAf/gyuj4SAnkzadk2HD3LsCUqG7N1bCfUiNoBHOrh2wj/1lRj0a/jVu6eB2hLw==","ModuleType":2,"script":0,"TLS":false,"AutoSubscribe":true,"MQTTVersion":2,"PingInterval":30}
-                $create[] = [
-                    'moduleID'      => '{EE0D345A-CF31-428A-A613-33CE98E752DD}', // MQTTClient
-                    'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
-                    'configuration' => [
-                        'User'          => $serial,
-                        'Password'      => $local_password,
-                        'ModuleType'    => 2,
-                        'script'        => 0,
-                        'TLS'           => false,
-                        'AutoSubscribe' => false,
-                        'MQTTVersion'   => 2
-                    ],
-                ];
-
-                // Client Socket = {3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}
-                // {"Open":true,"Host":"Dyson-Fan.damsky.home","Port":1883}
-                $create[] = [
-                    'moduleID'      => '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}', // Client Socket
-                    'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
-                    'configuration' => [
-                        'Port' => 1883
-                    ],
                 ];
 
                 $entry = [
@@ -182,6 +180,7 @@ class DysonConfig extends IPSModule
 
                 $config_list[] = $entry;
                 $this->SendDebug(__FUNCTION__, 'entry=' . print_r($entry, true), 0);
+                $this->SendDebug(__FUNCTION__, 'entry=' . json_encode($entry, JSON_PRETTY_PRINT), 0);
             }
         }
         return $config_list;
@@ -242,7 +241,7 @@ class DysonConfig extends IPSModule
                     'width'   => 'auto'
                 ],
                 [
-                    'caption' => 'Product Type',
+                    'caption' => 'Product type',
                     'name'    => 'product_type',
                     'width'   => '400px'
                 ]

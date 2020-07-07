@@ -11,6 +11,10 @@
 			"Germany": "Deutschland",
 			"England": "England",
 
+			"Serial": "Seriennummer",
+			"Name": "Bezeichnung",
+			"Product type": "Produkt-Typ",
+
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
 			"Instance is deleted": "Instanz wird gelöscht",

@@ -21,13 +21,16 @@ class DysonDevice extends IPSModule
         $this->RegisterPropertyString('serial', '');
         $this->RegisterPropertyString('product_type', '');
 
-        $this->RegisterAttributeString('local_password', '');
-
         /*
         $this->RegisterTimer('UpdateData', 0, 'Dyson_UpdateData(' . $this->InstanceID . ');');
         $this->RegisterMessage(0, IPS_KERNELMESSAGE);
         $this->RegisterMessage(0, IPS_KERNELSHUTDOWN);
          */
+
+        $this->RegisterAttributeString('localPassword', '');
+        $this->RegisterAttributeString('Auth', '');
+
+        $this->RequireParent('{EE0D345A-CF31-428A-A613-33CE98E752DD}');
     }
 
     public function ApplyChanges()
@@ -120,7 +123,7 @@ class DysonDevice extends IPSModule
             'caption' => 'Basic configuration (don\'t change)',
         ];
 
-        $formElements[] = ['name' => 'product_type', 'type' => 'SelectCategory', 'caption' => 'category'];
+        $formElements[] = ['name' => 'product_type', 'type' => 'ValidationTextBox', 'caption' => 'Product type'];
 
         return $formElements;
     }

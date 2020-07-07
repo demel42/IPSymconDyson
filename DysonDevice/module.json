@@ -1,7 +1,7 @@
 {
 	"id": "{D1A42861-0280-E373-A07E-EC51D3B43951}",
 	"name": "DysonDevice",
-	"type": 4,
+	"type": 3,
 	"vendor": "Dyson",
 	"aliases": [
 		"Dyson Gerät"

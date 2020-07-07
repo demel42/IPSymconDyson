@@ -79,15 +79,18 @@ trait DysonLibrary
 
     private function doLogin()
     {
-        $data = $this->GetBuffer('Auth');
+        $data = $this->ReadAttributeString('Auth');
+        $this->SendDebug(__FUNCTION__, 'data=' . $data, 0);
         if ($data != '') {
             $jdata = json_decode($data, true);
+            $this->SendDebug(__FUNCTION__, 'jdata=' . print_r($jdata, true), 0);
             $auth = isset($jdata['auth']) ? $jdata['auth'] : '';
+            $this->SendDebug(__FUNCTION__, 'auth=' . $auth, 0);
             if ($auth != false) {
+                $this->SendDebug(__FUNCTION__, 'return ' . $auth, 0);
                 return $auth;
             }
         }
-
         $user = $this->ReadPropertyString('user');
         $password = $this->ReadPropertyString('password');
         $country = $this->ReadPropertyString('country');
@@ -153,14 +156,16 @@ trait DysonLibrary
             }
         }
 
+        $auth = $this->doLogin();
         if ($auth != false) {
             $jdata = [
                 'auth' => $auth,
             ];
-            $this->SetBuffer('Auth', json_encode($jdata));
+            $this->WriteAttributeString('Auth', json_encode($jdata));
         } else {
-            $this->SetBuffer('Auth', '');
+            $this->WriteAttributeString('Auth', '');
         }
+
         return $auth;
     }
 
@@ -171,77 +176,7 @@ trait DysonLibrary
             return false;
         }
 
-        $user = $this->ReadPropertyString('user');
-        $password = $this->ReadPropertyString('password');
-        $country = $this->ReadPropertyString('country');
-
         $api_host = 'appapi.cp.dyson.com'; // api.cp.dyson.com
-
-        $postdata = [
-            'Email'    => $user,
-            'Password' => $password,
-        ];
-
-        $url = 'https://' . $api_host . '/v1/userregistration/authenticate?country=' . $country;
-
-        $this->SendDebug(__FUNCTION__, 'http-post: url=' . $url, 0);
-        $time_start = microtime(true);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postdata));
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        $cdata = curl_exec($ch);
-        $cerrno = curl_errno($ch);
-        $cerror = $cerrno ? curl_error($ch) : '';
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $duration = round(microtime(true) - $time_start, 2);
-        $this->SendDebug(__FUNCTION__, ' => errno=' . $cerrno . ', httpcode=' . $httpcode . ', duration=' . $duration . 's', 0);
-        $this->SendDebug(__FUNCTION__, ' => cdata=' . $cdata, 0);
-
-        $statuscode = 0;
-        $err = '';
-        $auth = '';
-        if ($cerrno) {
-            $statuscode = self::$IS_SERVERERROR;
-            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
-        } elseif ($httpcode != 200 && $httpcode != 201) {
-            if ($httpcode == 401) {
-                $statuscode = self::$IS_UNAUTHORIZED;
-                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
-            } elseif ($httpcode >= 500 && $httpcode <= 599) {
-                $statuscode = self::$IS_SERVERERROR;
-                $err = 'got http-code ' . $httpcode . ' (server error)';
-            } else {
-                $statuscode = self::$IS_HTTPERROR;
-                $err = 'got http-code ' . $httpcode;
-            }
-        } elseif ($cdata == '') {
-            $statuscode = self::$IS_INVALIDDATA;
-            $err = 'no data';
-        } else {
-            $jdata = json_decode($cdata, true);
-            if ($jdata == '') {
-                $statuscode = self::$IS_INVALIDDATA;
-                $err = 'malformed response';
-            } else {
-                $auth = $jdata['Account'] . ':' . $jdata['Password'];
-            }
-        }
-
-        if ($statuscode) {
-            $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
-            $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err, 0);
-            $this->SetStatus($statuscode);
-            return false;
-        }
 
         $url = 'https://' . $api_host . '/v2/provisioningservice/manifest'; //v1 ? old?
 
@@ -264,6 +199,8 @@ trait DysonLibrary
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
+        $statuscode = 0;
+        $err = '';
         $data = '';
         if ($cerrno) {
             $statuscode = self::$IS_SERVERERROR;
