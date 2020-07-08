@@ -152,6 +152,7 @@ class DysonConfig extends IPSModule
                     ],
                     [
                         'moduleID'      => '{EE0D345A-CF31-428A-A613-33CE98E752DD}', // MQTTClient
+                        // siehe DysonDevice::GetConfigurationForParent
                         'configuration' => [
                             'User'          => $serial,
                             'Password'      => $local_password,
@@ -159,7 +160,9 @@ class DysonConfig extends IPSModule
                             'script'        => 0,
                             'TLS'           => false,
                             'AutoSubscribe' => false,
-                            'MQTTVersion'   => 2
+                            'MQTTVersion'   => 2,
+                            'ClientID'      => 'symcon',
+                            'PingInterval'  => 30
                         ],
                     ],
                     [

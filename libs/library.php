@@ -77,20 +77,21 @@ trait DysonLibrary
         return $txt;
     }
 
-    private function doLogin()
+    private function doLogin($force)
     {
-        $data = $this->ReadAttributeString('Auth');
-        $this->SendDebug(__FUNCTION__, 'data=' . $data, 0);
-        if ($data != '') {
-            $jdata = json_decode($data, true);
-            $this->SendDebug(__FUNCTION__, 'jdata=' . print_r($jdata, true), 0);
-            $auth = isset($jdata['auth']) ? $jdata['auth'] : '';
-            $this->SendDebug(__FUNCTION__, 'auth=' . $auth, 0);
-            if ($auth != false) {
-                $this->SendDebug(__FUNCTION__, 'return ' . $auth, 0);
-                return $auth;
+        if ($force == false) {
+            $data = $this->ReadAttributeString('Auth');
+            $this->SendDebug(__FUNCTION__, 'Attribute("Auth")=' . $data, 0);
+            if ($data != '') {
+                $jdata = json_decode($data, true);
+                $auth = isset($jdata['auth']) ? $jdata['auth'] : '';
+                if ($auth != false) {
+                    $this->SendDebug(__FUNCTION__, 'old auth=' . $auth, 0);
+                    return $auth;
+                }
             }
         }
+
         $user = $this->ReadPropertyString('user');
         $password = $this->ReadPropertyString('password');
         $country = $this->ReadPropertyString('country');
@@ -156,7 +157,6 @@ trait DysonLibrary
             }
         }
 
-        $auth = $this->doLogin();
         if ($auth != false) {
             $jdata = [
                 'auth' => $auth,
@@ -166,12 +166,13 @@ trait DysonLibrary
             $this->WriteAttributeString('Auth', '');
         }
 
+        $this->SendDebug(__FUNCTION__, 'new auth=' . $auth, 0);
         return $auth;
     }
 
     private function getDeviceList()
     {
-        $auth = $this->doLogin();
+        $auth = $this->doLogin(false);
         if ($auth == false) {
             return false;
         }
@@ -235,6 +236,19 @@ trait DysonLibrary
         }
 
         return $jdata;
+    }
+
+    private function getDevice($serial)
+    {
+        $devices = $this->getDeviceList();
+        if ($devices != '') {
+            foreach ($devices as $device) {
+                if ($device['Serial'] == $serial) {
+                    return $device;
+                }
+            }
+        }
+        return false;
     }
 
     private function decryptPassword($encrypted_password)

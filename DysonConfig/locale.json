@@ -11,6 +11,9 @@
 			"Germany": "Deutschland",
 			"England": "England",
 
+			"category": "Kategorie",
+
+			"Product": "Produkt",
 			"Serial": "Seriennummer",
 			"Name": "Bezeichnung",
 			"Product type": "Produkt-Typ",
