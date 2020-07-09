@@ -334,7 +334,7 @@ class DysonDevice extends IPSModule
                 $this->WriteAttributeString('localPassword', $newPw);
 
                 /*
-                    Ausnahme zu Punkt 13 der Reviewrichtlinien, wurde als Ausnahme in Mail vom 07.07.2020 von Niels genehmigt
+                    Ausnahme zu Punkt 13 der Reviewrichtlinien, wurde per Mail vom 07.07.2020 von Niels genehmigt
                     Grund: das Passwort, das im MQTTClient als Property gesetzt werden muss, kann sich ändern. Der aktuelle
                     Wert wird zyklisch per HTTP von der Dyson-Cloud geholt und bei Änderungen in der MQTTClient-Instanz gesetzt.
                  */
@@ -349,7 +349,7 @@ class DysonDevice extends IPSModule
         }
     }
 
-    private function DecodeState($payload)
+    private function DecodeState($payload, $changeState)
     {
         $now = time();
         $is_changed = false;
@@ -364,37 +364,63 @@ class DysonDevice extends IPSModule
         $this->SendDebug(__FUNCTION__, 'time=' . date('d.m.y H:i:s', $ts), 0);
         $used_fields[] = 'time';
 
-        // rssi
-        if ($field['rssi']) {
-            $rssi = (int) $this->GetArrayElem($payload, 'rssi', 0);
-            $used_fields[] = 'rssi';
-            $this->SendDebug(__FUNCTION__, 'rssi=' . $rssi, 0);
-            $this->SaveValue('WifiStrength', $rssi, $is_changed);
+        if ($changeState == false) {
+            if ($field['rssi']) {
+                // rssi
+                $rssi = (int) $this->GetArrayElem($payload, 'rssi', 0);
+                $used_fields[] = 'rssi';
+                $this->SendDebug(__FUNCTION__, 'rssi=' . $rssi, 0);
+                $this->SaveValue('WifiStrength', $rssi, $is_changed);
+            }
         }
 
-        // fpwr - Fan Power (ON|OFF)
         if ($field['power']) {
+            // fpwr - Fan Power (ON|OFF)
             $fpwr = $this->GetArrayElem($payload, 'product-state.fpwr', '');
             $used_fields[] = 'product-state.fpwr';
-            $b = $this->str2bool($fpwr);
-            $this->SendDebug(__FUNCTION__, 'fpwr (fan power)=' . $fpwr . ' => ' . $this->bool2str($b), 0);
-            $this->SaveValue('Power', $b, $is_changed);
+            if ($changeState) {
+                $do = $fpwr[0] != $fpwr[1];
+                $fpwr = $fpwr[1];
+            } else {
+                $do = true;
+            }
+            if ($do) {
+                $b = $this->str2bool($fpwr);
+                $this->SendDebug(__FUNCTION__, 'fpwr (fan power)=' . $fpwr . ' => ' . $this->bool2str($b), 0);
+                $this->SaveValue('Power', $b, $is_changed);
+            }
         }
 
-        // auto - automatic mode (ON|OFF)
         if ($field['automatic_mode']) {
+            // auto - automatic mode (ON|OFF)
             $auto = $this->GetArrayElem($payload, 'product-state.auto', '');
             $used_fields[] = 'product-state.auto';
-            $b = $this->str2bool($auto);
-            $this->SendDebug(__FUNCTION__, 'auto (automatic mode)=' . $auto . ' => ' . $this->bool2str($b), 0);
-            $this->SaveValue('AutomaticMode', $b, $is_changed);
+            if ($changeState) {
+                $do = $auto[0] != $auto[1];
+                $auto = $auto[1];
+            } else {
+                $do = true;
+            }
+            if ($do) {
+                $b = $this->str2bool($auto);
+                $this->SendDebug(__FUNCTION__, 'auto (automatic mode)=' . $auto . ' => ' . $this->bool2str($b), 0);
+                $this->SaveValue('AutomaticMode', $b, $is_changed);
+            }
         }
 
         // sltm - sleep-timer (OFF|1..539)
         $sltm = $this->GetArrayElem($payload, 'data.sltm', 0);
         $used_fields[] = 'data.sltm';
-        $sleep_timer = $sltm == 'OFF' ? -1 : (int) $sltm;
-        $this->SendDebug(__FUNCTION__, 'sltm (sleep-timer)=' . $sltm . ' = ' . $sleep_timer, 0);
+        if ($changeState) {
+            $do = $sltm[0] != $sltm[1];
+            $sltm = $sltm[1];
+        } else {
+            $do = true;
+        }
+        if ($do) {
+            $sleep_timer = $sltm == 'OFF' ? -1 : (int) $sltm;
+            $this->SendDebug(__FUNCTION__, 'sltm (sleep-timer)=' . $sltm . ' = ' . $sleep_timer, 0);
+        }
 
         // oson - oscillation on (ON|OFF)
         // oscs - oscillation state (ON|OFF)
@@ -436,42 +462,27 @@ class DysonDevice extends IPSModule
             if (in_array('product-state.' . $var, $used_fields)) {
                 continue;
             }
-            $this->SendDebug(__FUNCTION__, '... product-state.' . $var . '="' . $val . '"', 0);
+            if ($changeState) {
+                if ($val[0] == $val[1]) {
+                    continue;
+                }
+                $this->SendDebug(__FUNCTION__, '... product-state.' . $var . '="' . $val[1] . '"', 0);
+            } else {
+                $this->SendDebug(__FUNCTION__, '... product-state.' . $var . '="' . $val . '"', 0);
+            }
         }
         foreach ($payload['scheduler'] as $var => $val) {
             if (in_array('scheduler.' . $var, $used_fields)) {
                 continue;
             }
-            $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . '="' . $val . '"', 0);
-        }
-    }
-
-    private function DecodeStateChanged($payload)
-    {
-        $used_fields = ['msg', 'time'];
-
-        $this->SendDebug(__FUNCTION__, 'unused changed variables', 0);
-        foreach ($payload['product-state'] as $var => $val) {
-            if (is_array($val)) {
-                continue;
+            if ($changeState) {
+                if ($val[0] == $val[1]) {
+                    continue;
+                }
+                $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . '="' . $val[1] . '"', 0);
+            } else {
+                $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . '="' . $val . '"', 0);
             }
-            if (in_array($var, $used_fields)) {
-                continue;
-            }
-            if ($val[0] == $val[1]) {
-                continue;
-            }
-            $this->SendDebug(__FUNCTION__, '... product-state.' . $var . ' changed ' . print_r($val, true), 0);
-        }
-
-        foreach ($payload['scheduler'] as $var => $val) {
-            if (in_array($var, $used_fields)) {
-                continue;
-            }
-            if ($val[0] == $val[1]) {
-                continue;
-            }
-            $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . ' changed ' . print_r($val, true), 0);
         }
     }
 
@@ -522,7 +533,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($field['voc']) {
-            // voc - volatile organic compounds
+            // va10 - volatile organic compounds
             $voc = (int) $this->GetArrayElem($payload, 'data.va10', 0);
             $used_fields[] = 'data.va10';
             $this->SendDebug(__FUNCTION__, 'va10 (VOC)=' . $voc, 0);
@@ -530,7 +541,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($field['nox']) {
-            // nox - nitrogen oxides
+            // noxl - nitrogen oxides
             $nox = (int) $this->GetArrayElem($payload, 'data.noxl', 0);
             $used_fields[] = 'data.noxl';
             $this->SendDebug(__FUNCTION__, 'noxl (NOx)=' . $nox, 0);
@@ -582,10 +593,10 @@ class DysonDevice extends IPSModule
         $ts = strtotime($payload['time']);
         switch ($msg) {
             case 'CURRENT-STATE':
-                $this->DecodeState($payload);
+                $this->DecodeState($payload, false);
                 break;
             case 'STATE-CHANGE':
-                $this->DecodeStateChanged($payload);
+                $this->DecodeState($payload, true);
                 break;
             case 'ENVIRONMENTAL-CURRENT-SENSOR-DATA':
                 $this->DecodeSensorData($payload);
