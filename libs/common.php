@@ -18,6 +18,25 @@ trait DysonCommon
         }
     }
 
+    private function SaveValue($Ident, $Value, &$IsChanged)
+    {
+        @$varID = $this->GetIDForIdent($Ident);
+        if ($varID == false) {
+            $this->SendDebug(__FUNCTION__, 'missing variable ' . $Ident, 0);
+            return;
+        }
+
+        if (parent::GetValue($Ident) != $Value) {
+            $IsChanged = true;
+        }
+
+        @$ret = parent::SetValue($Ident, $Value);
+        if ($ret == false) {
+            $this->SendDebug(__FUNCTION__, 'mismatch of value "' . $Value . '" for variable ' . $Ident, 0);
+            return;
+        }
+    }
+
     protected function GetValue($Ident)
     {
         @$varID = $this->GetIDForIdent($Ident);
