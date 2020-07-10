@@ -11,7 +11,43 @@
 			"Germany": "Deutschland",
 			"England": "England",
 
+			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
+
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
+
+
+			"Airflow direction": "Luftstromrichtung",
+			"Airflow rate": "Luftstromstärke",
+			"Automatic mode": "Automatik-Modus",
+			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
+			"Call settings": "Kommunikations-Einstellungen",
+			"Humidity": "Luchtfeuchte",
+			"Last change": "letzte Änderung",
+			"Last update": "letzte Aktualisierung",
+			"Load configuration every X minutes": "Konfiguration alle X Minuten abrufen",
+			"Minutes": "Minuten",
+			"Night mode": "Nachtmodus",
+			"Nitrogen oxides (NOx)": "Stickoxide (NOx)",
+			"Particulate matter (PM 10)": "Feinstaub (PM 10)",
+			"Particulate matter (PM 2.5)": "Feinstaub (PM 2.5)",
+			"Power": "Zustand",
+			"Product type": "Produkt-Typ",
+			"Reload Config": "Konfiguration erneut laden",
+			"Relogin": "Erneut anmelden",
+			"Rotation angle": "Drehwinkel",
+			"Rotation mode": "Drehmodus",
+			"Rotation start": "Drehstartpunkt",
+			"Sleep timer": "Timer",
+			"Temperature": "Temeratur",
+			"Update status every X minutes": "Status alle X Minuten abrufen",
+			"Update Status": "Status aktualisieren",
+			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",
+			"Wifi signal strenght": "Wifi Signalstärke",
+
+			"Off": "Aus",
+
+			"Front": "Vorderseite",
+			"Back": "Rückseite",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
