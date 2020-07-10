@@ -16,12 +16,15 @@
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
 
 
+			"Carbon filter lifetime": "Aktivkohlefilter Lebensdauer",
+			"HEPA filter lifetime": "HEPA-Filter Lebensdauer",
+
 			"Airflow direction": "Luftstromrichtung",
 			"Airflow rate": "Luftstromstärke",
 			"Automatic mode": "Automatik-Modus",
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
-			"Humidity": "Luchtfeuchte",
+			"Humidity": "Luftfeuchte",
 			"Last change": "letzte Änderung",
 			"Last update": "letzte Aktualisierung",
 			"Load configuration every X minutes": "Konfiguration alle X Minuten abrufen",
@@ -38,7 +41,7 @@
 			"Rotation mode": "Drehmodus",
 			"Rotation start": "Drehstartpunkt",
 			"Sleep timer": "Timer",
-			"Temperature": "Temeratur",
+			"Temperature": "Temperatur",
 			"Update status every X minutes": "Status alle X Minuten abrufen",
 			"Update Status": "Status aktualisieren",
 			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",

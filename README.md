@@ -74,6 +74,9 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 
 ## 6. Anhang
 
+Quellen
+- https://github.com/CharlesBlonde/libpurecoollink
+
 GUIDs
 - Modul: `{20E34F64-7545-2129-AF26-58F098F3ECC5}`
 - Instanzen:
