@@ -18,6 +18,11 @@
 			"Name": "Bezeichnung",
 			"Product type": "Produkt-Typ",
 
+			"Relogin": "Erneut anmelden",
+
+			"Login failed": "Anmeldung fehlgeschlagen",
+			"Login successful": "Anmeldung erfolgreich",
+
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
 			"Instance is deleted": "Instanz wird gelöscht",

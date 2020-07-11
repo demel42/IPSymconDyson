@@ -260,6 +260,18 @@ class DysonConfig extends IPSModule
     {
         $formActions = [];
 
+        $formActions[] = [
+            'type'    => 'Button',
+            'caption' => 'Relogin',
+            'onClick' => 'Dyson_ManualRelogin($id);'
+        ];
+
         return $formActions;
+    }
+
+    public function ManualRelogin()
+    {
+        $auth = $this->doLogin(true);
+        echo $this->Translate(($auth == false ? 'Login failed' : 'Login successful'));
     }
 }
