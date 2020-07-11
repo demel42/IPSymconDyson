@@ -152,6 +152,7 @@ class DysonConfig extends IPSModule
                     ],
                     [
                         'moduleID'      => '{EE0D345A-CF31-428A-A613-33CE98E752DD}', // MQTTClient
+                        'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
                         // siehe DysonDevice::GetConfigurationForParent
                         'configuration' => [
                             'User'          => $serial,
@@ -167,6 +168,7 @@ class DysonConfig extends IPSModule
                     ],
                     [
                         'moduleID'      => '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}', // Client Socket
+                        'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
                         'configuration' => [
                             'Port' => 1883
                         ],
