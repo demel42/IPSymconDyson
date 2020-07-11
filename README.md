@@ -37,7 +37,7 @@ Getestet wurde das Modul bisher mit:
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
 
-Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpuercool](https://github.com/CharlesBlonde/libpurecoollink).
+Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpurecool](https://github.com/CharlesBlonde/libpurecoollink).
 
 ## 3. Installation
 
