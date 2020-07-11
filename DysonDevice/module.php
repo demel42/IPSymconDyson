@@ -154,6 +154,11 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $field['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $field['nox']);
 
+        $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby mpnitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $field['standby_monitoring']);
+        if ($field['standby_monitoring']) {
+            $this->MaintainAction('StandbyMonitoring', true);
+        }
+
         $this->MaintainVariable('CarbonFilterLifetime', $this->Translate('Carbon filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $field['carbon_filter']);
         $this->MaintainVariable('HepaFilterLifetime', $this->Translate('HEPA filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $field['hepa_filter']);
 
@@ -424,13 +429,16 @@ class DysonDevice extends IPSModule
 
         if ($changeState == false) {
             if ($field['rssi']) {
-                // rssi
+                // rssi - wifi signal strength
                 $rssi = (int) $this->GetArrayElem($payload, 'rssi', 0);
                 $used_fields[] = 'rssi';
                 $this->SendDebug(__FUNCTION__, 'rssi=' . $rssi, 0);
                 $this->SaveValue('WifiStrength', $rssi, $is_changed);
             }
         }
+
+        // channel - wifi channel
+        $used_fields[] = 'channel';
 
         if ($field['power']) {
             // fpwr - Fan Power (ON|OFF)
@@ -632,7 +640,22 @@ class DysonDevice extends IPSModule
             }
         }
 
-        // rhtm - standby monitoring (ON|OFF)
+        if ($field['standby_monitoring']) {
+            // rhtm - standby monitoring (ON|OFF)
+            $rhtm = $this->GetArrayElem($payload, 'product-state.rhtm', '');
+            $used_fields[] = 'product-state.rhtm';
+            if ($changeState) {
+                $do = $rhtm[0] != $rhtm[1];
+                $rhtm = $rhtm[1];
+            } else {
+                $do = true;
+            }
+            if ($do) {
+                $b = $this->str2bool($rhtm);
+                $this->SendDebug(__FUNCTION__, 'rhtm (standby monitoring)=' . $rhtm . ' => ' . $this->bool2str($b), 0);
+                $this->SaveValue('StandbyMonitoring', $b, $is_changed);
+            }
+        }
 
         $this->SetValue('LastUpdate', $now);
         if ($is_changed) {
@@ -964,6 +987,11 @@ class DysonDevice extends IPSModule
                     $enabled = true;
                 }
                 break;
+            case 'SwitchStandbyMonitoring':
+                if ($field['standby_monitoring']) {
+                    $enabled = true;
+                }
+                break;
         }
 
         $this->SendDebug(__FUNCTION__, 'action "' . $func . '" is ' . ($enabled ? 'enabled' : 'disabled'), 0);
@@ -1136,6 +1164,19 @@ class DysonDevice extends IPSModule
         return $r;
     }
 
+    public function SwitchStandbyMonitoring(bool $mode)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $data = [
+            'rhtm'=> ($mode ? 'ON' : 'OFF')
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
     public function RequestAction($Ident, $Value)
     {
         if ($this->GetStatus() == IS_INACTIVE) {
@@ -1181,6 +1222,10 @@ class DysonDevice extends IPSModule
                 $r = $this->SetRotationStart((int) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
+            case 'StandbyMonitoring':
+                $r = $this->SwitchStandbyMonitoring((bool) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $Ident, 0);
                 break;
@@ -1204,6 +1249,7 @@ class DysonDevice extends IPSModule
         $field['night_mode'] = false;
         $field['sleep_timer'] = false;
 
+        $field['standby_monitoring'] = false;
         $field['carbon_filter'] = false;
         $field['hepa_filter'] = false;
 
@@ -1226,6 +1272,7 @@ class DysonDevice extends IPSModule
                 $field['night_mode'] = true;
                 $field['sleep_timer'] = true;
 
+                $field['standby_monitoring'] = true;
                 $field['carbon_filter'] = true;
                 $field['hepa_filter'] = true;
 
@@ -1302,14 +1349,9 @@ class DysonDevice extends IPSModule
             $this->MaintainAction('AirflowRate', $mode);
         }
         if ($field['rotation_mode']) {
-            /*
             $this->MaintainAction('RotationMode', $mode);
             $this->MaintainAction('RotationAngle', $mode);
             $this->MaintainAction('RotationStart', $mode);
-             */
-            $this->MaintainAction('RotationMode', true);
-            $this->MaintainAction('RotationAngle', true);
-            $this->MaintainAction('RotationStart', true);
         }
         if ($field['airflow_direction']) {
             $this->MaintainAction('AirflowDirection', $mode);
