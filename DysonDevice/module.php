@@ -860,22 +860,11 @@ class DysonDevice extends IPSModule
                 if ($skip) {
                     continue;
                 }
-                if ($changeState) {
-                    if ($val[0] == $val[1]) {
-                        continue;
-                    }
-                    if ($b == false) {
-                        $b = true;
-                        $this->SendDebug(__FUNCTION__, $s, 0);
-                    }
-                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val[1] . '"', 0);
-                } else {
-                    if ($b == false) {
-                        $b = true;
-                        $this->SendDebug(__FUNCTION__, $s, 0);
-                    }
-                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
+                if ($b == false) {
+                    $b = true;
+                    $this->SendDebug(__FUNCTION__, $s, 0);
                 }
+                $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
             }
         }
     }
@@ -1083,7 +1072,7 @@ class DysonDevice extends IPSModule
         return true;
     }
 
-    public function SwitchPower(bool $mode)
+    private function SwitchPower(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1096,7 +1085,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SwitchAutomaticMode(bool $mode)
+    private function SwitchAutomaticMode(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1109,7 +1098,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SwitchNightMode(bool $mode)
+    private function SwitchNightMode(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1122,7 +1111,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SetSleepTimer(int $min)
+    private function SetSleepTimer(int $min)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1135,7 +1124,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SetAirflowRate(int $val)
+    private function SetAirflowRate(int $val)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1148,7 +1137,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SwitchAirflowDirection(bool $mode)
+    private function SwitchAirflowDirection(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1161,7 +1150,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SwitchRotationMode(bool $mode)
+    private function SwitchRotationMode(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1174,7 +1163,7 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function SetRotationAngle(int $angle)
+    private function SetRotationAngle(int $angle)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1198,7 +1187,7 @@ class DysonDevice extends IPSModule
         return $r;
     }
 
-    public function SetRotationStart(int $start)
+    private function SetRotationStart(int $start)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
@@ -1222,7 +1211,7 @@ class DysonDevice extends IPSModule
         return $r;
     }
 
-    public function SwitchStandbyMonitoring(bool $mode)
+    private function SwitchStandbyMonitoring(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
