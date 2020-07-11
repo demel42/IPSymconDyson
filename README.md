@@ -18,11 +18,15 @@
 
 ## 1. Funktionsumfang
 
+Der Funktionsumfang unterscheidet sich natürlich je nach Gerätetyp, grundsätzlich aber
+- Übernahme des Status des Gerätes sowie der Umweltsensoren
+- Steuerung aller Funktionen, wie z.b. Lüfter ein/aus, Stärke, Einstellung der Drehung etc.
+
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 5.3
- - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall, die mit der _Dyson Link App_ verknüpft werden können.
- - das installierte Modul _MQTTClient_ von **Kai Schnittcher**
+- IP-Symcon ab Version 5.3
+- ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall, die mit der _Dyson Link App_ verknüpft werden können.
+- das installierte Modul _MQTTClient_ von **Kai Schnittcher**
 
 Getestet wurde das Modul bisher mit:
 
