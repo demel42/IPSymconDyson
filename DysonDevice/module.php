@@ -426,10 +426,10 @@ class DysonDevice extends IPSModule
                     }
                 }
             }
-			return true;
+            return true;
         }
 
-		return false;
+        return false;
     }
 
     private function DecodeState($payload, $changeState)
