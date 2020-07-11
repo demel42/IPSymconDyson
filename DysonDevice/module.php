@@ -199,6 +199,7 @@ class DysonDevice extends IPSModule
             $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
         }
 
+        $this->SendDebug(__FUNCTION__, $s, 0);
         return $s;
     }
 

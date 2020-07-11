@@ -68,6 +68,7 @@ class DysonConfig extends IPSModule
             $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
         }
 
+        $this->SendDebug(__FUNCTION__, $s, 0);
         return $s;
     }
 
@@ -113,6 +114,11 @@ class DysonConfig extends IPSModule
         $country = $this->ReadPropertyString('country');
 
         $config_list = [];
+
+        if ($this->CheckStatus() == STATUS_INVALID) {
+            $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);
+            return $config_list;
+        }
 
         $this->SetStatus(IS_ACTIVE);
 

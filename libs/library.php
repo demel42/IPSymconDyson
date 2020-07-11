@@ -48,7 +48,6 @@ trait DysonLibrary
                 break;
             case self::$IS_NODATA:
             case self::$IS_UNAUTHORIZED:
-            case self::$IS_FORBIDDEN:
             case self::$IS_SERVERERROR:
             case self::$IS_HTTPERROR:
             case self::$IS_INVALIDDATA:
@@ -79,6 +78,11 @@ trait DysonLibrary
 
     private function doLogin($force)
     {
+        if ($this->CheckStatus() == STATUS_INVALID) {
+            $this->SendDebug(__FUNCTION__, 'status=' . $this->GetStatusText(), 0);
+            return false;
+        }
+
         if ($force == false) {
             $data = $this->ReadAttributeString('Auth');
             $this->SendDebug(__FUNCTION__, 'Attribute("Auth")=' . $data, 0);
@@ -172,6 +176,11 @@ trait DysonLibrary
 
     private function getDeviceList()
     {
+        if ($this->CheckStatus() == STATUS_INVALID) {
+            $this->SendDebug(__FUNCTION__, 'status=' . $this->GetStatusText(), 0);
+            return false;
+        }
+
         $auth = $this->doLogin(false);
         if ($auth == false) {
             return false;
