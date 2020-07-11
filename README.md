@@ -24,14 +24,16 @@
  - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall
  - das installierte Modul _MQTTClient_ von **Kai Schnittcher**
 
-Getestet wurde das Modul bisher mit
-| Typ | Bezeichnung   |
+Getestet wurde das Modul bisher mit:
+
+| Typ | Bezeichnung |
+| :-- | :---------- |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
 
-Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpuercool[(https://github.com/CharlesBlonde/libpurecoollink).
+Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpuercool](https://github.com/CharlesBlonde/libpurecoollink).
 
 ## 3. Installation
 
@@ -39,7 +41,7 @@ Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpuercool[(
 
 **Installieren über den Module-Store**
 
-Die Webconsole von IP-Symcon mit http://<IP-Symcon IP>:3777/console/ öffnen.
+Die Webconsole von IP-Symcon mit http://\<IP-Symcon IP>:3777/console/ öffnen.
 
 Anschließend oben rechts auf das Symbol für den Modulstore (IP-Symcon > 5.1) klicken
 
@@ -88,7 +90,8 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 `Dyson_UpdateStatus(int $InstanzID)`
 Aktualiseren des Status des Gerätes.
 
-Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B. `RequestAction(<ID der Variable 'Power'>, true)`aktiviert das Gerät.
+Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B.<br>
+`RequestAction(<ID der Variable 'Power'>, true)` aktiviert das Gerät.
 
 ## 5. Konfiguration
 
