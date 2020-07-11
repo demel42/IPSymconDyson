@@ -20,7 +20,7 @@
 
 Der Funktionsumfang unterscheidet sich natürlich je nach Gerätetyp, grundsätzlich aber
 - Übernahme des Status des Gerätes sowie der Umweltsensoren
-- Steuerung aller Funktionen, wie z.b. Lüfter ein/aus, Stärke, Einstellung der Drehung etc.
+- Steuerung aller Funktionen, wie z.b. Lüfter ein/aus, Stärke und Richtung des Luftstroms, Timer etc.
 
 ## 2. Voraussetzungen
 
