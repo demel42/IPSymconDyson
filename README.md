@@ -110,6 +110,11 @@ Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B.<br>
 | Kategorie                 | integer  | 0            | Kategorie im Objektbaum, unter dem die Instanzen angelegt werden |
 | Produkt                   |          |              | Liste der mit dem Konto verknüpften Geräte |
 
+#### Actions
+
+| Bezeichnung                | Beschreibung |
+| :------------------------- | :----------- |
+| Erneut anmelden            | Test der Anmeldung an der Dyson-Cloud |
 
 ### DysonDevice
 
@@ -123,6 +128,14 @@ Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B.<br>
 | Status abrufen            | integer  | 0            | Abruf des Geräte-Status alle X Minuten |
 
 Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort das Passwort zur lokalen MQTT-Kommunikation mit dem Gerät geliefert wird.
+
+#### Actions
+
+| Bezeichnung                | Beschreibung |
+| :------------------------- | :----------- |
+| Erneut anmelden            | Test der Anmeldung an der Dyson-Cloud |
+| Konfiguration erneut laden | Geräte-Konfiguration aus der Dyson-Cloud laden |
+| Daten aktualisieren        | Geräte-Status abfragen |
 
 ## 6. Anhang
 
