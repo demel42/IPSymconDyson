@@ -154,7 +154,7 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $field['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $field['nox']);
 
-        $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby mpnitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $field['standby_monitoring']);
+        $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby monitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $field['standby_monitoring']);
         if ($field['standby_monitoring']) {
             $this->MaintainAction('StandbyMonitoring', true);
         }
@@ -417,28 +417,33 @@ class DysonDevice extends IPSModule
         $now = time();
         $is_changed = false;
 
-        $used_fields = ['msg', 'time', 'mode-reason', 'state-reason'];
-
         $product_type = $this->ReadPropertyString('product_type');
         $field = $this->product2field($product_type);
-        $this->SendDebug(__FUNCTION__, 'field=' . print_r($field, true), 0);
+
+        $used_fields = [];
+        $ignored_fields = ['mode-reason', 'state-reason'];
+
+        $this->SendDebug(__FUNCTION__, 'used variables', 0);
+
+        $msg = $payload['msg'];
+        $msg = $used_fields[] = 'msg';
 
         $ts = strtotime($payload['time']);
-        $this->SendDebug(__FUNCTION__, 'time=' . date('d.m.y H:i:s', $ts), 0);
         $used_fields[] = 'time';
+        $this->SendDebug(__FUNCTION__, '... msg=' . $msg . ', time=' . date('d.m.y H:i:s', $ts), 0);
 
         if ($changeState == false) {
             if ($field['rssi']) {
                 // rssi - wifi signal strength
                 $rssi = (int) $this->GetArrayElem($payload, 'rssi', 0);
                 $used_fields[] = 'rssi';
-                $this->SendDebug(__FUNCTION__, 'rssi=' . $rssi, 0);
+                $this->SendDebug(__FUNCTION__, '... rssi=' . $rssi, 0);
                 $this->SaveValue('WifiStrength', $rssi, $is_changed);
             }
         }
 
         // channel - wifi channel
-        $used_fields[] = 'channel';
+        $ignored_fields[] = 'channel';
 
         if ($field['power']) {
             // fpwr - Fan Power (ON|OFF)
@@ -452,17 +457,17 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($fpwr);
-                $this->SendDebug(__FUNCTION__, 'fpwr (fan power)=' . $fpwr . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... fan power (fpwr)=' . $fpwr . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('Power', $b, $is_changed);
                 $this->adjustAction($b);
             }
         }
 
         // fmod - fan mode
-        $used_fields[] = 'product-state.fmod';
+        $ignored_fields[] = 'product-state.fmod';
 
         // fnst - fan status (OFF|FAN)
-        $used_fields[] = 'product-state.fnst';
+        $ignored_fields[] = 'product-state.fnst';
 
         if ($field['airflow_rate']) {
             // fnsp - fan speed (OFF|1..9)
@@ -476,14 +481,14 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $i = $fnsp == 'OFF' ? 0 : (int) $fnsp;
-                $this->SendDebug(__FUNCTION__, 'fnsp (fan speed)=' . $fnsp . ' => ' . $i, 0);
+                $this->SendDebug(__FUNCTION__, '... fan speed (fnsp)=' . $fnsp . ' => ' . $i, 0);
                 $this->SaveValue('AirflowRate', $i, $is_changed);
             }
         }
 
         if ($field['rotation_mode']) {
             // oson - oscillation on (ON|OFF)
-            $used_fields[] = 'product-state.oson';
+            $ignored_fields[] = 'product-state.oson';
 
             // oscs - oscillation state (ON|OFF)
             $oscs = $this->GetArrayElem($payload, 'product-state.oscs', '');
@@ -497,7 +502,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($oscs);
-                $this->SendDebug(__FUNCTION__, 'oscs (oscillation state)=' . $oscs . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... oscillation state (oscs)=' . $oscs . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('RotationMode', $b, $is_changed);
             }
 
@@ -522,18 +527,18 @@ class DysonDevice extends IPSModule
                 $end = 0;
                 $this->adjust_rotation($angle, $start, $end);
 
-                $this->SendDebug(__FUNCTION__, 'osal (oscillation angle low)=' . $osal . ', osau (oscillation angle up)=' . $osau, 0);
-                $this->SendDebug(__FUNCTION__, ' => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
+                $this->SendDebug(__FUNCTION__, '... oscillation angle low (osal)=' . $osal . ', up (osau)=' . $osau, 0);
+                $this->SendDebug(__FUNCTION__, '    => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
                 $this->SaveValue('RotationAngle', $angle, $is_changed);
                 $this->SaveValue('RotationStart', $start, $is_changed);
             }
 
             // ancp - angle ... (CUST)
-            $used_fields[] = 'product-state.ancp';
+            $ignored_fields[] = 'product-state.ancp';
         }
 
         if ($field['airflow_direction']) {
-            // fdir - fan direction front (ON|OFF)
+            // fdir - front direction  (ON|OFF)
             $fdir = $this->GetArrayElem($payload, 'product-state.fdir', '');
             $used_fields[] = 'product-state.fdir';
             if ($changeState) {
@@ -544,7 +549,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($fdir);
-                $this->SendDebug(__FUNCTION__, 'fdir (fan direction front)=' . $fdir . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... front direction (fdir)=' . $fdir . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('AirflowDirection', $b, $is_changed);
             }
         }
@@ -561,7 +566,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($auto);
-                $this->SendDebug(__FUNCTION__, 'auto (automatic mode)=' . $auto . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... automatic mode (auto)=' . $auto . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('AutomaticMode', $b, $is_changed);
             }
         }
@@ -578,7 +583,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($nmod);
-                $this->SendDebug(__FUNCTION__, 'nmod (night mode)=' . $nmod . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... night mode (nmod)=' . $nmod . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('NightMode', $b, $is_changed);
             }
         }
@@ -595,14 +600,14 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
-                $this->SendDebug(__FUNCTION__, 'sltm (sleep-timer)=' . $sltm . ' => ' . $sleep_timer, 0);
+                $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
                 $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
             }
         }
 
         if ($field['carbon_filter']) {
             // cflt - carbon filter type (CARF)
-            $used_fields[] = 'product-state.cflt';
+            $ignored_fields[] = 'product-state.cflt';
 
             // cflr - carbon filter range (0..100%)
             $cflr = (int) $this->GetArrayElem($payload, 'product-state.cflr', 0);
@@ -615,14 +620,14 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
-                $this->SendDebug(__FUNCTION__, 'cflr (carbon filter range)=' . $cflr, 0);
+                $this->SendDebug(__FUNCTION__, '... carbon filter lifetime (cflr)=' . $cflr, 0);
                 $this->SaveValue('CarbonFilterLifetime', $cflr, $is_changed);
             }
         }
 
         if ($field['hepa_filter']) {
             // hflt - hepa filter type (GHEP)
-            $used_fields[] = 'product-state.hflt';
+            $ignored_fields[] = 'product-state.hflt';
 
             // hflr - hepa filter range (0..100%)
             $hflr = (int) $this->GetArrayElem($payload, 'product-state.hflr', 0);
@@ -635,7 +640,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
-                $this->SendDebug(__FUNCTION__, 'hflr (hepa filter range)=' . $hflr, 0);
+                $this->SendDebug(__FUNCTION__, '... hepa filter lifetime (hflr)=' . $hflr, 0);
                 $this->SaveValue('HepaFilterLifetime', $hflr, $is_changed);
             }
         }
@@ -652,7 +657,7 @@ class DysonDevice extends IPSModule
             }
             if ($do) {
                 $b = $this->str2bool($rhtm);
-                $this->SendDebug(__FUNCTION__, 'rhtm (standby monitoring)=' . $rhtm . ' => ' . $this->bool2str($b), 0);
+                $this->SendDebug(__FUNCTION__, '... standby monitoring (rhtm)=' . $rhtm . ' => ' . $this->bool2str($b), 0);
                 $this->SaveValue('StandbyMonitoring', $b, $is_changed);
             }
         }
@@ -662,60 +667,80 @@ class DysonDevice extends IPSModule
             $this->SetValue('LastChange', $ts);
         }
 
-        $b = false;
-        foreach ($payload as $var => $val) {
-            if (is_array($val)) {
-                continue;
-            }
-            if (in_array($var, $used_fields)) {
-                continue;
-            }
-            if ($b == false) {
-                $b = true;
-                $this->SendDebug(__FUNCTION__, 'unused variables', 0);
-            }
-            $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
-        }
-        foreach ($payload['product-state'] as $var => $val) {
-            if (in_array('product-state.' . $var, $used_fields)) {
-                continue;
-            }
-            if ($changeState) {
-                if ($val[0] == $val[1]) {
+        for ($i = 0; $i < 2; $i++) {
+            $b = false;
+            $s = ($i == 0 ? 'ignored' : 'unused') . ' variables';
+            foreach ($payload as $var => $val) {
+                if (is_array($val)) {
+                    continue;
+                }
+                if ($i == 0) {
+                    $skip = !in_array($var, $ignored_fields);
+                } else {
+                    $skip = in_array($var, $used_fields) || in_array($var, $ignored_fields);
+                }
+                if ($skip) {
                     continue;
                 }
                 if ($b == false) {
                     $b = true;
-                    $this->SendDebug(__FUNCTION__, 'unused variables', 0);
+                    $this->SendDebug(__FUNCTION__, $s, 0);
                 }
-                $this->SendDebug(__FUNCTION__, '... product-state.' . $var . '="' . $val[1] . '"', 0);
-            } else {
-                if ($b == false) {
-                    $b = true;
-                    $this->SendDebug(__FUNCTION__, 'unused variables', 0);
+                $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
+            }
+            foreach ($payload['product-state'] as $var => $val) {
+                $var = 'product-state.' . $var;
+                if ($i == 0) {
+                    $skip = !in_array($var, $ignored_fields);
+                } else {
+                    $skip = in_array($var, $used_fields) || in_array($var, $ignored_fields);
                 }
-                $this->SendDebug(__FUNCTION__, '... product-state.' . $var . '="' . $val . '"', 0);
-            }
-        }
-        foreach ($payload['scheduler'] as $var => $val) {
-            if (in_array('scheduler.' . $var, $used_fields)) {
-                continue;
-            }
-            if ($changeState) {
-                if ($val[0] == $val[1]) {
+                if ($skip) {
                     continue;
                 }
-                if ($b == false) {
-                    $b = true;
-                    $this->SendDebug(__FUNCTION__, 'unused variables', 0);
+                if ($changeState) {
+                    if ($val[0] == $val[1]) {
+                        continue;
+                    }
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val[1] . '"', 0);
+                } else {
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
                 }
-                $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . '="' . $val[1] . '"', 0);
-            } else {
-                if ($b == false) {
-                    $b = true;
-                    $this->SendDebug(__FUNCTION__, 'unused variables', 0);
+            }
+            foreach ($payload['scheduler'] as $var => $val) {
+                $var = 'scheduler.' . $var;
+                if ($i == 0) {
+                    $skip = !in_array($var, $ignored_fields);
+                } else {
+                    $skip = in_array($var, $used_fields) || in_array($var, $ignored_fields);
                 }
-                $this->SendDebug(__FUNCTION__, '... scheduler.' . $var . '="' . $val . '"', 0);
+                if ($skip) {
+                    continue;
+                }
+                if ($changeState) {
+                    if ($val[0] == $val[1]) {
+                        continue;
+                    }
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val[1] . '"', 0);
+                } else {
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
+                }
             }
         }
     }
@@ -728,17 +753,25 @@ class DysonDevice extends IPSModule
 
         $now = time();
         $is_changed = false;
-        $used_fields = ['msg', 'time'];
+
+        $used_fields = [];
+        $ignored_fields = [];
+
+        $this->SendDebug(__FUNCTION__, 'used variables', 0);
+
+        $msg = $payload['msg'];
+        $msg = $used_fields[] = 'msg';
 
         $ts = strtotime($payload['time']);
-        $this->SendDebug(__FUNCTION__, 'time=' . date('d.m.y H:i:s', $ts), 0);
+        $used_fields[] = 'time';
+        $this->SendDebug(__FUNCTION__, '... msg=' . $msg . ', time=' . date('d.m.y H:i:s', $ts), 0);
 
         if ($field['temperature']) {
             // tact - temperature actual
             $tact = (int) $this->GetArrayElem($payload, 'data.tact', 0);
             $used_fields[] = 'data.tact';
             $temp = $tact / 10 - 273;
-            $this->SendDebug(__FUNCTION__, 'tact (temperature)=' . $tact . ' => ' . $temp, 0);
+            $this->SendDebug(__FUNCTION__, '... temperature (tact)=' . $tact . ' => ' . $temp, 0);
             $this->SaveValue('Temperature', $temp, $is_changed);
         }
 
@@ -746,29 +779,29 @@ class DysonDevice extends IPSModule
             // hact - humidity actual
             $hum = (int) $this->GetArrayElem($payload, 'data.hact', 0);
             $used_fields[] = 'data.hact';
-            $this->SendDebug(__FUNCTION__, 'hact (humidity)=' . $hum, 0);
+            $this->SendDebug(__FUNCTION__, '... humidity (hact)=' . $hum, 0);
             $this->SaveValue('Humidity', $hum, $is_changed);
         }
 
         if ($field['pm25']) {
             // pm25 - PM 10 ?
-            $used_fields[] = 'data.pm25';
+            $ignored_fields[] = 'data.pm25';
 
             // p25r - PM 2.5 real
             $pm25 = (int) $this->GetArrayElem($payload, 'data.p25r', 0);
             $used_fields[] = 'data.p25r';
-            $this->SendDebug(__FUNCTION__, 'p25r (PM2.5)=' . $pm25, 0);
+            $this->SendDebug(__FUNCTION__, '... PM2.5 (p25r)=' . $pm25, 0);
             $this->SaveValue('PM25', $pm25, $is_changed);
         }
 
         if ($field['pm10']) {
             // pm10 - PM 10 ?
-            $used_fields[] = 'data.pm10';
+            $ignored_fields[] = 'data.pm10';
 
             // p10r - PM 10 real
             $pm10 = (int) $this->GetArrayElem($payload, 'data.p10r', 0);
             $used_fields[] = 'data.p10r';
-            $this->SendDebug(__FUNCTION__, 'p10r (PM10)=' . $pm10, 0);
+            $this->SendDebug(__FUNCTION__, '... PM10 (p10r)=' . $pm10, 0);
             $this->SaveValue('PM10', $pm10, $is_changed);
         }
 
@@ -776,7 +809,7 @@ class DysonDevice extends IPSModule
             // va10 - volatile organic compounds
             $voc = (int) $this->GetArrayElem($payload, 'data.va10', 0);
             $used_fields[] = 'data.va10';
-            $this->SendDebug(__FUNCTION__, 'va10 (VOC)=' . $voc, 0);
+            $this->SendDebug(__FUNCTION__, '... VOC (va10)=' . $voc, 0);
             $this->SaveValue('VOC', $voc, $is_changed);
         }
 
@@ -784,41 +817,66 @@ class DysonDevice extends IPSModule
             // noxl - nitrogen oxides
             $nox = (int) $this->GetArrayElem($payload, 'data.noxl', 0);
             $used_fields[] = 'data.noxl';
-            $this->SendDebug(__FUNCTION__, 'noxl (NOx)=' . $nox, 0);
+            $this->SendDebug(__FUNCTION__, '... NOx (noxl)=' . $nox, 0);
             $this->SaveValue('NOx', $nox, $is_changed);
         }
 
         // sltm - sleep-timer (OFF|1..539)
-        $used_fields[] = 'data.sltm'; // siehe DecodeState()
+        $ignored_fields[] = 'data.sltm'; // siehe DecodeState()
 
         $this->SetValue('LastUpdate', $now);
         if ($is_changed) {
             $this->SetValue('LastChange', $ts);
         }
 
-        $b = false;
-        foreach ($payload as $var => $val) {
-            if (is_array($val)) {
-                continue;
+        for ($i = 0; $i < 2; $i++) {
+            $b = false;
+            $s = ($i == 0 ? 'ignored' : 'unused') . ' variables';
+            foreach ($payload as $var => $val) {
+                if (is_array($val)) {
+                    continue;
+                }
+                if ($i == 0) {
+                    $skip = !in_array($var, $ignored_fields);
+                } else {
+                    $skip = in_array($var, $used_fields) || in_array($var, $ignored_fields);
+                }
+                if ($skip) {
+                    continue;
+                }
+                if ($b == false) {
+                    $b = true;
+                    $this->SendDebug(__FUNCTION__, $s, 0);
+                }
+                $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
             }
-            if (in_array($var, $used_fields)) {
-                continue;
+            foreach ($payload['data'] as $var => $val) {
+                $var = 'data.' . $var;
+                if ($i == 0) {
+                    $skip = !in_array($var, $ignored_fields);
+                } else {
+                    $skip = in_array($var, $used_fields) || in_array($var, $ignored_fields);
+                }
+                if ($skip) {
+                    continue;
+                }
+                if ($changeState) {
+                    if ($val[0] == $val[1]) {
+                        continue;
+                    }
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val[1] . '"', 0);
+                } else {
+                    if ($b == false) {
+                        $b = true;
+                        $this->SendDebug(__FUNCTION__, $s, 0);
+                    }
+                    $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
+                }
             }
-            if ($b == false) {
-                $b = true;
-                $this->SendDebug(__FUNCTION__, 'unused variables', 0);
-            }
-            $this->SendDebug(__FUNCTION__, '... ' . $var . '="' . $val . '"', 0);
-        }
-        foreach ($payload['data'] as $var => $val) {
-            if (in_array('data.' . $var, $used_fields)) {
-                continue;
-            }
-            if ($b == false) {
-                $b = true;
-                $this->SendDebug(__FUNCTION__, 'unused variables', 0);
-            }
-            $this->SendDebug(__FUNCTION__, '... data.' . $var . '="' . $val . '"', 0);
         }
     }
 
