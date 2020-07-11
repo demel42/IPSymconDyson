@@ -91,7 +91,7 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 
 ## 4. Funktionsreferenz
 
-`Dyson_UpdateStatus(int $InstanzID)`
+`Dyson_UpdateStatus(int $InstanzID)`<br>
 Aktualiseren des Status des Gerätes.
 
 Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B.<br>
