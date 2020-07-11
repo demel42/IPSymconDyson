@@ -21,7 +21,7 @@
 ## 2. Voraussetzungen
 
  - IP-Symcon ab Version 5.3
- - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall
+ - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall, die mit der _Dyson Link App_ verknüpft werden können.
  - das installierte Modul _MQTTClient_ von **Kai Schnittcher**
 
 Getestet wurde das Modul bisher mit:
