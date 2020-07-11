@@ -21,6 +21,17 @@
 ## 2. Voraussetzungen
 
  - IP-Symcon ab Version 5.3
+ - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall
+ - das installierte Modul _MQTTClient_ von **Kai Schnittcher**
+
+Getestet wurde das Modul bisher mit
+| Typ | Bezeichnung   |
+| 438 | Dyson Pure Cool Turmventilator mit Luftreiniger |
+
+Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
+Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
+
+Das Modul basiert unter anderem auf Informationen aus dem Projekt [libpuercool[(https://github.com/CharlesBlonde/libpurecoollink).
 
 ## 3. Installation
 
@@ -58,19 +69,53 @@ In dem Konfigurationsdialog die Dyson-Zugangsdaten eintragen.
 
 Hier werden alle Dyson-Produkte, die mit dem angegebenen Dyson-Konto verknüpft sind, angeboten; aus denen wählt man ein Produkt aus.
 
-Mit den Schaltflächen _Erstellen_ bzw. _Alle erstellen_ werden das/die gewählte Produkt anlegt.
+Mit den Schaltflächen _Erstellen_ bzw. _Alle erstellen_ werden das/die gewählte Produkt(e) anlegt. Dabei werden 3 Instanzen erzeugt:
+- DysonDevice
+Die Daten des Dyson-Accounts werden von DysonConfig hierhin dupliziert, Änderungen hieran müssen manuelle nachgeführt werden.
+Die Produkte werden aufgrund der _Seriennummer_ identifiziert; durch den _Produkt-Typ_ wird der Umfang der Variablen festgelegt.
+- MQTTClient
+in der Instanz wird bei der Anlage der Instanz alles konfiguriert und kann nachträglich nicht geändert werden.
+Tip: die erzeugte Instanz danach sinnvoll benennen, da für jedes Gerät eine solche Instanz angelegt wird.
+- Client Socket
+in dieser Instanz muss noch der Hostname bzw. die IP-Adresse des Dyson-Gerätes eingetragen werden… die vorgegebenen Port-Nummer _1883_ darf nicht geändert werden
 
-Der Aufruf des Konfigurators kann jederzeit wiederholt werden.
-
-Die Produkte werden aufgrund der _Seriennummer_ identifiziert.
-
-Zu den Geräte-Instanzen werden im Rahmen der Konfiguration Produkttyp-abhängig Variablen angelegt. Zusätzlich kann man in dem Modultyp-spezifischen Konfigurationsdialog weitere Variablen aktivieren.
+Zu den Geräte-Instanzen werden im Rahmen der Konfiguration Produkttyp-abhängig Variablen angelegt.
 
 Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert werden.
 
 ## 4. Funktionsreferenz
 
+`Dyson_UpdateStatus(int $InstanzID)`
+Aktualiseren des Status des Gerätes.
+
+Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B. `RequestAction(<ID der Variable 'Power'>, true)`aktiviert das Gerät.
+
 ## 5. Konfiguration
+
+### DysonConfig
+
+#### Properties
+
+| Eigenschaft               | Typ      | Standardwert | Beschreibung |
+| :------------------------ | :------  | :----------- | :----------- |
+| Dyson-Zugangsdaten        | string   |              | Benutzername und Passwort des Dyson-Cloud sowie das Land |
+|                           |          |              | |
+| Kategorie                 | integer  | 0            | Kategorie im Objektbaum, unter dem die Instanzen angelegt werden |
+| Produkt                   |          |              | Liste der mit dem Konto verknüpften Geräte |
+
+
+### DysonDevice
+
+#### Properties
+
+| Eigenschaft               | Typ      | Standardwert | Beschreibung |
+| :------------------------ | :------  | :----------- | :----------- |
+| Dyson-Zugangsdaten        | string   |              | Benutzername und Passwort des Dyson-Cloud sowie das Land |
+|                           |          |              | |
+| Konfiguration abrufen     | integer  | 60           | Abrufen der Daten aus der Dyson-Cloud alle X Minuten |
+| Status abrufen            | integer  | 0            | Abruf des Geräte-Status alle X Minuten |
+
+Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort das Passwort zur lokalen MQTT-Kommunikation mit dem Gerät geliefert wird.
 
 ## 6. Anhang
 
@@ -85,5 +130,5 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 0.1 @ xx.xx.xxxx xx:xx
+- 1.0 @ 11.07.2020 12:51
   - Initiale Version
