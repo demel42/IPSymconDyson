@@ -15,7 +15,6 @@
 
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
 
-
 			"Standby monitoring": "kontinuierliche Überwachung",
 
 			"Carbon filter lifetime": "Aktivkohlefilter Lebensdauer",
@@ -53,6 +52,11 @@
 
 			"Front": "Vorderseite",
 			"Back": "Rückseite",
+
+			"Login failed": "Anmeldung fehlgeschlagen",
+			"Login successful": "Anmeldung erfolgreich",
+			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
+			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",

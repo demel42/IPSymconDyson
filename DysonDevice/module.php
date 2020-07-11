@@ -223,9 +223,12 @@ class DysonDevice extends IPSModule
         $formElements = [];
 
         $product_type = $this->ReadPropertyString('product_type');
-        $name = $this->product2name($product_type);
+        $product_name = $this->product2name($product_type);
 
-        $formElements[] = ['type' => 'Label', 'caption' => $name];
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Dyson'
+        ];
 
         $items = [];
         $items[] = [
@@ -260,9 +263,18 @@ class DysonDevice extends IPSModule
             'caption' => ''
         ];
         $items[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'product_type',
-            'caption' => 'Product type'
+            'type'    => 'RowLayout',
+            'items'   => [
+                [
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'product_type',
+                    'caption' => 'Product type'
+                ],
+                [
+                    'type'    => 'Label',
+                    'caption' => $product_name
+                ]
+            ]
         ];
         $formElements[] = [
             'type'    => 'ExpansionPanel',
@@ -307,19 +319,24 @@ class DysonDevice extends IPSModule
         $formActions = [];
 
         $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Relogin',
-            'onClick' => 'Dyson_Relogin($id);'
-        ];
-        $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Reload Config',
-            'onClick' => 'Dyson_ManualReloadConfig($id);'
-        ];
-        $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Update Status',
-            'onClick' => 'Dyson_ManualUpdateStatus($id);'
+            'type'    => 'RowLayout',
+            'items'   => [
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Relogin',
+                    'onClick' => 'Dyson_ManualRelogin($id);'
+                ],
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Reload Config',
+                    'onClick' => 'Dyson_ManualReloadConfig($id);'
+                ],
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Update Status',
+                    'onClick' => 'Dyson_ManualUpdateStatus($id);'
+                ]
+            ]
         ];
 
         return $formActions;
@@ -364,7 +381,7 @@ class DysonDevice extends IPSModule
         }
     }
 
-    public function Relogin()
+    public function ManualRelogin()
     {
         $auth = $this->doLogin(true);
         echo $this->Translate(($auth == false ? 'Login failed' : 'Login successful'));
@@ -372,8 +389,8 @@ class DysonDevice extends IPSModule
 
     public function ManualReloadConfig()
     {
-        $localPassword = $this->loadConfig();
-        echo $this->Translate(($localPassword == false ? 'Load config failed' : 'Load config succeeded'));
+        $r = $this->loadConfig();
+        echo $this->Translate(($r == false ? 'Load config failed' : 'Load config succeeded'));
     }
 
     public function ReloadConfig()
@@ -409,7 +426,10 @@ class DysonDevice extends IPSModule
                     }
                 }
             }
+			return true;
         }
+
+		return false;
     }
 
     private function DecodeState($payload, $changeState)
