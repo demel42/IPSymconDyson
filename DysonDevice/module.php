@@ -528,11 +528,11 @@ class DysonDevice extends IPSModule
             }
 
             // osal - oscillation angle low (5..309)
-            $osal = (int) $this->GetArrayElem($payload, 'product-state.osal', 0);
+            $osal = $this->GetArrayElem($payload, 'product-state.osal', 0);
             $used_fields[] = 'product-state.osal';
 
             // osau - oscillation angle up (50..354)
-            $osau = (int) $this->GetArrayElem($payload, 'product-state.osau', 0);
+            $osau = $this->GetArrayElem($payload, 'product-state.osau', 0);
             $used_fields[] = 'product-state.osau';
 
             if ($changeState) {
@@ -548,8 +548,7 @@ class DysonDevice extends IPSModule
                 $end = 0;
                 $this->adjust_rotation($angle, $start, $end);
 
-                $this->SendDebug(__FUNCTION__, '... oscillation angle low (osal)=' . $osal . ', up (osau)=' . $osau, 0);
-                $this->SendDebug(__FUNCTION__, '    => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
+                $this->SendDebug(__FUNCTION__, '... oscillation angle low (osal)=' . $osal . ', up (osau)=' . $osau . ' => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
                 $this->SaveValue('RotationAngle', $angle, $is_changed);
                 $this->SaveValue('RotationStart', $start, $is_changed);
             }
@@ -631,7 +630,7 @@ class DysonDevice extends IPSModule
             $ignored_fields[] = 'product-state.cflt';
 
             // cflr - carbon filter range (0..100%)
-            $cflr = (int) $this->GetArrayElem($payload, 'product-state.cflr', 0);
+            $cflr = $this->GetArrayElem($payload, 'product-state.cflr', 0);
             $used_fields[] = 'product-state.cflr';
             if ($changeState) {
                 $do = $cflr[0] != $cflr[1];
@@ -640,7 +639,6 @@ class DysonDevice extends IPSModule
                 $do = true;
             }
             if ($do) {
-                $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
                 $this->SendDebug(__FUNCTION__, '... carbon filter lifetime (cflr)=' . $cflr, 0);
                 $this->SaveValue('CarbonFilterLifetime', $cflr, $is_changed);
             }
@@ -651,7 +649,7 @@ class DysonDevice extends IPSModule
             $ignored_fields[] = 'product-state.hflt';
 
             // hflr - hepa filter range (0..100%)
-            $hflr = (int) $this->GetArrayElem($payload, 'product-state.hflr', 0);
+            $hflr = $this->GetArrayElem($payload, 'product-state.hflr', 0);
             $used_fields[] = 'product-state.hflr';
             if ($changeState) {
                 $do = $hflr[0] != $hflr[1];
@@ -660,7 +658,6 @@ class DysonDevice extends IPSModule
                 $do = true;
             }
             if ($do) {
-                $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
                 $this->SendDebug(__FUNCTION__, '... hepa filter lifetime (hflr)=' . $hflr, 0);
                 $this->SaveValue('HepaFilterLifetime', $hflr, $is_changed);
             }
@@ -1374,7 +1371,7 @@ class DysonDevice extends IPSModule
 
     private function adjust_rotation(&$angle, &$start, &$end)
     {
-        $this->SendDebug(__FUNCTION__, 'ORG: angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
+        $s = 'angle=' . $angle . ', start=' . $start . ', end=' . $end;
         if ($angle < 68) {        // 45 + (90 - 45) / 2 = 67.5
             $angle = 45;
         } elseif ($angle < 135) {  // 90 + (180 - 90) / 2 = 135
@@ -1384,7 +1381,6 @@ class DysonDevice extends IPSModule
         } else {
             $angle = 350;
         }
-        $this->SendDebug(__FUNCTION__, 'MID: angle=' . $angle, 0);
 
         if ($start < 5) {
             $start = 5;
@@ -1396,7 +1392,7 @@ class DysonDevice extends IPSModule
             $start -= $end - 354;
             $end = $start + $angle;
         }
-        $this->SendDebug(__FUNCTION__, 'NEW: angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
+        $this->SendDebug(__FUNCTION__, $s . ' => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
     }
 
     private function adjustAction($mode)
