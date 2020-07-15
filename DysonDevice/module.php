@@ -1348,6 +1348,27 @@ class DysonDevice extends IPSModule
                 $field['voc'] = true;
                 $field['nox'] = true;
                 break;
+            case 455:
+                $field['rssi'] = true;
+                $field['power'] = true;
+                $field['airflow_rate'] = true;
+                $field['rotation_mode'] = true;
+                $field['airflow_direction'] = true;
+                $field['automatic_mode'] = true;
+                $field['night_mode'] = true;
+                $field['sleep_timer'] = true;
+
+                $field['standby_monitoring'] = true;
+                $field['carbon_filter'] = true;
+                $field['hepa_filter'] = true;
+
+                $field['temperature'] = true;
+                $field['humidity'] = true;
+                $field['pm25'] = true;
+                $field['pm10'] = true;
+                $field['voc'] = true;
+                $field['nox'] = true;
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);
                 break;
@@ -1359,6 +1380,7 @@ class DysonDevice extends IPSModule
     {
         $product2name = [
             438 => 'Dyson Pure Cool purifier fan tower',
+            455 => 'Dyson Pure Hot+Cool purifier fan tower',
         ];
 
         if (isset($product2name[$product_type])) {
