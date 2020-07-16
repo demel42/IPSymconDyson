@@ -794,9 +794,17 @@ class DysonDevice extends IPSModule
             $hmax = $this->GetArrayElem($payload, 'product-state.hmax', '');
             if ($hmax != '') {
                 $used_fields[] = 'product-state.hmax';
-                $temp = (int) $this->decode_temperature($hmax);
-                $this->SendDebug(__FUNCTION__, '... temperature (hmax)=' . $hmax . ' => ' . $temp, 0);
-                $this->SaveValue('HeatingTemperature', $temp, $is_changed);
+                if ($changeState) {
+                    $do = $hmax[0] != $hmax[1];
+                    $hmax = $hmax[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+					$temp = (int) $this->decode_temperature($hmax);
+					$this->SendDebug(__FUNCTION__, '... temperature (hmax)=' . $hmax . ' => ' . $temp, 0);
+					$this->SaveValue('HeatingTemperature', $temp, $is_changed);
+				}
             } else {
                 $missing_fields[] = 'product-state.hmax';
             }
