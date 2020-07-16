@@ -14,7 +14,7 @@
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
-			"Dyson Pure Hot+cCool purifier fan tower": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger",
+			"Dyson Pure Hot+Cool purifier fan tower": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger",
 
 			"Standby monitoring": "kontinuierliche Überwachung",
 
@@ -26,6 +26,8 @@
 			"Automatic mode": "Automatik-Modus",
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
+			"Heater mode": "Heizung",
+			"Heating temperatur": "Heiztemperatur",
 			"Humidity": "Luftfeuchte",
 			"Last change": "letzte Änderung",
 			"Last update": "letzte Aktualisierung",

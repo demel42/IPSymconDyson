@@ -32,6 +32,7 @@ Getestet wurde das Modul bisher mit:
 
 | Typ | Bezeichnung |
 | :-- | :---------- |
+| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
@@ -149,6 +150,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 1.0 @ 16.07.2020 14:24
+  - Modell 455 hinzugefügt
 
 - 1.0 @ 15.07.2020 10:08
   - Initiale Version
