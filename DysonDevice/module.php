@@ -790,7 +790,7 @@ class DysonDevice extends IPSModule
                 $missing_fields[] = 'product-state.hmod';
             }
 
-            // hmax - heating temperature 2930 (1/10° K)
+            // hmax - heating temperature (1/10° K)
             $hmax = $this->GetArrayElem($payload, 'product-state.hmax', '');
             if ($hmax != '') {
                 $used_fields[] = 'product-state.hmax';
@@ -1694,7 +1694,7 @@ class DysonDevice extends IPSModule
 
     private function encode_temperature(int $temp)
     {
-        return $temp + 273.15 * 10;
+        return (int) round(($temp + 273.15) * 10);
     }
 
     private function decode_temperature(string $str)
