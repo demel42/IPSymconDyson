@@ -801,10 +801,10 @@ class DysonDevice extends IPSModule
                     $do = true;
                 }
                 if ($do) {
-					$temp = (int) $this->decode_temperature($hmax);
-					$this->SendDebug(__FUNCTION__, '... temperature (hmax)=' . $hmax . ' => ' . $temp, 0);
-					$this->SaveValue('HeatingTemperature', $temp, $is_changed);
-				}
+                    $temp = (int) $this->decode_temperature($hmax);
+                    $this->SendDebug(__FUNCTION__, '... temperature (hmax)=' . $hmax . ' => ' . $temp, 0);
+                    $this->SaveValue('HeatingTemperature', $temp, $is_changed);
+                }
             } else {
                 $missing_fields[] = 'product-state.hmax';
             }
