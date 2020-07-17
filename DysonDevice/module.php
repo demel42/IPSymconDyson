@@ -42,8 +42,8 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.AirflowDirection', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
 
         $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Direct'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1];
+        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1];
+        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Direct'), 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.AirflowDistribution', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
 
         $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
@@ -160,7 +160,7 @@ class DysonDevice extends IPSModule
         if ($options['airflow_direction']) {
             $this->MaintainAction('AirflowDirection', true);
         }
-        $this->MaintainVariable('AirflowDistribution', $this->Translate('Airflow mode'), VARIABLETYPE_BOOLEAN, 'Dyson.AirflowDistribution', $vpos++, $options['airflow_distribution']);
+        $this->MaintainVariable('AirflowDistribution', $this->Translate('Airflow distribution'), VARIABLETYPE_BOOLEAN, 'Dyson.AirflowDistribution', $vpos++, $options['airflow_distribution']);
         if ($options['airflow_distribution']) {
             $this->MaintainAction('AirflowDistribution', true);
         }
@@ -1591,6 +1591,10 @@ class DysonDevice extends IPSModule
                 break;
             case 'AirflowDirection':
                 $r = $this->SwitchAirflowDirection((bool) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
+            case 'AirflowDistribution':
+                $r = $this->SwitchAirflowDistribution((bool) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
             case 'RotationMode':
