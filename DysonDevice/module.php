@@ -565,27 +565,49 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['rotation_mode']) {
-            // oson - oscillation on (OFF|ON)
-            $ignored_fields[] = 'product-state.oson';
+            if ($options['rotation_mode_use_oson']) {
+                // oson - oscillation on (OFF|ON)
+                $oson = $this->GetArrayElem($payload, 'product-state.oson', '');
+                if ($oson != '') {
+                    $used_fields[] = 'product-state.oson';
 
-            // oscs - oscillation state (OFF|ON)
-            $oscs = $this->GetArrayElem($payload, 'product-state.oscs', '');
-            if ($oscs != '') {
-                $used_fields[] = 'product-state.oscs';
-
-                if ($changeState) {
-                    $do = $oscs[0] != $oscs[1];
-                    $oscs = $oscs[1];
+                    if ($changeState) {
+                        $do = $oson[0] != $oson[1];
+                        $oson = $oson[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $b = $this->str2bool($oson);
+                        $this->SendDebug(__FUNCTION__, '... oscillation mode (oson)=' . $oson . ' => ' . $this->bool2str($b), 0);
+                        $this->SaveValue('RotationMode', $b, $is_changed);
+                    }
                 } else {
-                    $do = true;
-                }
-                if ($do) {
-                    $b = $this->str2bool($oscs);
-                    $this->SendDebug(__FUNCTION__, '... oscillation state (oscs)=' . $oscs . ' => ' . $this->bool2str($b), 0);
-                    $this->SaveValue('RotationMode', $b, $is_changed);
+                    $missing_fields[] = 'product-state.oson';
                 }
             } else {
-                $missing_fields[] = 'product-state.oscs';
+                // oson - oscillation on (OFF|ON)
+                $ignored_fields[] = 'product-state.oson';
+
+                // oscs - oscillation state (OFF|ON)
+                $oscs = $this->GetArrayElem($payload, 'product-state.oscs', '');
+                if ($oscs != '') {
+                    $used_fields[] = 'product-state.oscs';
+
+                    if ($changeState) {
+                        $do = $oscs[0] != $oscs[1];
+                        $oscs = $oscs[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $b = $this->str2bool($oscs);
+                        $this->SendDebug(__FUNCTION__, '... oscillation state (oscs)=' . $oscs . ' => ' . $this->bool2str($b), 0);
+                        $this->SaveValue('RotationMode', $b, $is_changed);
+                    }
+                } else {
+                    $missing_fields[] = 'product-state.oscs';
+                }
             }
         }
 
@@ -1640,6 +1662,7 @@ class DysonDevice extends IPSModule
         $options['power_use_fmod'] = false;
         $options['airflow_rate'] = false;
         $options['rotation_mode'] = false;
+        $options['rotation_mode_use_oson'] = false;
         $options['rotation_angle'] = false;
         $options['airflow_direction'] = false;
         $options['airflow_distribution'] = false;
@@ -1693,6 +1716,7 @@ class DysonDevice extends IPSModule
                 $options['automatic_mode'] = true;
                 $options['airflow_rate'] = true;
                 $options['rotation_mode'] = true;
+                $options['rotation_mode_use_oson'] = true;
                 $options['airflow_distribution'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
