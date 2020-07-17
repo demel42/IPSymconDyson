@@ -833,7 +833,7 @@ class DysonDevice extends IPSModule
                     $do = true;
                 }
                 if ($do) {
-                    $temp = (int) $this->decode_temperature($hmax);
+                    $temp = (float) $this->decode_temperature($hmax);
                     $this->SendDebug(__FUNCTION__, '... temperature (hmax)=' . $hmax . ' => ' . $temp, 0);
                     $this->SaveValue('HeatingTemperature', $temp, $is_changed);
                 }
@@ -966,7 +966,7 @@ class DysonDevice extends IPSModule
             $tact = $this->GetArrayElem($payload, 'data.tact', '');
             if ($tact != '') {
                 $used_fields[] = 'data.tact';
-                $temp = (int) $this->decode_temperature($tact);
+                $temp = (float) $this->decode_temperature($tact);
                 $this->SendDebug(__FUNCTION__, '... temperature (tact)=' . $tact . ' => ' . $temp, 0);
                 $this->SaveValue('Temperature', $temp, $is_changed);
             } else {
@@ -1529,7 +1529,7 @@ class DysonDevice extends IPSModule
         }
 
         $temp = (float) $this->GetValue('HeatingTemperature');
-        $k = $this->encode_temperature($temp);
+        $k = (int) $this->encode_temperature($temp);
 
         if ($mode) {
             $data = [
@@ -1551,7 +1551,7 @@ class DysonDevice extends IPSModule
             return false;
         }
 
-        $k = $this->encode_temperature($temp);
+        $k = (int) $this->encode_temperature($temp);
 
         $data = [
             'hmax'=> sprintf('%04d', $k),
@@ -1751,7 +1751,7 @@ class DysonDevice extends IPSModule
         $this->SendDebug(__FUNCTION__, $s . ' => angle=' . $angle . ', start=' . $start . ', end=' . $end, 0);
     }
 
-    private function encode_temperature(int $temp)
+    private function encode_temperature(float $temp)
     {
         return (int) round(($temp + 273.15) * 10);
     }
@@ -1761,8 +1761,7 @@ class DysonDevice extends IPSModule
         if ($str == '') {
             return false;
         }
-        $temp = (int) $str / 10 - 273.15;
-        return $temp;
+        return = (float) $str / 10 - 273.15;
     }
 
     private function adjustAction($mode)
