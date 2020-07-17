@@ -32,7 +32,7 @@ Getestet wurde das Modul bisher mit:
 
 | Typ | Bezeichnung |
 | :-- | :---------- |
-| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger |
+| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
@@ -138,6 +138,18 @@ Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort da
 | Konfiguration erneut laden | Geräte-Konfiguration aus der Dyson-Cloud laden |
 | Daten aktualisieren        | Geräte-Status abfragen |
 
+### Variablenprofile
+
+Es werden folgende Variablenprofile angelegt:
+* Boolean<br>
+Dyson.AirflowDirection, Dyson.AirflowDistribution
+
+* Integer<br>
+Dyson.AirflowRate, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.RotationAngle, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.Wifi
+
+* Float<br>
+Dyson.Humidity, Dyson.Temperature
+
 ## 6. Anhang
 
 Quellen
@@ -151,7 +163,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.0 @ 16.07.2020 14:24
+- 1.0 @ 17.07.2020 10:52
   - Modell 455 hinzugefügt
 
 - 1.0 @ 15.07.2020 10:08

@@ -14,7 +14,7 @@
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
-			"Dyson Pure Hot+Cool purifier fan tower": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger",
+			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)",
 
 			"Standby monitoring": "kontinuierliche Überwachung",
 
@@ -22,10 +22,12 @@
 			"HEPA filter lifetime": "HEPA-Filter Lebensdauer",
 
 			"Airflow direction": "Luftstromrichtung",
+			"Airflow distribution": "Luftstromverteilung",
 			"Airflow rate": "Luftstromstärke",
 			"Automatic mode": "Automatik-Modus",
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
+			"Dust": "Feinstaub",
 			"Heater mode": "Heizung",
 			"Heating temperatur": "Heiztemperatur",
 			"Humidity": "Luftfeuchte",
@@ -55,6 +57,9 @@
 
 			"Front": "Vorderseite",
 			"Back": "Rückseite",
+
+			"Direct": "Direkt",
+			"Indirect": "Indirekt",
 
 			"Login failed": "Anmeldung fehlgeschlagen",
 			"Login successful": "Anmeldung erfolgreich",
