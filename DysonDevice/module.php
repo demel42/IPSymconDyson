@@ -1727,9 +1727,6 @@ class DysonDevice extends IPSModule
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
-                $options['dust'] = true;
-                $options['voc'] = true;
-                $options['voc_use_vact'] = true;
                 break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);
