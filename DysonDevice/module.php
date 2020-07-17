@@ -1761,7 +1761,7 @@ class DysonDevice extends IPSModule
         if ($str == '') {
             return false;
         }
-        return = (float) $str / 10 - 273.15;
+        return (float) $str / 10 - 273.15;
     }
 
     private function adjustAction($mode)
