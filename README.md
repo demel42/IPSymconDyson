@@ -138,6 +138,15 @@ Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort da
 | Konfiguration erneut laden | Geräte-Konfiguration aus der Dyson-Cloud laden |
 | Daten aktualisieren        | Geräte-Status abfragen |
 
+### Test-Bereich
+
+alle schaltbaren Statusvariablen der Instanz können hier geschaltet werden.
+
+### Experten-Bereich
+
+Hier können zum Testen von Steruefunktionen (für neue Modelle) die ensprechenden Kommandos getestet werden
+Das Eingabefeld _Kommando_ muss einen _JSON-Encoded-String enthalten, z.B. `{"fpwr":"ON"}`
+
 ### Variablenprofile
 
 Es werden folgende Variablenprofile angelegt:

@@ -366,6 +366,43 @@ class DysonDevice extends IPSModule
             ]
         ];
 
+        $formActions[] = [
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Test area',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'    => 'TestCenter',
+                ]
+            ]
+        ];
+
+        $formActions[] = [
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Expert area',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'   => 'Label',
+                    'caption'=> 'Test own \'SET-STATE\' command; the command has to be a JSON-coded string (see documentation)',
+                ],
+                [
+                    'type'   => 'Label',
+                    'caption'=> 'Examine the debug-window for information about \'ExecuteSetState\'',
+                ],
+                [
+                    'type'   => 'ValidationTextBox',
+                    'name'   => 'cmd',
+                    'caption'=> 'Command'
+                ],
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Execute',
+                    'onClick' => 'Dyson_ExecuteSetState($id, $cmd);'
+                ],
+            ]
+        ];
+
         return $formActions;
     }
 
@@ -1385,6 +1422,17 @@ class DysonDevice extends IPSModule
         $this->SendCommand($func, json_encode($payload));
 
         return true;
+    }
+
+    public function ExecuteSetState(string $cmd)
+    {
+        $this->SendDebug(__FUNCTION__, 'cmd=' . print_r($cmd, true), 0);
+        $data = json_decode($cmd, true);
+        if ($data == '') {
+            $this->SendDebug(__FUNCTION__, 'json_error=' . json_last_error_msg(), 0);
+            return;
+        }
+        return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
     private function SwitchPower(bool $mode)

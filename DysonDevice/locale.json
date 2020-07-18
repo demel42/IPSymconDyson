@@ -16,6 +16,17 @@
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
 			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)",
 
+			"Test area": "Test-Bereich",
+
+			"Expert area": "Experten-Bereich",
+			"Test own 'SET-STATE' command; the command has to be a JSON-coded string (see documentation)":
+				"Eigene 'SET-STATE'-Kommandos testen; das Kommando muss eine JSON-kodierte Zeichenkette sein (siehe Dokumentation)",
+			"Examine the debug-window for information about 'ExecuteSetState'":
+				"Überprüfen Sie das Debug-Fenster auf Informationen zu 'ExecuteSetState'",
+
+			"Command": "Kommando",
+			"Execute": "Ausführen",
+
 			"Standby monitoring": "kontinuierliche Überwachung",
 
 			"Carbon filter lifetime": "Aktivkohlefilter Lebensdauer",
