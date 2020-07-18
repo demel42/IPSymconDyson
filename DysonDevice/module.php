@@ -85,6 +85,8 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations);
 
+        $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 0, 0, 0, 0, 'Temperature');
+
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
         $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
@@ -166,7 +168,7 @@ class DysonDevice extends IPSModule
         }
 
         $this->MaintainVariable('HeaterMode', $this->Translate('Heater mode'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['heating']);
-        $this->MaintainVariable('HeatingTemperature', $this->Translate('Heating temperature'), VARIABLETYPE_FLOAT, 'Dyson.Temperature', $vpos++, $options['heating']);
+        $this->MaintainVariable('HeatingTemperature', $this->Translate('Heating temperature'), VARIABLETYPE_FLOAT, 'Dyson.HeatingTemperature', $vpos++, $options['heating']);
         if ($options['heating']) {
             $this->MaintainAction('HeaterMode', true);
             $this->MaintainAction('HeatingTemperature', true);
@@ -1912,6 +1914,9 @@ class DysonDevice extends IPSModule
         }
         if ($options['airflow_distribution']) {
             $this->MaintainAction('AirflowDistribution', $mode);
+        }
+        if ($options['heating']) {
+            $this->MaintainAction('HeatingTemperature', $mode);
         }
     }
 }

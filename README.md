@@ -157,7 +157,7 @@ Dyson.AirflowDirection, Dyson.AirflowDistribution
 Dyson.AirflowRate, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.RotationAngle, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.Wifi
 
 * Float<br>
-Dyson.Humidity, Dyson.Temperature
+Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
 
 ## 6. Anhang
 
