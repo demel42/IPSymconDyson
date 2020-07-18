@@ -1469,7 +1469,7 @@ class DysonDevice extends IPSModule
         if ($options['automatic_mode_use_fmod']) {
             $power = (bool) $this->GetValue('Power');
             $data = [
-                'fmod'=> ($mode ? 'AUTO' : ($power ? 'ON' : 'OFF'))
+                'fmod'=> ($mode ? 'AUTO' : ($power ? 'FAN' : 'OFF'))
             ];
         } else {
             $data = [
