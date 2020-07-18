@@ -82,12 +82,12 @@ class DysonDevice extends IPSModule
 
         $associations = [];
         $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => -272, 'Name' => '%f °C', 'Farbe' => -1];
+        $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations);
 
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%f %%', 'Farbe' => -1];
+        $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations);
     }
 
@@ -495,7 +495,7 @@ class DysonDevice extends IPSModule
 
         if ($options['power']) {
             if ($options['power_use_fmod']) {
-                // fmod - fan mode (OFF|FAN)
+                // fmod - fan mode (OFF|FAN|AUTO)
                 $fmod = $this->GetArrayElem($payload, 'product-state.fmod', '');
                 if ($fmod != '') {
                     $used_fields[] = 'product-state.fmod';
@@ -535,7 +535,7 @@ class DysonDevice extends IPSModule
                     $missing_fields[] = 'product-state.fpwr';
                 }
 
-                // fmod - fan mode (OFF|FAN)
+                // fmod - fan mode (OFF|FAN|AUTO)
                 $ignored_fields[] = 'product-state.fmod';
             }
 
@@ -695,23 +695,44 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['automatic_mode']) {
-            // auto - automatic mode (OFF|ON)
-            $auto = $this->GetArrayElem($payload, 'product-state.auto', '');
-            if ($auto != '') {
-                $used_fields[] = 'product-state.auto';
-                if ($changeState) {
-                    $do = $auto[0] != $auto[1];
-                    $auto = $auto[1];
+            if ($options['automatic_mode_use_fmod']) {
+                // fmod - fan mode (OFF|FAN|AUTO)
+                $fmod = $this->GetArrayElem($payload, 'product-state.fmod', '');
+                if ($fmod != '') {
+                    $used_fields[] = 'product-state.fmod';
+                    if ($changeState) {
+                        $do = $fmod[0] != $fmod[1];
+                        $fmod = $fmod[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $b = $fmod == 'AUTO';
+                        $this->SendDebug(__FUNCTION__, '... automatic mod from fan mode (fmod)=' . $fmod . ' => ' . $this->bool2str($b), 0);
+                        $this->SaveValue('AutomaticMode', $b, $is_changed);
+                    }
                 } else {
-                    $do = true;
-                }
-                if ($do) {
-                    $b = $this->str2bool($auto);
-                    $this->SendDebug(__FUNCTION__, '... automatic mode (auto)=' . $auto . ' => ' . $this->bool2str($b), 0);
-                    $this->SaveValue('AutomaticMode', $b, $is_changed);
+                    $missing_fields[] = 'product-state.fmod';
                 }
             } else {
-                $missing_fields[] = 'product-state.auto';
+                // auto - automatic mode (OFF|ON)
+                $auto = $this->GetArrayElem($payload, 'product-state.auto', '');
+                if ($auto != '') {
+                    $used_fields[] = 'product-state.auto';
+                    if ($changeState) {
+                        $do = $auto[0] != $auto[1];
+                        $auto = $auto[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $b = $this->str2bool($auto);
+                        $this->SendDebug(__FUNCTION__, '... automatic mode (auto)=' . $auto . ' => ' . $this->bool2str($b), 0);
+                        $this->SaveValue('AutomaticMode', $b, $is_changed);
+                    }
+                } else {
+                    $missing_fields[] = 'product-state.auto';
+                }
             }
         }
 
@@ -868,7 +889,7 @@ class DysonDevice extends IPSModule
         }
 
         // dial - unklar
-        // qtar - quality target (Zielwert der Luftqualität: gut, sensibel, sehr sensibel)
+        // qtar - quality target (Zielwert der Luftqualität: 1="LOW", 3="AVERAGE", 4="HIGH")
         // filf - filter life (unbekannte Umrechnung: "4117" => 96%)
         // tilt - device tilt
 
@@ -1325,7 +1346,7 @@ class DysonDevice extends IPSModule
                     $enabled = true;
                 }
                 break;
-            case 'SetHeatingTemerature':
+            case 'SetHeatingTemperature':
                 if ($options['heating']) {
                     $enabled = true;
                 }
@@ -1368,12 +1389,12 @@ class DysonDevice extends IPSModule
 
     private function SwitchPower(bool $mode)
     {
-        $product_type = $this->ReadPropertyString('product_type');
-        $options = $this->product2options($product_type);
-
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
         }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
 
         if ($options['power_use_fmod']) {
             $data = [
@@ -1394,9 +1415,19 @@ class DysonDevice extends IPSModule
             return false;
         }
 
-        $data = [
-            'auto'=> ($mode ? 'ON' : 'OFF')
-        ];
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        if ($options['automatic_mode_use_fmod']) {
+            $power = (bool) $this->GetValue('Power');
+            $data = [
+                'fmod'=> ($mode ? 'AUTO' : ($power ? 'ON' : 'OFF'))
+            ];
+        } else {
+            $data = [
+                'auto'=> ($mode ? 'ON' : 'OFF')
+            ];
+        }
 
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
@@ -1453,14 +1484,27 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    private function SwitchRotationMode(bool $mode)
+    private function SwitchAirflowDistribution(bool $mode)
     {
-        $product_type = $this->ReadPropertyString('product_type');
-        $options = $this->product2options($product_type);
-
         if (!$this->checkAction(__FUNCTION__, true)) {
             return false;
         }
+
+        $data = [
+            'ffoc'=> ($mode ? 'ON' : 'OFF')
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
+    private function SwitchRotationMode(bool $mode)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
 
         if ($options['rotation_angle']) {
             $start = (int) $this->GetValue('RotationStart');
@@ -1667,6 +1711,7 @@ class DysonDevice extends IPSModule
         $options['airflow_direction'] = false;
         $options['airflow_distribution'] = false;
         $options['automatic_mode'] = false;
+        $options['automatic_mode_use_fmod'] = false;
         $options['night_mode'] = false;
         $options['sleep_timer'] = false;
 
@@ -1714,6 +1759,7 @@ class DysonDevice extends IPSModule
                 $options['power'] = true;
                 $options['power_use_fmod'] = true;
                 $options['automatic_mode'] = true;
+                $options['automatic_mode_use_fmod'] = true;
                 $options['airflow_rate'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_mode_use_oson'] = true;
