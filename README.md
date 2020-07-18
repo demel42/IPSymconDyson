@@ -93,10 +93,7 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 ## 4. Funktionsreferenz
 
 `Dyson_UpdateStatus(int $InstanzID)`<br>
-Aktualiseren des Status des Gerätes.
-
-Alle auslösbaren Aktionen stehen per _RequestAction_ zur Verfügung, z.B.<br>
-`RequestAction(<ID der Variable 'Power'>, true)` aktiviert das Gerät.
+Auslösen einer Aktualisierungs-Anforderug an das Gerät.
 
 ## 5. Konfiguration
 
@@ -145,7 +142,7 @@ alle schaltbaren Statusvariablen der Instanz können hier geschaltet werden.
 ### Experten-Bereich
 
 Hier können zum Testen von Steruefunktionen (für neue Modelle) die ensprechenden Kommandos getestet werden
-Das Eingabefeld _Kommando_ muss einen _JSON-Encoded-String enthalten, z.B. `{"fpwr":"ON"}`
+Das Eingabefeld _Kommando_ muss einen JSON-Encoded-String enthalten, z.B. `{"fpwr":"ON"}`
 
 ### Variablenprofile
 
@@ -173,7 +170,7 @@ GUIDs
 ## 7. Versions-Historie
 
 - 1.0 @ 18.07.2020 09:32
-  - Modell 455 hinzugefügt
+  - Modell 455 (Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)) hinzugefügt mit Unterstützung durch [jbr27](https://www.symcon.de/forum/members/13374-jbr27)
 
 - 1.0 @ 15.07.2020 10:08
   - Initiale Version
