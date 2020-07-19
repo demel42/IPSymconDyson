@@ -252,4 +252,20 @@ trait DysonCommon
         $this->SendDebug(__FUNCTION__, 'used=' . $this->bool2str($used), 0);
         return $used;
     }
+
+    private function AdjustAction($Ident, $Mode)
+    {
+        @$varID = $this->GetIDForIdent($Ident);
+        if ($varID == false) {
+            $this->SendDebug(__FUNCTION__, 'missing variable ' . $Ident, 0);
+            return false;
+        }
+
+        $v = IPS_GetVariable($varID);
+        $oldMode = $v['VariableAction'] != 0;
+
+        $this->MaintainAction($Ident, $Mode);
+
+        return $oldMode != $Mode;
+    }
 }

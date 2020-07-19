@@ -548,7 +548,7 @@ class DysonDevice extends IPSModule
                         $b = $this->str2bool($fmod);
                         $this->SendDebug(__FUNCTION__, '... fan power (fmod)=' . $fmod . ' => ' . $this->bool2str($b), 0);
                         $this->SaveValue('Power', $b, $is_changed);
-                        $this->adjustAction($b);
+                        $this->AdjustActions($b);
                     }
                 } else {
                     $missing_fields[] = 'product-state.fmod';
@@ -568,7 +568,7 @@ class DysonDevice extends IPSModule
                         $b = $this->str2bool($fpwr);
                         $this->SendDebug(__FUNCTION__, '... fan power (fpwr)=' . $fpwr . ' => ' . $this->bool2str($b), 0);
                         $this->SaveValue('Power', $b, $is_changed);
-                        $this->adjustAction($b);
+                        $this->AdjustActions($b);
                     }
                 } else {
                     $missing_fields[] = 'product-state.fpwr';
@@ -1885,38 +1885,43 @@ class DysonDevice extends IPSModule
         return (float) $str / 10 - 273.15;
     }
 
-    private function adjustAction($mode)
+    private function AdjustActions($mode)
     {
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
+        $chg = false;
         if ($options['automatic_mode']) {
-            $this->MaintainAction('AutomaticMode', $mode);
+            $chg |= $this->AdjustAction('AutomaticMode', $mode);
         }
         if ($options['night_mode']) {
-            $this->MaintainAction('NightMode', $mode);
+            $chg |= $this->AdjustAction('NightMode', $mode);
         }
         if ($options['sleep_timer']) {
-            $this->MaintainAction('SleepTimer', $mode);
+            $chg |= $this->AdjustAction('SleepTimer', $mode);
         }
         if ($options['airflow_rate']) {
-            $this->MaintainAction('AirflowRate', $mode);
+            $chg |= $this->AdjustAction('AirflowRate', $mode);
         }
         if ($options['rotation_mode']) {
-            $this->MaintainAction('RotationMode', $mode);
+            $chg |= $this->AdjustAction('RotationMode', $mode);
         }
         if ($options['rotation_angle']) {
-            $this->MaintainAction('RotationAngle', $mode);
-            $this->MaintainAction('RotationStart', $mode);
+            $chg |= $this->AdjustAction('RotationAngle', $mode);
+            $chg |= $this->AdjustAction('RotationStart', $mode);
         }
         if ($options['airflow_direction']) {
-            $this->MaintainAction('AirflowDirection', $mode);
+            $chg |= $this->AdjustAction('AirflowDirection', $mode);
         }
         if ($options['airflow_distribution']) {
-            $this->MaintainAction('AirflowDistribution', $mode);
+            $chg |= $this->AdjustAction('AirflowDistribution', $mode);
         }
         if ($options['heating']) {
-            $this->MaintainAction('HeatingTemperature', $mode);
+            $chg |= $this->AdjustAction('HeatingTemperature', $mode);
+        }
+
+        if ($chg) {
+            $this->ReloadForm();
         }
     }
 }
