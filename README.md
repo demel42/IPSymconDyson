@@ -1,4 +1,4 @@
-# IPSymconDyson
+
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.3+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
@@ -169,7 +169,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.0 @ 18.07.2020 09:32
+- 1.1 @ 19.07.2020 09:12
   - Modell 455 (Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)) hinzugefügt mit Unterstützung durch [jbr27](https://www.symcon.de/forum/members/13374-jbr27)
 
 - 1.0 @ 15.07.2020 10:08
