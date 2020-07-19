@@ -85,7 +85,7 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations);
 
-        $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 0, 0, 0, 0, 'Temperature');
+        $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 1, 37, 1, 0, 'Temperature');
 
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
