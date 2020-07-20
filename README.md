@@ -169,8 +169,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.1 @ 20.07.2020 14:04
+- 1.1 @ 20.07.2020 17:58
   - Modell 455 (Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)) hinzugefügt mit Unterstützung durch [jbr27](https://www.symcon.de/forum/members/13374-jbr27)
+  - fehlende Systemvoraussetzungen im Konfigurationsformular anzeigen
 
 - 1.0 @ 15.07.2020 10:08
   - Initiale Version

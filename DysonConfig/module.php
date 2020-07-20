@@ -202,7 +202,18 @@ class DysonConfig extends IPSModule
     {
         $formElements = [];
 
-        $formElements[] = ['type' => 'Label', 'caption' => 'Dyson Configurator'];
+        $s = $this->CheckPrerequisites();
+        if ($s != '') {
+            $formElements[] = [
+                'type'    => 'Label',
+                'caption' => $s,
+            ];
+            $formElements[] = [
+                'type'    => 'Label',
+            ];
+        }
+
+        $formElements[] = ['type' => 'Label', 'caption' => 'Dyson configurator'];
 
         $items = [];
         $items[] = ['type' => 'ValidationTextBox', 'name' => 'user', 'caption' => 'User'];

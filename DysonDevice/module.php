@@ -254,12 +254,23 @@ class DysonDevice extends IPSModule
     {
         $formElements = [];
 
+        $s = $this->CheckPrerequisites();
+        if ($s != '') {
+            $formElements[] = [
+                'type'    => 'Label',
+                'caption' => $s,
+            ];
+            $formElements[] = [
+                'type'    => 'Label',
+            ];
+        }
+
         $product_type = $this->ReadPropertyString('product_type');
         $product_name = $this->product2name($product_type);
 
         $formElements[] = [
             'type'    => 'Label',
-            'caption' => 'Dyson'
+            'caption' => 'Dyson device'
         ];
 
         $items = [];

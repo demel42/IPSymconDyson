@@ -1,7 +1,7 @@
 {
 	"translations": {
 		"de": {
-			"Dyson Configurator": "Dyson Konfigurator",
+			"Dyson device": "Dyson Gerät",
 
 			"Dyson Account-Details": "Dyson Konto-Details",
 			"User": "Benutzer",
@@ -12,6 +12,7 @@
 			"England": "England",
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
+			"Module MQTTClient": "Modul MQTTClient",
 
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
 			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)",
