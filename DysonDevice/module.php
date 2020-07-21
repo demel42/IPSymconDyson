@@ -260,8 +260,11 @@ class DysonDevice extends IPSModule
                 'type'    => 'Label',
                 'caption' => $s,
             ];
+        }
+        if ($this->HasActiveParent() == false) {
             $formElements[] = [
                 'type'    => 'Label',
+                'caption' => 'Instance has no active parent instance',
             ];
         }
 
@@ -1264,6 +1267,13 @@ class DysonDevice extends IPSModule
 
     private function SubscribeStatus()
     {
+        if ($this->HasActiveParent() == false) {
+            $s = 'has no active parent instance';
+            $this->SendDebug(__FUNCTION__, $s, 0);
+            $this->LogMessage($s, KL_WARNING);
+            return;
+        }
+
         $serial = $this->ReadPropertyString('serial');
         $product_type = $this->ReadPropertyString('product_type');
 
@@ -1310,6 +1320,13 @@ class DysonDevice extends IPSModule
 
     private function SendCommand($func, $payload)
     {
+        if ($this->HasActiveParent() == false) {
+            $s = 'has no active parent instance';
+            $this->SendDebug(__FUNCTION__, $s, 0);
+            $this->LogMessage($s, KL_WARNING);
+            return;
+        }
+
         $serial = $this->ReadPropertyString('serial');
         $product_type = $this->ReadPropertyString('product_type');
 

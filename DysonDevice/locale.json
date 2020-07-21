@@ -14,6 +14,8 @@
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 			"Module MQTTClient": "Modul MQTTClient",
 
+			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
+
 			"Dyson Pure Cool purifier fan tower": "Dyson Pure Cool Turmventilator mit Luftreiniger",
 			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)",
 
