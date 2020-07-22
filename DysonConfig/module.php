@@ -108,7 +108,7 @@ class DysonConfig extends IPSModule
         return $tree_position;
     }
 
-    public function getConfiguratorValues()
+    private function getConfiguratorValues()
     {
         $user = $this->ReadPropertyString('user');
         $password = $this->ReadPropertyString('password');

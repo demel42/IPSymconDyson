@@ -169,6 +169,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.2 @ 22.07.2020 12:20 (beta)
+  - interne Funktion getConfiguratorValues() ist nun "private"
+
 - 1.1 @ 21.07.2020 17:39
   - Modell 455 (Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)) hinzugefügt mit Unterstützung durch [jbr27](https://www.symcon.de/forum/members/13374-jbr27)
   - fehlende Systemvoraussetzungen im Konfigurationsformular anzeigen
