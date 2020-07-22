@@ -198,7 +198,7 @@ class DysonConfig extends IPSModule
         return $config_list;
     }
 
-    public function GetFormElements()
+    private function GetFormElements()
     {
         $formElements = [];
 
@@ -276,7 +276,7 @@ class DysonConfig extends IPSModule
         return $formElements;
     }
 
-    protected function GetFormActions()
+    private function GetFormActions()
     {
         $formActions = [];
 

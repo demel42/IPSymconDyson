@@ -250,7 +250,7 @@ class DysonDevice extends IPSModule
         return $form;
     }
 
-    public function GetFormElements()
+    private function GetFormElements()
     {
         $formElements = [];
 
@@ -360,7 +360,7 @@ class DysonDevice extends IPSModule
         return $formElements;
     }
 
-    protected function GetFormActions()
+    private function GetFormActions()
     {
         $formActions = [];
 
