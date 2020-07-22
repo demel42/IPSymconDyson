@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
-require_once __DIR__ . '/../libs/library.php';  // globale Funktionen
+require_once __DIR__ . '/../libs/common.php'; // globale Funktionen
+require_once __DIR__ . '/../libs/local.php';  // lokale Funktionen
 
 class DysonConfig extends IPSModule
 {
     use DysonCommon;
-    use DysonLibrary;
+    use DysonLocal;
 
     public function Create()
     {

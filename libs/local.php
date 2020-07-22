@@ -8,7 +8,7 @@ if (!defined('STATUS_INVALID')) {
     define('STATUS_RETRYABLE', 2);
 }
 
-trait DysonLibrary
+trait DysonLocal
 {
     public static $IS_NODATA = IS_EBASE + 1;
     public static $IS_UNAUTHORIZED = IS_EBASE + 2;
