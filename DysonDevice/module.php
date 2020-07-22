@@ -7,8 +7,8 @@ require_once __DIR__ . '/../libs/local.php';  // locale Funktionen
 
 class DysonDevice extends IPSModule
 {
-    use DysonCommon;
-    use DysonLocal;
+    use DysonCommonLib;
+    use DysonLocalLib;
 
     public function Create()
     {

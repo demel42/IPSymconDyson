@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-trait DysonCommon
+trait DysonCommonLib
 {
     protected function SetValue($Ident, $Value)
     {
