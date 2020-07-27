@@ -1814,6 +1814,7 @@ class DysonDevice extends IPSModule
 
         switch ($product_type) {
             case 438:
+            case 520:
                 $options['rssi'] = true;
                 $options['power'] = true;
                 $options['airflow_rate'] = true;
@@ -1865,8 +1866,9 @@ class DysonDevice extends IPSModule
     private function product2name($product_type)
     {
         $product2name = [
-            438 => 'Dyson Pure Cool purifier fan tower',
+            438 => 'Dyson Pure Cool purifier fan tower (TP04)',
             455 => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
+            520 => 'Dyson Pure Cool table fan air purifier (DP04)',
         ];
 
         if (isset($product2name[$product_type])) {
