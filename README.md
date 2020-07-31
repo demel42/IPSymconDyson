@@ -175,8 +175,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.2 @ 27.07.2020 18:22 (beta)
-31.07.2020 10:02
+- 1.2 @ 31.07.2020 10:02 (beta)
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"
