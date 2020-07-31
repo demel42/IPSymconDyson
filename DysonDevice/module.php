@@ -14,6 +14,8 @@ class DysonDevice extends IPSModule
     {
         parent::Create();
 
+        $this->RegisterPropertyBoolean('module_disable', false);
+
         $this->RegisterPropertyString('user', '');
         $this->RegisterPropertyString('password', '');
         $this->RegisterPropertyString('country', '');
@@ -198,6 +200,14 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
         $this->MaintainVariable('LastChange', $this->Translate('Last change'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
+        $module_disable = $this->ReadPropertyBoolean('module_disable');
+        if ($module_disable) {
+            $this->SetTimerInterval('ReloadConfig', 0);
+            $this->SetTimerInterval('UpdateStatus', 0);
+            $this->SetStatus(IS_INACTIVE);
+            return;
+        }
+
         $this->SetStatus(IS_ACTIVE);
 
         $cID = $this->GetConnectionID();
@@ -267,6 +277,12 @@ class DysonDevice extends IPSModule
                 'caption' => 'Instance has no active parent instance',
             ];
         }
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'module_disable',
+            'caption' => 'Instance is disabled'
+        ];
 
         $product_type = $this->ReadPropertyString('product_type');
         $product_name = $this->product2name($product_type);
@@ -486,6 +502,11 @@ class DysonDevice extends IPSModule
 
     private function loadConfig()
     {
+        if ($this->GetStatus() == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+            return;
+        }
+
         $oldPw = $this->ReadAttributeString('localPassword');
 
         $serial = $this->ReadPropertyString('serial');
@@ -1267,10 +1288,14 @@ class DysonDevice extends IPSModule
 
     private function SubscribeStatus()
     {
+        if ($this->GetStatus() == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+            return;
+        }
+
         if ($this->HasActiveParent() == false) {
-            $s = 'has no active parent instance';
-            $this->SendDebug(__FUNCTION__, $s, 0);
-            $this->LogMessage($s, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, 'has no active parent instance', 0);
+            $this->LogMessage('has no active parent instance', KL_WARNING);
             return;
         }
 
@@ -1309,6 +1334,11 @@ class DysonDevice extends IPSModule
 
     private function RequestStateCommand()
     {
+        if ($this->GetStatus() == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+            return;
+        }
+
         $payload = [
             'msg'         => 'REQUEST-CURRENT-STATE',
             'time'        => strftime('%Y-%m-%dT%H:%M:%SZ', time()),
@@ -1320,10 +1350,14 @@ class DysonDevice extends IPSModule
 
     private function SendCommand($func, $payload)
     {
+        if ($this->GetStatus() == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+            return;
+        }
+
         if ($this->HasActiveParent() == false) {
-            $s = 'has no active parent instance';
-            $this->SendDebug(__FUNCTION__, $s, 0);
-            $this->LogMessage($s, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, 'has no active parent instance', 0);
+            $this->LogMessage('has no active parent instance', KL_WARNING);
             return;
         }
 

@@ -96,6 +96,9 @@ Die Instanzen können dann in gewohnter Weise im Objektbaum frei positioniert we
 `Dyson_UpdateStatus(int $InstanzID)`<br>
 Auslösen einer Aktualisierungs-Anforderug an das Gerät.
 
+Alle auslösbaren Aktionen stehen per RequestAction zur Verfügung, z.B. Einschalten des Gerätes:
+`RequestAction(<ID der Variable 'Power'>, true)`
+
 ## 5. Konfiguration
 
 ### DysonConfig
@@ -121,6 +124,8 @@ Auslösen einer Aktualisierungs-Anforderug an das Gerät.
 
 | Eigenschaft               | Typ      | Standardwert | Beschreibung |
 | :------------------------ | :------  | :----------- | :----------- |
+| Instanz ist deaktiviert   | boolean  | false        | Instanz temporär deaktivieren |
+|                           |          |              | |
 | Dyson-Zugangsdaten        | string   |              | Benutzername und Passwort des Dyson-Cloud sowie das Land |
 |                           |          |              | |
 | Konfiguration abrufen     | integer  | 60           | Abrufen der Daten aus der Dyson-Cloud alle X Minuten |
@@ -142,7 +147,7 @@ alle schaltbaren Statusvariablen der Instanz können hier geschaltet werden.
 
 ### Experten-Bereich
 
-Hier können zum Testen von Steruefunktionen (für neue Modelle) die ensprechenden Kommandos getestet werden
+Hier können zum Testen von Steuerfunktionen (für neue Modelle) die ensprechenden Kommandos geschickt werden
 Das Eingabefeld _Kommando_ muss einen JSON-Encoded-String enthalten, z.B. `{"fpwr":"ON"}`
 
 ### Variablenprofile
@@ -171,10 +176,12 @@ GUIDs
 ## 7. Versions-Historie
 
 - 1.2 @ 27.07.2020 18:22 (beta)
+31.07.2020 10:02
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"
-  - Modell 520 (Dyson Pure Cool Tischventilator Luftreiniger (DP04)) hinzugefügt (im Test)
+  - Modell 520 (Dyson Pure Cool Tischventilator Luftreiniger (DP04)) hinzugefügt
+  - Schalter "Instanz ist deaktiviert" hinzugefügt
 
 - 1.1 @ 21.07.2020 17:39
   - Modell 455 (Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)) hinzugefügt mit Unterstützung durch [jbr27](https://www.symcon.de/forum/members/13374-jbr27)

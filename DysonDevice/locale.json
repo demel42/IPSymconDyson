@@ -1,6 +1,9 @@
 {
 	"translations": {
 		"de": {
+			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
+			"Instance is disabled": "Instanz ist deaktiviert",
+
 			"Dyson device": "Dyson Gerät",
 
 			"Dyson Account-Details": "Dyson Konto-Details",
@@ -13,8 +16,6 @@
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 			"Module MQTTClient": "Modul MQTTClient",
-
-			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
 
 			"Dyson Pure Cool purifier fan tower (TP04)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP04)",
 			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02)",
