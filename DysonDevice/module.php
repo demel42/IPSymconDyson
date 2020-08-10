@@ -1890,6 +1890,24 @@ class DysonDevice extends IPSModule
                 $options['temperature'] = true;
                 $options['humidity'] = true;
                 break;
+            case 475:
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['power_use_fmod'] = true;
+                $options['automatic_mode'] = true;
+                $options['automatic_mode_use_fmod'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode'] = true;
+                $options['rotation_mode_use_oson'] = true;
+                $options['airflow_distribution'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+
+                $options['standby_monitoring'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);
                 break;
@@ -1902,6 +1920,7 @@ class DysonDevice extends IPSModule
         $product2name = [
             438 => 'Dyson Pure Cool purifier fan tower (TP04)',
             455 => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
+            475 => 'Dyson Pure Cool fan tower (TP02)',
             520 => 'Dyson Pure Cool table fan air purifier (DP04)',
         ];
 
