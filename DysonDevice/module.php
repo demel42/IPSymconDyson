@@ -52,6 +52,7 @@ class DysonDevice extends IPSModule
 
         $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
         $this->CreateVarProfile('Dyson.PM', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow');
+        $this->CreateVarProfile('Dyson.Dust', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
 
@@ -183,7 +184,7 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('Humidity', $this->Translate('Humidity'), VARIABLETYPE_FLOAT, 'Dyson.Humidity', $vpos++, $options['humidity']);
         $this->MaintainVariable('PM25', $this->Translate('Particulate matter (PM 2.5)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm25']);
         $this->MaintainVariable('PM10', $this->Translate('Particulate matter (PM 10)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm10']);
-        $this->MaintainVariable('Dust', $this->Translate('Dust'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['dust']);
+        $this->MaintainVariable('Dust', $this->Translate('Dust'), VARIABLETYPE_INTEGER, 'Dyson.Dust', $vpos++, $options['dust']);
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $options['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
 
@@ -1899,7 +1900,6 @@ class DysonDevice extends IPSModule
                 $options['airflow_rate'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_mode_use_oson'] = true;
-                $options['airflow_distribution'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
 
@@ -1907,6 +1907,10 @@ class DysonDevice extends IPSModule
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
+
+                $options['dust'] = true;
+                $options['voc'] = true;
+                $options['voc_use_vact'] = true;
                 break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);

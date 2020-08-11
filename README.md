@@ -158,7 +158,7 @@ Es werden folgende Variablenprofile angelegt:
 Dyson.AirflowDirection, Dyson.AirflowDistribution
 
 * Integer<br>
-Dyson.AirflowRate, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.RotationAngle, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.Wifi
+Dyson.AirflowRate, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.Dust, Dyson.RotationAngle, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.Wifi
 
 * Float<br>
 Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
@@ -176,7 +176,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.2 @ 10.08.2020 17:14 (beta)
+- 1.2 @ 11.08.2020 15:27 (beta)
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"
