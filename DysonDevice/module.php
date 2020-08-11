@@ -1869,7 +1869,7 @@ class DysonDevice extends IPSModule
         $options['standby_monitoring'] = false;
         $options['carbon_filter'] = false;
         $options['hepa_filter'] = false;
-        $options['filter lifetime'] = false;
+        $options['filter_lifetime'] = false;
 
         // ENVIROMENTAL SENSOR DATA
         $options['temperature'] = false;
@@ -1921,7 +1921,7 @@ class DysonDevice extends IPSModule
                 $options['heating'] = true;
 
                 $options['standby_monitoring'] = true;
-                $options['filter lifetime'] = true;
+                $options['filter_lifetime'] = true;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
