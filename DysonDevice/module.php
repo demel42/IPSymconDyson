@@ -1580,9 +1580,18 @@ class DysonDevice extends IPSModule
             return false;
         }
 
-        $data = [
-            'fnsp'=> sprintf('%04d', $val)
-        ];
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        if ($val == 0 && $options['automatic_mode_use_fmod']) {
+            $data = [
+                'fmod'=> 'OFF'
+            ];
+        } else {
+            $data = [
+                'fnsp'=> sprintf('%04d', $val)
+            ];
+        }
 
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
@@ -1821,6 +1830,7 @@ class DysonDevice extends IPSModule
         $options['power'] = false;
         $options['power_use_fmod'] = false;
         $options['airflow_rate'] = false;
+        $options['airflow_off_use_fmod'] = false;
         $options['rotation_mode'] = false;
         $options['rotation_mode_use_oson'] = false;
         $options['rotation_angle'] = false;
@@ -1898,6 +1908,7 @@ class DysonDevice extends IPSModule
                 $options['automatic_mode'] = true;
                 $options['automatic_mode_use_fmod'] = true;
                 $options['airflow_rate'] = true;
+                $options['airflow_off_use_fmod'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_mode_use_oson'] = true;
                 $options['night_mode'] = true;
