@@ -85,6 +85,8 @@ class DysonDevice extends IPSModule
 
         $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '');
 
+        $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' ' . $this->Translate('hours'), 0, 0, 0, 0, '');
+
         $associations = [];
         $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
         $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
@@ -195,6 +197,8 @@ class DysonDevice extends IPSModule
 
         $this->MaintainVariable('CarbonFilterLifetime', $this->Translate('Carbon filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['carbon_filter']);
         $this->MaintainVariable('HepaFilterLifetime', $this->Translate('HEPA filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['hepa_filter']);
+
+        $this->MaintainVariable('FilterLifetime', $this->Translate('Filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.FilterLifetime', $vpos++, $options['filter_lifetime']);
 
         $this->MaintainVariable('WifiStrength', $this->Translate('Wifi signal strenght'), VARIABLETYPE_INTEGER, 'Dyson.Wifi', $vpos++, true);
 
@@ -966,9 +970,28 @@ class DysonDevice extends IPSModule
             $ignore_fields[] = 'product-state.hsta';
         }
 
+        if ($options['filter_lifetime']) {
+            // filf - filter life (in Stunden)
+            $filf = $this->GetArrayElem($payload, 'product-state.filf', '');
+            if ($filf != '') {
+                $used_fields[] = 'product-state.filf';
+                if ($changeState) {
+                    $do = $filf[0] != $filf[1];
+                    $filf = $filf[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    $this->SendDebug(__FUNCTION__, '... filter lifetime (filf)=' . $filf, 0);
+                    $this->SaveValue('FilterLifetime', $filf, $is_changed);
+                }
+            } else {
+                $missing_fields[] = 'product-state.hflr';
+            }
+        }
+
         // dial - unklar
         // qtar - quality target (Zielwert der Luftqualität: 1="LOW", 3="AVERAGE", 4="HIGH")
-        // filf - filter life (unbekannte Umrechnung: "4117" => 96%)
         // tilt - device tilt
 
         $this->SetValue('LastUpdate', $now);
@@ -1846,6 +1869,7 @@ class DysonDevice extends IPSModule
         $options['standby_monitoring'] = false;
         $options['carbon_filter'] = false;
         $options['hepa_filter'] = false;
+        $options['filter lifetime'] = false;
 
         // ENVIROMENTAL SENSOR DATA
         $options['temperature'] = false;
@@ -1897,6 +1921,7 @@ class DysonDevice extends IPSModule
                 $options['heating'] = true;
 
                 $options['standby_monitoring'] = true;
+                $options['filter lifetime'] = true;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
@@ -1915,6 +1940,8 @@ class DysonDevice extends IPSModule
                 $options['sleep_timer'] = true;
 
                 $options['standby_monitoring'] = true;
+
+                $options['filter lifetime'] = true;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;

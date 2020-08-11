@@ -45,6 +45,7 @@
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
 			"Dust": "Feinstaub",
+			"Filter lifetime": "Filter-Lebensdauer",
 			"Heater mode": "Heizung",
 			"Heating temperature": "Heiztemperatur",
 			"Humidity": "Luftfeuchte",
@@ -69,6 +70,8 @@
 			"Update Status": "Status aktualisieren",
 			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",
 			"Wifi signal strenght": "Wifi Signalstärke",
+
+			"hours": "Stunden",
 
 			"Off": "Aus",
 
