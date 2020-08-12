@@ -52,9 +52,11 @@ class DysonDevice extends IPSModule
 
         $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
         $this->CreateVarProfile('Dyson.PM', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow');
-        $this->CreateVarProfile('Dyson.Dust', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
+
+        $this->CreateVarProfile('Dyson.Dust-Index', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
+        $this->CreateVarProfile('Dyson.VOC-Index', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
 
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
@@ -85,7 +87,11 @@ class DysonDevice extends IPSModule
 
         $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '');
 
-        $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' ' . $this->Translate('hours'), 0, 0, 0, 0, '');
+        $associations = [];
+        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('High'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.AQT', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Flag', $associations);
 
         $associations = [];
         $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
@@ -186,9 +192,10 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('Humidity', $this->Translate('Humidity'), VARIABLETYPE_FLOAT, 'Dyson.Humidity', $vpos++, $options['humidity']);
         $this->MaintainVariable('PM25', $this->Translate('Particulate matter (PM 2.5)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm25']);
         $this->MaintainVariable('PM10', $this->Translate('Particulate matter (PM 10)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm10']);
-        $this->MaintainVariable('Dust', $this->Translate('Dust'), VARIABLETYPE_INTEGER, 'Dyson.Dust', $vpos++, $options['dust']);
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $options['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
+        $this->MaintainVariable('Dust-Index', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.Dust-Index', $vpos++, $options['dust-index']);
+        $this->MaintainVariable('VOC-Index', $this->Translate('Volatile organic compounds (VOC) index'), VARIABLETYPE_INTEGER, 'Dyson.VOC-Index', $vpos++, $options['voc_index']);
 
         $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby monitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['standby_monitoring']);
         if ($options['standby_monitoring']) {
@@ -198,7 +205,12 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('CarbonFilterLifetime', $this->Translate('Carbon filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['carbon_filter']);
         $this->MaintainVariable('HepaFilterLifetime', $this->Translate('HEPA filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['hepa_filter']);
 
-        $this->MaintainVariable('FilterLifetime', $this->Translate('Filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.FilterLifetime', $vpos++, $options['filter_lifetime']);
+        $this->MaintainVariable('FilterLifetime', $this->Translate('Filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['filter_lifetime']);
+
+        $this->MaintainVariable('AirQualitiyTarget', $this->Translate('Air qualitiy target'), VARIABLETYPE_INTEGER, 'Dyson.AQT', $vpos++, $options['air_quality_target']);
+        if ($options['air_quality_target']) {
+            $this->MaintainAction('AirQualitiyTarget', true);
+        }
 
         $this->MaintainVariable('WifiStrength', $this->Translate('Wifi signal strenght'), VARIABLETYPE_INTEGER, 'Dyson.Wifi', $vpos++, true);
 
@@ -982,16 +994,36 @@ class DysonDevice extends IPSModule
                     $do = true;
                 }
                 if ($do) {
-                    $this->SendDebug(__FUNCTION__, '... filter lifetime (filf)=' . $filf, 0);
-                    $this->SaveValue('FilterLifetime', $filf, $is_changed);
+                    $perc = (int) round($filf / $options['filter_lifetime_max'] * 100);
+                    $this->SendDebug(__FUNCTION__, '... filter lifetime (filf)=' . $filf . ' => ' . $perc . '%', 0);
+                    $this->SaveValue('FilterLifetime', $perc, $is_changed);
                 }
             } else {
-                $missing_fields[] = 'product-state.hflr';
+                $missing_fields[] = 'product-state.filf';
+            }
+        }
+
+        if ($options['air_quality_target']) {
+            // qtar - quality target (Zielwert der Luftqualität: 1="LOW", 3="AVERAGE", 4="HIGH")
+            $qtar = $this->GetArrayElem($payload, 'product-state.qtar', '');
+            if ($qtar != '') {
+                $used_fields[] = 'product-state.qtar';
+                if ($changeState) {
+                    $do = $qtar[0] != $qtar[1];
+                    $qtar = $qtar[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    $this->SendDebug(__FUNCTION__, '... air quality target (qtar)=' . $qtar, 0);
+                    $this->SaveValue('FilterLifetime', $qtar, $is_changed);
+                }
+            } else {
+                $missing_fields[] = 'product-state.qtar';
             }
         }
 
         // dial - unklar
-        // qtar - quality target (Zielwert der Luftqualität: 1="LOW", 3="AVERAGE", 4="HIGH")
         // tilt - device tilt
 
         $this->SetValue('LastUpdate', $now);
@@ -1163,42 +1195,42 @@ class DysonDevice extends IPSModule
             }
         }
 
-        if ($options['dust']) {
+        if ($options['dust_index']) {
             // pact - particular matter aktual
             $pact = $this->GetArrayElem($payload, 'data.pact', '');
             if ($pact != '') {
                 $used_fields[] = 'data.pact';
                 $dust = (int) $pact;
                 $this->SendDebug(__FUNCTION__, '... Dust (pact)=' . $dust, 0);
-                $this->SaveValue('Dust', $dust, $is_changed);
+                $this->SaveValue('Dust-Index', $dust, $is_changed);
             } else {
                 $missing_fields[] = 'data.pact';
             }
         }
 
         if ($options['voc']) {
-            if ($options['voc_use_vact']) {
-                // vact - volatile organic compounds
-                $vact = $this->GetArrayElem($payload, 'data.vact', '');
-                if ($vact != '') {
-                    $used_fields[] = 'data.vact';
-                    $voc = (int) $vact;
-                    $this->SendDebug(__FUNCTION__, '... VOC (vact)=' . $voc, 0);
-                    $this->SaveValue('VOC', $voc, $is_changed);
-                } else {
-                    $missing_fields[] = 'data.vact';
-                }
+            // va10 - volatile organic compounds
+            $va10 = $this->GetArrayElem($payload, 'data.va10', '');
+            if ($va10 != '') {
+                $used_fields[] = 'data.va10';
+                $voc = (int) $va10;
+                $this->SendDebug(__FUNCTION__, '... VOC (va10)=' . $voc, 0);
+                $this->SaveValue('VOC', $voc, $is_changed);
             } else {
-                // va10 - volatile organic compounds
-                $va10 = $this->GetArrayElem($payload, 'data.va10', '');
-                if ($va10 != '') {
-                    $used_fields[] = 'data.va10';
-                    $voc = (int) $va10;
-                    $this->SendDebug(__FUNCTION__, '... VOC (va10)=' . $voc, 0);
-                    $this->SaveValue('VOC', $voc, $is_changed);
-                } else {
-                    $missing_fields[] = 'data.va10';
-                }
+                $missing_fields[] = 'data.va10';
+            }
+        }
+
+        if ($options['voc_index']) {
+            // vact - volatile organic compounds
+            $vact = $this->GetArrayElem($payload, 'data.vact', '');
+            if ($vact != '') {
+                $used_fields[] = 'data.vact';
+                $voc = (int) $vact;
+                $this->SendDebug(__FUNCTION__, '... VOC (vact)=' . $voc, 0);
+                $this->SaveValue('VOC-Index', $voc, $is_changed);
+            } else {
+                $missing_fields[] = 'data.vact';
             }
         }
 
@@ -1476,6 +1508,11 @@ class DysonDevice extends IPSModule
                 break;
             case 'SetHeatingTemperature':
                 if ($options['heating']) {
+                    $enabled = true;
+                }
+                break;
+            case 'SetAirQualityTarget':
+                if ($options['air_quality_target']) {
                     $enabled = true;
                 }
                 break;
@@ -1774,6 +1811,19 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
+    private function SetAirQualityTarget(int $val)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $data = [
+            'qtar'=> sprintf('%04d', $val),
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
     public function RequestAction($Ident, $Value)
     {
         if ($this->GetStatus() == IS_INACTIVE) {
@@ -1835,6 +1885,10 @@ class DysonDevice extends IPSModule
                 $r = $this->SetHeatingTemperature((float) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
+            case 'AirQualityTarget':
+                $r = $this->SetAirQualityTarget((int) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $Ident, 0);
                 break;
@@ -1870,16 +1924,18 @@ class DysonDevice extends IPSModule
         $options['carbon_filter'] = false;
         $options['hepa_filter'] = false;
         $options['filter_lifetime'] = false;
+        $options['filter_lifetime_max'] = 0;
 
         // ENVIROMENTAL SENSOR DATA
         $options['temperature'] = false;
         $options['humidity'] = false;
         $options['pm25'] = false;
         $options['pm10'] = false;
-        $options['dust'] = false;
+        $options['dust_index'] = false;
         $options['voc'] = false;
-        $options['voc_use_vact'] = false;
+        $options['voc_index'] = false;
         $options['nox'] = false;
+        $options['air_quality_target'] = false;
 
         switch ($product_type) {
             case 438:
@@ -1942,13 +1998,15 @@ class DysonDevice extends IPSModule
                 $options['standby_monitoring'] = true;
 
                 $options['filter lifetime'] = true;
+                $options['filter_lifetime_max'] = 4300;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
 
-                $options['dust'] = true;
-                $options['voc'] = true;
-                $options['voc_use_vact'] = true;
+                $options['dust_index'] = true;
+                $options['voc_index'] = true;
+
+                $options['air_quality_target'] = true;
                 break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);
@@ -2046,6 +2104,9 @@ class DysonDevice extends IPSModule
         }
         if ($options['heating']) {
             $chg |= $this->AdjustAction('HeatingTemperature', $mode);
+        }
+        if ($options['air_quality_target']) {
+            $chg |= $this->AdjustAction('AirQualityTarget', $mode);
         }
 
         if ($chg) {

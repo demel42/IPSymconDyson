@@ -44,7 +44,7 @@
 			"Automatic mode": "Automatik-Modus",
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
-			"Dust": "Feinstaub",
+			"Dust index": "Feinstaub-Index",
 			"Filter lifetime": "Filter-Lebensdauer",
 			"Heater mode": "Heizung",
 			"Heating temperature": "Heiztemperatur",
@@ -69,11 +69,17 @@
 			"Update status every X minutes": "Status alle X Minuten abrufen",
 			"Update Status": "Status aktualisieren",
 			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",
+			"Volatile organic compounds (VOC) index": "Flüchtige Organische Verbindungen (VOC)-Index",
 			"Wifi signal strenght": "Wifi Signalstärke",
+			"Air qualitiy target": "Zielwert der Luftqualität",
 
 			"hours": "Stunden",
 
 			"Off": "Aus",
+
+			"Low": "gering",
+			"Average": "mittel",
+			"High": "hoch",
 
 			"Front": "Vorderseite",
 			"Back": "Rückseite",
