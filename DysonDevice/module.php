@@ -1992,6 +1992,7 @@ class DysonDevice extends IPSModule
                 $options['airflow_off_use_fmod'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_mode_use_oson'] = true;
+                $options['airflow_distribution'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
 
