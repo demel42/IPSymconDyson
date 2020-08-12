@@ -55,8 +55,8 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
 
-        $this->CreateVarProfile('Dyson.Dust-Index', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
-        $this->CreateVarProfile('Dyson.VOC-Index', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
+        $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
+        $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
 
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
@@ -194,8 +194,8 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('PM10', $this->Translate('Particulate matter (PM 10)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm10']);
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $options['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
-        $this->MaintainVariable('Dust-Index', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.Dust-Index', $vpos++, $options['dust-index']);
-        $this->MaintainVariable('VOC-Index', $this->Translate('Volatile organic compounds (VOC) index'), VARIABLETYPE_INTEGER, 'Dyson.VOC-Index', $vpos++, $options['voc_index']);
+        $this->MaintainVariable('DustIndex', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.DustIndex', $vpos++, $options['dust_index']);
+        $this->MaintainVariable('VOCIndex', $this->Translate('Volatile organic compounds (VOC) index'), VARIABLETYPE_INTEGER, 'Dyson.VOCIndex', $vpos++, $options['voc_index']);
 
         $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby monitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['standby_monitoring']);
         if ($options['standby_monitoring']) {
@@ -1202,7 +1202,7 @@ class DysonDevice extends IPSModule
                 $used_fields[] = 'data.pact';
                 $dust = (int) $pact;
                 $this->SendDebug(__FUNCTION__, '... Dust (pact)=' . $dust, 0);
-                $this->SaveValue('Dust-Index', $dust, $is_changed);
+                $this->SaveValue('DustIndex', $dust, $is_changed);
             } else {
                 $missing_fields[] = 'data.pact';
             }
@@ -1228,7 +1228,7 @@ class DysonDevice extends IPSModule
                 $used_fields[] = 'data.vact';
                 $voc = (int) $vact;
                 $this->SendDebug(__FUNCTION__, '... VOC (vact)=' . $voc, 0);
-                $this->SaveValue('VOC-Index', $voc, $is_changed);
+                $this->SaveValue('VOCIndex', $voc, $is_changed);
             } else {
                 $missing_fields[] = 'data.vact';
             }
