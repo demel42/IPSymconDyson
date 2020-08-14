@@ -34,6 +34,7 @@ Getestet wurde das Modul bisher mit:
 | :-- | :---------- |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
+| 469 | Dyson Pure Cool Ventilator (????) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator Luftreiniger (DP04) |
 
@@ -176,11 +177,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.2 @ 12.08.2020 15:59 (beta)
+- 1.2 @ 14.08.2020 07:10 (beta)
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"
   - Modell 520 (Dyson Pure Cool Tischventilator Luftreiniger (DP04)) hinzugefügt
+  - Modell 469 (Dyson Pure Cool Ventilator (????)) hinzugefügt - IM TEST
   - Modell 475 (Dyson Pure Cool Turmventilator mit Luftreiniger (TP02)) hinzugefügt - IM TEST
   - Schalter "Instanz ist deaktiviert" hinzugefügt
 

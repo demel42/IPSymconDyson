@@ -852,23 +852,27 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['sleep_timer']) {
-            // sltm - sleep-timer (OFF|1..539)
-            $sltm = $this->GetArrayElem($payload, 'product-state.sltm', '');
-            if ($sltm != '') {
-                $used_fields[] = 'product-state.sltm';
-                if ($changeState) {
-                    $do = $sltm[0] != $sltm[1];
-                    $sltm = $sltm[1];
+            if ($options['sleep_timer_from_sensor'] == false) {
+                // sltm - sleep-timer (OFF|1..539)
+                $sltm = $this->GetArrayElem($payload, 'product-state.sltm', '');
+                if ($sltm != '') {
+                    $used_fields[] = 'product-state.sltm';
+                    if ($changeState) {
+                        $do = $sltm[0] != $sltm[1];
+                        $sltm = $sltm[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
+                        $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
+                        $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
+                    }
                 } else {
-                    $do = true;
-                }
-                if ($do) {
-                    $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
-                    $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
-                    $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
+                    $missing_fields[] = 'product-state.sltm';
                 }
             } else {
-                $missing_fields[] = 'product-state.sltm';
+                $ignored_fields[] = 'product-state.sltm';
             }
         }
 
@@ -1016,7 +1020,7 @@ class DysonDevice extends IPSModule
                 }
                 if ($do) {
                     $this->SendDebug(__FUNCTION__, '... air quality target (qtar)=' . $qtar, 0);
-                    $this->SaveValue('FilterLifetime', $qtar, $is_changed);
+                    $this->SaveValue('AirQualityTarget', (int) $qtar, $is_changed);
                 }
             } else {
                 $missing_fields[] = 'product-state.qtar';
@@ -1247,8 +1251,30 @@ class DysonDevice extends IPSModule
             }
         }
 
-        // sltm - sleep-timer (OFF|1..539)
-        $ignored_fields[] = 'data.sltm'; // siehe DecodeState()
+        if ($options['sleep_timer']) {
+            if ($options['sleep_timer_from_sensor']) {
+                // sltm - sleep-timer (OFF|1..539)
+                $sltm = $this->GetArrayElem($payload, 'data.sltm', '');
+                if ($sltm != '') {
+                    $used_fields[] = 'data.sltm';
+                    if ($changeState) {
+                        $do = $sltm[0] != $sltm[1];
+                        $sltm = $sltm[1];
+                    } else {
+                        $do = true;
+                    }
+                    if ($do) {
+                        $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
+                        $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
+                        $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
+                    }
+                } else {
+                    $missing_fields[] = 'data.sltm';
+                }
+            } else {
+                $ignored_fields[] = 'data.sltm';
+            }
+        }
 
         $this->SetValue('LastUpdate', $now);
         if ($is_changed) {
@@ -1917,6 +1943,7 @@ class DysonDevice extends IPSModule
         $options['automatic_mode_use_fmod'] = false;
         $options['night_mode'] = false;
         $options['sleep_timer'] = false;
+        $options['sleep_timer_from_sensor'] = false;
 
         $options['heating'] = false;
 
@@ -1982,6 +2009,7 @@ class DysonDevice extends IPSModule
                 $options['temperature'] = true;
                 $options['humidity'] = true;
                 break;
+            case 469:
             case 475:
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -1992,9 +2020,9 @@ class DysonDevice extends IPSModule
                 $options['airflow_off_use_fmod'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_mode_use_oson'] = true;
-                $options['airflow_distribution'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
+                $options['sleep_timer_from_sensor'] = true;
 
                 $options['standby_monitoring'] = true;
 
@@ -2021,6 +2049,7 @@ class DysonDevice extends IPSModule
         $product2name = [
             438 => 'Dyson Pure Cool purifier fan tower (TP04)',
             455 => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
+            469 => 'Dyson Pure Cool fan (????)',
             475 => 'Dyson Pure Cool fan tower (TP02)',
             520 => 'Dyson Pure Cool table fan air purifier (DP04)',
         ];
