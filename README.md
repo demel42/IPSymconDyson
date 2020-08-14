@@ -32,11 +32,11 @@ Getestet wurde das Modul bisher mit:
 
 | Typ | Bezeichnung |
 | :-- | :---------- |
-| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
-| 469 | Dyson Pure Cool Ventilator (????) |
+| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
+| 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
-| 520 | Dyson Pure Cool Tischventilator Luftreiniger (DP04) |
+| 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -177,7 +177,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.2 @ 14.08.2020 07:10 (beta)
+- 1.2 @ 14.08.2020 10:33 (beta)
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"

@@ -207,9 +207,9 @@ class DysonDevice extends IPSModule
 
         $this->MaintainVariable('FilterLifetime', $this->Translate('Filter lifetime'), VARIABLETYPE_INTEGER, 'Dyson.Percent', $vpos++, $options['filter_lifetime']);
 
-        $this->MaintainVariable('AirQualitiyTarget', $this->Translate('Air qualitiy target'), VARIABLETYPE_INTEGER, 'Dyson.AQT', $vpos++, $options['air_quality_target']);
+        $this->MaintainVariable('AirQualityTarget', $this->Translate('Air qualitiy target'), VARIABLETYPE_INTEGER, 'Dyson.AQT', $vpos++, $options['air_quality_target']);
         if ($options['air_quality_target']) {
-            $this->MaintainAction('AirQualitiyTarget', true);
+            $this->MaintainAction('AirQualityTarget', true);
         }
 
         $this->MaintainVariable('WifiStrength', $this->Translate('Wifi signal strenght'), VARIABLETYPE_INTEGER, 'Dyson.Wifi', $vpos++, true);
@@ -2026,7 +2026,7 @@ class DysonDevice extends IPSModule
 
                 $options['standby_monitoring'] = true;
 
-                $options['filter lifetime'] = true;
+                $options['filter_lifetime'] = true;
                 $options['filter_lifetime_max'] = 4300;
 
                 $options['temperature'] = true;
@@ -2049,9 +2049,9 @@ class DysonDevice extends IPSModule
         $product2name = [
             438 => 'Dyson Pure Cool purifier fan tower (TP04)',
             455 => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
-            469 => 'Dyson Pure Cool fan (????)',
-            475 => 'Dyson Pure Cool fan tower (TP02)',
-            520 => 'Dyson Pure Cool table fan air purifier (DP04)',
+            469 => 'Dyson Pure Cool purifier desk fan (DP02)',
+            475 => 'Dyson Pure Cool purifier fan tower (TP02)',
+            520 => 'Dyson Pure Cool purifier desk fan (DP04)',
         ];
 
         if (isset($product2name[$product_type])) {
