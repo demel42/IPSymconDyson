@@ -74,6 +74,7 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1];
         $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1];
         $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.AirflowRate', VARIABLETYPE_INTEGER, '', 0, 9, 0, 0, '', $associations);
 
         $associations = [];

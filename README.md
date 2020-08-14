@@ -177,12 +177,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.2 @ 14.08.2020 10:33 (beta)
+- 1.2 @ 14.08.2020 11:23 (beta)
   - interne Funktionen sind nun "private"
   - library.php in local.php umbenannt
   - Traits des Moduls haben nun Postfix "Lib"
-  - Modell 520 (Dyson Pure Cool Tischventilator Luftreiniger (DP04)) hinzugefügt
-  - Modell 469 (Dyson Pure Cool Ventilator (????)) hinzugefügt - IM TEST
+  - Modell 520 (Dyson Pure Cool Tischventilator mit Luftreiniger (DP04)) hinzugefügt
+  - Modell 469 (Dyson Pure Cool Tischventilator mit Luftreiniger (DP02)) hinzugefügt - IM TEST
   - Modell 475 (Dyson Pure Cool Turmventilator mit Luftreiniger (TP02)) hinzugefügt - IM TEST
   - Schalter "Instanz ist deaktiviert" hinzugefügt
 
