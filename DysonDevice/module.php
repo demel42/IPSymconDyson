@@ -639,7 +639,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['airflow_rate']) {
-            // fnsp - fan speed (OFF|1..9)
+            // fnsp - fan speed (AUTO|OFF|1..9)
             $fnsp = $this->GetArrayElem($payload, 'product-state.fnsp', '');
             if ($fnsp != '') {
                 $used_fields[] = 'product-state.fnsp';
@@ -650,7 +650,17 @@ class DysonDevice extends IPSModule
                     $do = true;
                 }
                 if ($do) {
-                    $i = $fnsp == 'OFF' ? 0 : (int) $fnsp;
+                    switch ($fnsp) {
+                        case 'OFF':
+                            $i = 0;
+                            break;
+                        case 'AUTO':
+                            $i = -1;
+                            break;
+                        default:
+                            $i = (int) $fnsp;
+                            break;
+                    }
                     $this->SendDebug(__FUNCTION__, '... fan speed (fnsp)=' . $fnsp . ' => ' . $i, 0);
                     $this->SaveValue('AirflowRate', $i, $is_changed);
                 }
