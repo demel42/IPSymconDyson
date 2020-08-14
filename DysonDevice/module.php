@@ -89,9 +89,9 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '');
 
         $associations = [];
-        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('High'), 'Farbe' => -1];
         $associations[] = ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('High'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.AQT', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Flag', $associations);
 
         $associations = [];
@@ -1668,7 +1668,16 @@ class DysonDevice extends IPSModule
             'sltm'=> sprintf('%04d', $min)
         ];
 
-        return $this->SetStateCommand(__FUNCTION__, $data);
+        $r = $this->SetStateCommand(__FUNCTION__, $data);
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        if ($options['sleep_timer_from_sensor']) {
+            $this->RequestStateCommand();
+        }
+
+        return $r;
     }
 
     private function SetAirflowRate(int $val)
