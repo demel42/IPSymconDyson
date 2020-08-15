@@ -1268,17 +1268,9 @@ class DysonDevice extends IPSModule
                 $sltm = $this->GetArrayElem($payload, 'data.sltm', '');
                 if ($sltm != '') {
                     $used_fields[] = 'data.sltm';
-                    if ($changeState) {
-                        $do = $sltm[0] != $sltm[1];
-                        $sltm = $sltm[1];
-                    } else {
-                        $do = true;
-                    }
-                    if ($do) {
-                        $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
-                        $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
-                        $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
-                    }
+                    $sleep_timer = $sltm == 'OFF' ? 0 : (int) $sltm;
+                    $this->SendDebug(__FUNCTION__, '... sleep timer (sltm)=' . $sltm . ' => ' . $sleep_timer, 0);
+                    $this->SaveValue('SleepTimer', $sleep_timer, $is_changed);
                 } else {
                     $missing_fields[] = 'data.sltm';
                 }
