@@ -2,12 +2,6 @@
 
 declare(strict_types=1);
 
-if (!defined('STATUS_INVALID')) {
-    define('STATUS_INVALID', 0);
-    define('STATUS_VALID', 1);
-    define('STATUS_RETRYABLE', 2);
-}
-
 trait DysonLocalLib
 {
     public static $IS_NODATA = IS_EBASE + 1;
@@ -18,6 +12,10 @@ trait DysonLocalLib
     public static $IS_NOPRODUCT = IS_EBASE + 6;
     public static $IS_PRODUCTMISSІNG = IS_EBASE + 7;
     public static $IS_INVALIDPREREQUISITES = IS_EBASE + 8;
+
+    public static $STATUS_INVALID = 0;
+    public static $STATUS_VALID = 1;
+    public static $STATUS_RETRYABLE = 2;
 
     private function GetFormStatus()
     {
@@ -44,17 +42,17 @@ trait DysonLocalLib
     {
         switch ($this->GetStatus()) {
             case IS_ACTIVE:
-                $class = STATUS_VALID;
+                $class = self::$STATUS_VALID;
                 break;
             case self::$IS_NODATA:
             case self::$IS_UNAUTHORIZED:
             case self::$IS_SERVERERROR:
             case self::$IS_HTTPERROR:
             case self::$IS_INVALIDDATA:
-                $class = STATUS_RETRYABLE;
+                $class = self::$STATUS_RETRYABLE;
                 break;
             default:
-                $class = STATUS_INVALID;
+                $class = self::$STATUS_INVALID;
                 break;
         }
 
@@ -78,7 +76,7 @@ trait DysonLocalLib
 
     private function doLogin($force)
     {
-        if ($this->CheckStatus() == STATUS_INVALID) {
+        if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, 'status=' . $this->GetStatusText(), 0);
             return false;
         }
@@ -176,7 +174,7 @@ trait DysonLocalLib
 
     private function getDeviceList()
     {
-        if ($this->CheckStatus() == STATUS_INVALID) {
+        if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, 'status=' . $this->GetStatusText(), 0);
             return false;
         }

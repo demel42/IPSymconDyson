@@ -1334,7 +1334,7 @@ class DysonDevice extends IPSModule
     {
         $this->SendDebug(__FUNCTION__, 'data=' . $data, 0);
 
-        if ($this->CheckStatus() == STATUS_INVALID) {
+        if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);
             return;
         }

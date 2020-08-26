@@ -116,7 +116,7 @@ class DysonConfig extends IPSModule
 
         $config_list = [];
 
-        if ($this->CheckStatus() == STATUS_INVALID) {
+        if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);
             return $config_list;
         }
