@@ -32,6 +32,7 @@ Getestet wurde das Modul bisher mit:
 
 | Typ | Bezeichnung |
 | :-- | :---------- |
+| 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
