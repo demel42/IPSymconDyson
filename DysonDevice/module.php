@@ -1977,6 +1977,7 @@ class DysonDevice extends IPSModule
         $options['air_quality_target'] = false;
 
         switch ($product_type) {
+            case 358:
             case 438:
             case 520:
                 $options['rssi'] = true;
@@ -2000,7 +2001,6 @@ class DysonDevice extends IPSModule
                 $options['voc'] = true;
                 $options['nox'] = true;
                 break;
-            case 358:
             case 455:
                 $options['rssi'] = true;
                 $options['power'] = true;
