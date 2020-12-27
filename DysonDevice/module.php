@@ -2002,6 +2002,7 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 break;
             case 455:
+            case 527:
                 $options['rssi'] = true;
                 $options['power'] = true;
                 $options['power_use_fmod'] = true;
@@ -2066,6 +2067,7 @@ class DysonDevice extends IPSModule
             469 => 'Dyson Pure Cool purifier desk fan (DP02)',
             475 => 'Dyson Pure Cool purifier fan tower (TP02)',
             520 => 'Dyson Pure Cool purifier desk fan (DP04)',
+            527 => 'Dyson Pure Hot+Cool',
         ];
 
         if (isset($product2name[$product_type])) {
