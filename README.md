@@ -34,10 +34,11 @@ Getestet wurde das Modul bisher mit:
 | :-- | :---------- |
 | 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
-| 455 | Dyson Pure Hot+Cool Turmventilator mit Luftreiniger (HP02) |
+| 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
+| 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -178,7 +179,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.3 @ 27.12.2020 15:23 (beta)
+- 1.3 @ 27.12.2020 16:51 (beta)
   - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05)) hinzugefügt
   - Modell 527 (Dyson Pure Hot+Cool ...) hinzugefügt
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
