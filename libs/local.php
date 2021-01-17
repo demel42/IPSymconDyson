@@ -105,6 +105,12 @@ trait DysonLocalLib
             'Password' => $password,
         ];
 
+        $headers = [
+            'User-Agent: IP-Symcon',
+            'Accept: */*',
+            'Content-Type: application/json',
+        ];
+
         $url = 'https://' . $api_host . '/v1/userregistration/authenticate?country=' . $country;
 
         $this->SendDebug(__FUNCTION__, 'http-post: url=' . $url, 0);
@@ -113,7 +119,8 @@ trait DysonLocalLib
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postdata));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -188,12 +195,18 @@ trait DysonLocalLib
 
         $url = 'https://' . $api_host . '/v2/provisioningservice/manifest'; //v1 ? old?
 
+        $headers = [
+            'User-Agent: IP-Symcon',
+            'Accept: */*',
+        ];
+
         $this->SendDebug(__FUNCTION__, 'http-get: url=' . $url, 0);
         $time_start = microtime(true);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

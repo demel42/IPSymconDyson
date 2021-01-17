@@ -179,10 +179,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.3 @ 27.12.2020 16:51 (beta)
+- 1.3 @ 17.01.2021 19:05 (beta)
   - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05)) hinzugefügt
   - Modell 527 (Dyson Pure Hot+Cool ...) hinzugefügt
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
+  - in den HTTP-Requests wird nun zusätzliche die Angabe des "User-Agent" erwartet, das Fehler wird mit einem HTTP-Error 403 quittiert
 
 - 1.2 @ 26.08.2020 10:31
   - interne Funktionen sind nun "private"
