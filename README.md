@@ -32,7 +32,7 @@ Getestet wurde das Modul bisher mit:
 
 | Typ | Bezeichnung |
 | :-- | :---------- |
-| 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05) |
+| 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
@@ -179,9 +179,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.3 @ 17.01.2021 19:05 (beta)
-  - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (DP05)) hinzugefügt
-  - Modell 527 (Dyson Pure Hot+Cool ...) hinzugefügt
+- 1.3 @ 22.01.2021 16:18 (beta)
+  - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)) hinzugefügt
+  - Modell 527 (Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04)) hinzugefügt
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
   - in den HTTP-Requests wird nun zusätzliche die Angabe des "User-Agent" erwartet, das Fehler wird mit einem HTTP-Error 403 quittiert
 

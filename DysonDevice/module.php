@@ -64,6 +64,7 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.SleepTimer', VARIABLETYPE_INTEGER, '', 0, 539, 1, 0, '', $associations);
 
         $associations = [];
+        $associations[] = ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1];
         $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
         $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
         $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1];
@@ -839,6 +840,26 @@ class DysonDevice extends IPSModule
                     $missing_fields[] = 'product-state.auto';
                 }
             }
+        }
+
+        if ($options['humidify_mode']) {
+            /*
+            
+            TXT: 22.01.2021, 08:22:23 |          DecodeState | ... product-state.msta="HUMD"
+            
+            TXT: 22.01.2021, 08:25:12 |          DecodeState | ... product-state.haut="ON"
+            TXT: 22.01.2021, 08:25:17 |          DecodeState | ... product-state.haut="OFF"
+            
+            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.hume="HUMD"
+            
+            TXT: 22.01.2021, 08:22:28 |          DecodeState | ... product-state.humt="0050"
+            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.humt="0070"
+            
+            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.cltr="1342"
+            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.wath="1350"
+            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.psta="CLNG"
+            
+             */
         }
 
         if ($options['night_mode']) {
@@ -1956,6 +1977,7 @@ class DysonDevice extends IPSModule
         $options['night_mode'] = false;
         $options['sleep_timer'] = false;
         $options['sleep_timer_from_sensor'] = false;
+        $options['humidify_mode'] = false;
 
         $options['heating'] = false;
 
@@ -1977,7 +1999,6 @@ class DysonDevice extends IPSModule
         $options['air_quality_target'] = false;
 
         switch ($product_type) {
-            case 358:
             case 438:
             case 520:
                 $options['rssi'] = true;
@@ -1993,6 +2014,28 @@ class DysonDevice extends IPSModule
                 $options['standby_monitoring'] = true;
                 $options['carbon_filter'] = true;
                 $options['hepa_filter'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['voc'] = true;
+                $options['nox'] = true;
+                break;
+            case 358:
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode'] = true;
+                $options['rotation_angle'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+                $options['humidify_mode'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['filter_lifetime'] = true;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;
@@ -2080,7 +2123,7 @@ class DysonDevice extends IPSModule
     private function product2name($product_type)
     {
         $product2name = [
-            358 => 'Dyson Pure Humidify+Cool desk fan (DP05)',
+            358 => 'Dyson Pure Humidify+Cool desk fan (PH01)',
             438 => 'Dyson Pure Cool purifier fan tower (TP04)',
             455 => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
             469 => 'Dyson Pure Cool purifier desk fan (DP02)',
