@@ -844,21 +844,21 @@ class DysonDevice extends IPSModule
 
         if ($options['humidify_mode']) {
             /*
-            
+
             TXT: 22.01.2021, 08:22:23 |          DecodeState | ... product-state.msta="HUMD"
-            
+
             TXT: 22.01.2021, 08:25:12 |          DecodeState | ... product-state.haut="ON"
             TXT: 22.01.2021, 08:25:17 |          DecodeState | ... product-state.haut="OFF"
-            
+
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.hume="HUMD"
-            
+
             TXT: 22.01.2021, 08:22:28 |          DecodeState | ... product-state.humt="0050"
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.humt="0070"
-            
+
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.cltr="1342"
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.wath="1350"
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.psta="CLNG"
-            
+
              */
         }
 
