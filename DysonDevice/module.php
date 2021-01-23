@@ -58,6 +58,8 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
         $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
 
+        $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock');
+
         $associations = [];
         $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
         $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
@@ -106,6 +108,8 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
         $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations);
+
+        $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 100, 0, 'Drops', '');
     }
 
     public function ApplyChanges()
@@ -189,6 +193,17 @@ class DysonDevice extends IPSModule
             $this->MaintainAction('HeaterMode', true);
             $this->MaintainAction('HeatingTemperature', true);
         }
+
+        /* Humifidy */
+        $this->MaintainVariable('HumidifyAutomaticMode', $this->Translate('Humidify automatic mode'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['humidify']);
+        if ($options['humidify']) {
+            $this->MaintainAction('HumidifyAutomaticMode', true);
+        }
+        $this->MaintainVariable('HumidifyTarget', $this->Translate('Humidify target value'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
+        if ($options['humidify']) {
+            $this->MaintainAction('HumidifyTarget', true);
+        }
+        $this->MaintainVariable('DurationUntilCleaningCycle', $this->Translate('Duration until next deep cleaning cycle'), VARIABLETYPE_INTEGER, 'Dyson.Hours', $vpos++, $options['humidify']);
 
         $this->MaintainVariable('Temperature', $this->Translate('Temperature'), VARIABLETYPE_FLOAT, 'Dyson.Temperature', $vpos++, $options['temperature']);
         $this->MaintainVariable('Humidity', $this->Translate('Humidity'), VARIABLETYPE_FLOAT, 'Dyson.Humidity', $vpos++, $options['humidity']);
@@ -437,17 +452,17 @@ class DysonDevice extends IPSModule
             'expanded ' => false,
             'items'     => [
                 [
-                    'type'   => 'Label',
-                    'caption'=> 'Test own \'SET-STATE\' command; the command has to be a JSON-coded string (see documentation)',
+                    'type'    => 'Label',
+                    'caption' => 'Test own \'SET-STATE\' command; the command has to be a JSON-coded string (see documentation)',
                 ],
                 [
-                    'type'   => 'Label',
-                    'caption'=> 'Examine the debug-window for information about \'ExecuteSetState\'',
+                    'type'    => 'Label',
+                    'caption' => 'Examine the debug-window for information about \'ExecuteSetState\'',
                 ],
                 [
-                    'type'   => 'ValidationTextBox',
-                    'name'   => 'cmd',
-                    'caption'=> 'Command'
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'cmd',
+                    'caption' => 'Command'
                 ],
                 [
                     'type'    => 'Button',
@@ -842,24 +857,66 @@ class DysonDevice extends IPSModule
             }
         }
 
-        if ($options['humidify_mode']) {
+        if ($options['humidify']) {
+            // humt - humidify target
+            $humt = $this->GetArrayElem($payload, 'product-state.humt', '');
+            if ($humt != '') {
+                $used_fields[] = 'product-state.humt';
+                $hum = (int) $humt;
+                $this->SendDebug(__FUNCTION__, '... humidify target (humt)=' . $hum, 0);
+                $this->SaveValue('HumidifyTarget', $hum, $is_changed);
+            } else {
+                $missing_fields[] = 'product-state.humt';
+            }
+
+            // haut - humidify automatic (ON|OFF)
+            $haut = $this->GetArrayElem($payload, 'product-state.haut', '');
+            if ($haut != '') {
+                $used_fields[] = 'product-state.haut';
+                if ($changeState) {
+                    $do = $haut[0] != $haut[1];
+                    $haut = $haut[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    $b = $this->str2bool($haut);
+                    $this->SendDebug(__FUNCTION__, '... automatic mode (haut)=' . $auto . ' => ' . $this->bool2str($b), 0);
+                    $this->SaveValue('HumidifyAutomaticMode', $b, $is_changed);
+                }
+            } else {
+                $missing_fields[] = 'product-state.haut';
+            }
             /*
-
-            TXT: 22.01.2021, 08:22:23 |          DecodeState | ... product-state.msta="HUMD"
-
             TXT: 22.01.2021, 08:25:12 |          DecodeState | ... product-state.haut="ON"
             TXT: 22.01.2021, 08:25:17 |          DecodeState | ... product-state.haut="OFF"
 
+
+
+            TXT: 22.01.2021, 08:22:23 |          DecodeState | ... product-state.msta="HUMD"
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.msta="OFF"
+
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.hume="HUMD"
 
-            TXT: 22.01.2021, 08:22:28 |          DecodeState | ... product-state.humt="0050"
-            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.humt="0070"
-
-            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.cltr="1342"
-            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.wath="1350"
             TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.psta="CLNG"
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.psta="OFF"
+
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.clcr="CLNO"
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.cdrr="0060"
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.cltr="1341"
+            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.wath="1350"
 
              */
+            // cltr - cleaning cylcle timerange
+            $cltr = $this->GetArrayElem($payload, 'product-state.cltr', '');
+            if ($cltr != '') {
+                $used_fields[] = 'product-state.cltr';
+                $dur = (int) $cltr;
+                $this->SendDebug(__FUNCTION__, '... cleaning cylcle timerange (cltr)=' . $dur, 0);
+                $this->SaveValue('DurationUntilCleaningCycle', $dur, $is_changed);
+            } else {
+                $missing_fields[] = 'product-state.cltr';
+            }
         }
 
         if ($options['night_mode']) {
@@ -932,7 +989,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['hepa_filter']) {
-            // hflt - hepa filter type (GHEP)
+            // hflt - hepa filter type (GHEP|GCOM)
             $ignored_fields[] = 'product-state.hflt';
 
             // hflr - hepa filter range (0..100%)
@@ -1566,6 +1623,16 @@ class DysonDevice extends IPSModule
                     $enabled = true;
                 }
                 break;
+            case 'SwitchHumidifyAutomaticMode':
+                if ($options['humidify']) {
+                    $enabled = true;
+                }
+                break;
+            case 'SetHumidifyTarget':
+                if ($options['humidify']) {
+                    $enabled = true;
+                }
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unsupported action "' . $func . '"', 0);
                 break;
@@ -1624,11 +1691,11 @@ class DysonDevice extends IPSModule
 
         if ($options['power_use_fmod']) {
             $data = [
-                'fmod'=> ($mode ? 'FAN' : 'OFF')
+                'fmod' => ($mode ? 'FAN' : 'OFF')
             ];
         } else {
             $data = [
-                'fpwr'=> ($mode ? 'ON' : 'OFF')
+                'fpwr' => ($mode ? 'ON' : 'OFF')
             ];
         }
 
@@ -1647,11 +1714,11 @@ class DysonDevice extends IPSModule
         if ($options['automatic_mode_use_fmod']) {
             $power = (bool) $this->GetValue('Power');
             $data = [
-                'fmod'=> ($mode ? 'AUTO' : ($power ? 'FAN' : 'OFF'))
+                'fmod' => ($mode ? 'AUTO' : ($power ? 'FAN' : 'OFF'))
             ];
         } else {
             $data = [
-                'auto'=> ($mode ? 'ON' : 'OFF')
+                'auto' => ($mode ? 'ON' : 'OFF')
             ];
         }
 
@@ -1665,7 +1732,7 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'nmod'=> ($mode ? 'ON' : 'OFF')
+            'nmod' => ($mode ? 'ON' : 'OFF')
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1678,7 +1745,7 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'sltm'=> sprintf('%04d', $min)
+            'sltm' => sprintf('%04d', $min)
         ];
 
         $r = $this->SetStateCommand(__FUNCTION__, $data);
@@ -1704,11 +1771,11 @@ class DysonDevice extends IPSModule
 
         if ($val == 0 && $options['automatic_mode_use_fmod']) {
             $data = [
-                'fmod'=> 'OFF'
+                'fmod' => 'OFF'
             ];
         } else {
             $data = [
-                'fnsp'=> sprintf('%04d', $val)
+                'fnsp' => sprintf('%04d', $val)
             ];
         }
 
@@ -1722,7 +1789,7 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'fdir'=> ($mode ? 'ON' : 'OFF')
+            'fdir' => ($mode ? 'ON' : 'OFF')
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1735,7 +1802,7 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'ffoc'=> ($mode ? 'ON' : 'OFF')
+            'ffoc' => ($mode ? 'ON' : 'OFF')
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1757,14 +1824,14 @@ class DysonDevice extends IPSModule
             $this->adjust_rotation($angle, $start, $end);
 
             $data = [
-                'oson'=> ($mode ? 'ON' : 'OFF'),
-                'ancp'=> 'CUST',
-                'osal'=> sprintf('%04d', $start),
-                'osau'=> sprintf('%04d', $end),
+                'oson' => ($mode ? 'ON' : 'OFF'),
+                'ancp' => 'CUST',
+                'osal' => sprintf('%04d', $start),
+                'osau' => sprintf('%04d', $end),
             ];
         } else {
             $data = [
-                'oson'=> ($mode ? 'ON' : 'OFF'),
+                'oson' => ($mode ? 'ON' : 'OFF'),
             ];
         }
 
@@ -1782,9 +1849,9 @@ class DysonDevice extends IPSModule
         $this->adjust_rotation($angle, $start, $end);
 
         $data = [
-            'ancp'=> 'CUST',
-            'osal'=> sprintf('%04d', $start),
-            'osau'=> sprintf('%04d', $end),
+            'ancp' => 'CUST',
+            'osal' => sprintf('%04d', $start),
+            'osau' => sprintf('%04d', $end),
         ];
 
         $r = $this->SetStateCommand(__FUNCTION__, $data);
@@ -1806,9 +1873,9 @@ class DysonDevice extends IPSModule
         $this->adjust_rotation($angle, $start, $end);
 
         $data = [
-            'ancp'=> 'CUST',
-            'osal'=> sprintf('%04d', $start),
-            'osau'=> sprintf('%04d', $end),
+            'ancp' => 'CUST',
+            'osal' => sprintf('%04d', $start),
+            'osau' => sprintf('%04d', $end),
         ];
 
         $r = $this->SetStateCommand(__FUNCTION__, $data);
@@ -1826,7 +1893,7 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'rhtm'=> ($mode ? 'ON' : 'OFF')
+            'rhtm' => ($mode ? 'ON' : 'OFF')
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1843,12 +1910,12 @@ class DysonDevice extends IPSModule
 
         if ($mode) {
             $data = [
-                'hmod'=> 'HEAT',
-                'hmax'=> sprintf('%04d', $k),
+                'hmod' => 'HEAT',
+                'hmax' => sprintf('%04d', $k),
             ];
         } else {
             $data = [
-                'hmod'=> 'OFF',
+                'hmod' => 'OFF',
             ];
         }
 
@@ -1864,7 +1931,7 @@ class DysonDevice extends IPSModule
         $k = (int) $this->encode_temperature($temp);
 
         $data = [
-            'hmax'=> sprintf('%04d', $k),
+            'hmax' => sprintf('%04d', $k),
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1877,7 +1944,39 @@ class DysonDevice extends IPSModule
         }
 
         $data = [
-            'qtar'=> sprintf('%04d', $val),
+            'qtar' => sprintf('%04d', $val),
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
+    private function SwitchHumidifyAutomaticMode(bool $mode)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        $data = [
+            'haut' => ($mode ? 'ON' : 'OFF')
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
+    private function SetHumidifyTarget(float $hum)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        $data = [
+            'humt' => sprintf('%04d', (int) $hum),
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1948,6 +2047,14 @@ class DysonDevice extends IPSModule
                 $r = $this->SetAirQualityTarget((int) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
+            case 'HumidifyAutomaticMode':
+                $r = $this->SwitchHumidifyAutomaticMode((bool) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
+            case 'HumidifyTarget':
+                $r = $this->SetHumidifyTarget((float) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $Ident, 0);
                 break;
@@ -1977,7 +2084,7 @@ class DysonDevice extends IPSModule
         $options['night_mode'] = false;
         $options['sleep_timer'] = false;
         $options['sleep_timer_from_sensor'] = false;
-        $options['humidify_mode'] = false;
+        $options['humidify'] = false;
 
         $options['heating'] = false;
 
@@ -2032,10 +2139,10 @@ class DysonDevice extends IPSModule
                 $options['automatic_mode'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
-                $options['humidify_mode'] = true;
+                $options['humidify'] = true;
 
                 $options['standby_monitoring'] = true;
-                $options['filter_lifetime'] = true;
+                $options['hepa_filter'] = true;
 
                 $options['temperature'] = true;
                 $options['humidity'] = true;

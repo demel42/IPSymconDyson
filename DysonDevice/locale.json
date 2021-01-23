@@ -41,6 +41,11 @@
 			"Carbon filter lifetime": "Aktivkohlefilter Lebensdauer",
 			"HEPA filter lifetime": "HEPA-Filter Lebensdauer",
 
+			"Start deep cleaning": "Tiefenreinigung durchführen",
+			"Duration until next deep cleaning cycle": "Dauer bis zum nächsten Tiefenreinigungszyklus",
+			"Humidify target value": "Luftbefeuchtungs Zielwert",
+			"Humidify automatic mode": "Lufbefeuchtung-Automatik",
+
 			"Airflow direction": "Luftstromrichtung",
 			"Airflow distribution": "Luftstromverteilung",
 			"Airflow rate": "Luftstromstärke",
