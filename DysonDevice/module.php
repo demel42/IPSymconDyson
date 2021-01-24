@@ -1959,9 +1959,33 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
-        $data = [
-            'haut' => ($mode ? 'ON' : 'OFF')
-        ];
+        if ($mode) {
+            $data = [
+                'haut' => 'ON'
+            ];
+            $power = (bool) $this->GetValue('Power');
+            if (£power == false) {
+                $data[] = [
+                    'fpwr' => 'ON'
+                ];
+            }
+            $flowrate = (int) $this->GetValue('AirflowRate');
+            if ($flowrate == 0) {
+                $data[] = [
+                    'fnsp' => sprintf('%04d', 1)
+                ];
+            }
+            $target = (int) $this->GetValue('HumidifyTarget');
+            if ($target == 0) {
+                $data[] = [
+                    'humt' => sprintf('%04d', 50)
+                ];
+            }
+        } else {
+            $data = [
+                'haut' => 'OFF'
+            ];
+        }
 
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
@@ -1976,7 +2000,7 @@ class DysonDevice extends IPSModule
         $options = $this->product2options($product_type);
 
         $data = [
-            'humt' => sprintf('%04d', (int) $hum),
+            'humt' => sprintf('%04d', (int) $hum)
         ];
 
         return $this->SetStateCommand(__FUNCTION__, $data);
