@@ -1964,7 +1964,7 @@ class DysonDevice extends IPSModule
                 'haut' => 'ON'
             ];
             $power = (bool) $this->GetValue('Power');
-            if (£power == false) {
+            if ($power == false) {
                 $data[] = [
                     'fpwr' => 'ON'
                 ];
