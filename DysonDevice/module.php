@@ -203,6 +203,7 @@ class DysonDevice extends IPSModule
         if ($options['humidify']) {
             $this->MaintainAction('HumidifyTarget', true);
         }
+        $this->MaintainVariable('HumidifyInternalSetPoint', $this->Translate('Internal humidify set point'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
         $this->MaintainVariable('DurationUntilCleaningCycle', $this->Translate('Duration until next deep cleaning cycle'), VARIABLETYPE_INTEGER, 'Dyson.Hours', $vpos++, $options['humidify']);
 
         $this->MaintainVariable('Temperature', $this->Translate('Temperature'), VARIABLETYPE_FLOAT, 'Dyson.Temperature', $vpos++, $options['temperature']);
@@ -887,26 +888,18 @@ class DysonDevice extends IPSModule
             } else {
                 $missing_fields[] = 'product-state.haut';
             }
-            /*
-            TXT: 22.01.2021, 08:25:12 |          DecodeState | ... product-state.haut="ON"
-            TXT: 22.01.2021, 08:25:17 |          DecodeState | ... product-state.haut="OFF"
 
+            // rect - humidify internal set point
+            $rect = $this->GetArrayElem($payload, 'product-state.rect', '');
+            if ($rect != '') {
+                $used_fields[] = 'product-state.rect';
+                $hum = (int) $rect;
+                $this->SendDebug(__FUNCTION__, '... humidify internal set point (rect)=' . $hum, 0);
+                $this->SaveValue('HumidifyInternalSetPoint', $hum, $is_changed);
+            } else {
+                $missing_fields[] = 'product-state.rect';
+            }
 
-
-            TXT: 22.01.2021, 08:22:23 |          DecodeState | ... product-state.msta="HUMD"
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.msta="OFF"
-
-            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.hume="HUMD"
-
-            TXT: 22.01.2021, 08:22:35 |          DecodeState | ... product-state.psta="CLNG"
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.psta="OFF"
-
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.clcr="CLNO"
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.cdrr="0060"
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.cltr="1341"
-            TXT: 22.01.2021, 20:37:29 |          DecodeState | ... product-state.wath="1350"
-
-             */
             // cltr - cleaning cylcle timerange
             $cltr = $this->GetArrayElem($payload, 'product-state.cltr', '');
             if ($cltr != '') {
