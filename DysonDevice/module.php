@@ -203,7 +203,7 @@ class DysonDevice extends IPSModule
         if ($options['humidify']) {
             $this->MaintainAction('HumidifyTarget', true);
         }
-        $this->MaintainVariable('HumidifyInternalSetPoint', $this->Translate('Internal humidify set point'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
+        $this->MaintainVariable('HumidifyAutomaticTarget', $this->Translate('Humidify automatic target value'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
         $this->MaintainVariable('DurationUntilCleaningCycle', $this->Translate('Duration until next deep cleaning cycle'), VARIABLETYPE_INTEGER, 'Dyson.Hours', $vpos++, $options['humidify']);
 
         $this->MaintainVariable('Temperature', $this->Translate('Temperature'), VARIABLETYPE_FLOAT, 'Dyson.Temperature', $vpos++, $options['temperature']);
@@ -895,7 +895,7 @@ class DysonDevice extends IPSModule
                 $used_fields[] = 'product-state.rect';
                 $hum = (int) $rect;
                 $this->SendDebug(__FUNCTION__, '... humidify internal set point (rect)=' . $hum, 0);
-                $this->SaveValue('HumidifyInternalSetPoint', $hum, $is_changed);
+                $this->SaveValue('HumidifyAutomaticTarget', $hum, $is_changed);
             } else {
                 $missing_fields[] = 'product-state.rect';
             }
