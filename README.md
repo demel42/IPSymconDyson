@@ -179,7 +179,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.3 @ 29.01.2021 17:30 (beta)
+- 1.3 @ 29.01.2021 17:30
   - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)) hinzugefügt
   - Modell 527 (Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04)) hinzugefügt
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
