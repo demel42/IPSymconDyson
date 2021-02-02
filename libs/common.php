@@ -264,6 +264,7 @@ trait DysonCommonLib
         $v = IPS_GetVariable($varID);
         $oldMode = $v['VariableAction'] != 0;
 
+        $this->SendDebug(__FUNCTION__, 'MaintainAction(' . $Ident . ', ' . $this->bool2str($Mode) . ')', 0);
         $this->MaintainAction($Ident, $Mode);
 
         return $oldMode != $Mode;
