@@ -10,6 +10,10 @@
 
 			"Germany": "Deutschland",
 			"England": "England",
+			"Austria": "Österreich",
+			"Switzerland": "Schweiz",
+			"Netherlands": "Niederlande",
+			"France": "Frankreich",
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 			"Module MQTTClient": "Modul MQTTClient",

@@ -227,6 +227,22 @@ class DysonConfig extends IPSModule
                 'caption' => $this->Translate('Germany'),
                 'value'   => 'de'
             ],
+            [
+                'caption' => $this->Translate('Austria'),
+                'value'   => 'au'
+            ],
+            [
+                'caption' => $this->Translate('Switzerland'),
+                'value'   => 'ch'
+            ],
+            [
+                'caption' => $this->Translate('Netherlands'),
+                'value'   => 'nl'
+            ],
+            [
+                'caption' => $this->Translate('France'),
+                'value'   => 'fr'
+            ],
         ];
         $items[] = [
             'type'    => 'Select',
