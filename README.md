@@ -180,7 +180,7 @@ GUIDs
 ## 7. Versions-Historie
 
 - 1.4 @ 18.02.2021 17:50 (beta)
-  - Länderauswahl ergänzt: Österreich, Schweiz, Niederlande, Frankreich"
+  - Länderauswahl ergänzt um Österreich, Schweiz, Niederlande, Frankreich
 
 - 1.3 @ 29.01.2021 17:30
   - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)) hinzugefügt
