@@ -87,9 +87,18 @@ trait DysonLocalLib
             if ($data != '') {
                 $jdata = json_decode($data, true);
                 $auth = isset($jdata['auth']) ? $jdata['auth'] : '';
+                $tstamp = isset($jdata['tstamp']) ? $jdata['tstamp'] : 0;
                 if ($auth != false) {
                     $this->SendDebug(__FUNCTION__, 'old auth=' . $auth, 0);
                     return $auth;
+                } else {
+                    $now = time();
+                    $dif = $now - $tstamp;
+                    $this->SendDebug(__FUNCTION__, 'tstamp=' . date('H:i:s', $tstamp) . ', now=' . date('H:i:s', $now) . ', dif=' . $dif, 0);
+                    if ($tstamp + 300 > time()) {
+                        $this->SendDebug(__FUNCTION__, 'try not to login, last attempt was ' . date('H:i:s', $tstamp) . ' (< 5m ago)', 0);
+                        return false;
+                    }
                 }
             }
         }
@@ -98,7 +107,7 @@ trait DysonLocalLib
         $password = $this->ReadPropertyString('password');
         $country = $this->ReadPropertyString('country');
 
-        $api_host = 'appapi.cp.dyson.com'; // api.cp.dyson.com
+        $api_host = 'appapi.cp.dyson.com';
 
         $postdata = [
             'Email'    => $user,
@@ -106,7 +115,7 @@ trait DysonLocalLib
         ];
 
         $headers = [
-            'User-Agent: IP-Symcon',
+            'User-Agent: DysonLink/29019 CFNetwork/1188 Darwin/20.0.0',
             'Accept: */*',
             'Content-Type: application/json',
         ];
@@ -166,14 +175,11 @@ trait DysonLocalLib
             }
         }
 
-        if ($auth != false) {
-            $jdata = [
-                'auth' => $auth,
-            ];
-            $this->WriteAttributeString('Auth', json_encode($jdata));
-        } else {
-            $this->WriteAttributeString('Auth', '');
-        }
+        $jdata = [
+            'auth'   => $auth,
+            'tstamp' => time(),
+        ];
+        $this->WriteAttributeString('Auth', json_encode($jdata));
 
         $this->SendDebug(__FUNCTION__, 'new auth=' . $auth, 0);
         return $auth;
@@ -196,7 +202,7 @@ trait DysonLocalLib
         $url = 'https://' . $api_host . '/v2/provisioningservice/manifest'; //v1 ? old?
 
         $headers = [
-            'User-Agent: IP-Symcon',
+            'User-Agent: DysonLink/29019 CFNetwork/1188 Darwin/20.0.0',
             'Accept: */*',
         ];
 
