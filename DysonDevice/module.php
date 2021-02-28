@@ -2109,7 +2109,7 @@ class DysonDevice extends IPSModule
         $options['carbon_filter'] = false;
         $options['hepa_filter'] = false;
         $options['filter_lifetime'] = false;
-        $options['filter_lifetime_max'] = 0;
+        $options['filter_lifetime_max'] = 100;
 
         // ENVIROMENTAL SENSOR DATA
         $options['temperature'] = false;
