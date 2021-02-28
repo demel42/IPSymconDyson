@@ -17,6 +17,9 @@ trait DysonLocalLib
     public static $STATUS_VALID = 1;
     public static $STATUS_RETRYABLE = 2;
 
+    private static $api_host = 'appapi.cp.dyson.com';
+    private static $user_agent = 'DysonLink/29019 CFNetwork/1188 Darwin/20.0.0';
+
     private function GetFormStatus()
     {
         $formStatus = [];
@@ -74,6 +77,17 @@ trait DysonLocalLib
         return $txt;
     }
 
+    /*
+
+    accountstatus = requests.get(
+            "https://{0}/v1/userregistration/userstatus".format(self._dyson_api_url),
+            params={"country": self._country, "email": self._email},
+            headers=self._headers,
+            verify=False,
+        )
+
+     */
+
     private function doLogin($force)
     {
         if ($this->CheckStatus() == self::$STATUS_INVALID) {
@@ -107,7 +121,71 @@ trait DysonLocalLib
         $password = $this->ReadPropertyString('password');
         $country = $this->ReadPropertyString('country');
 
-        $api_host = 'appapi.cp.dyson.com';
+        $url = 'https://' . self::$api_host . '/v1/userregistration/userstatus?email=' . $user . '&country=' . $country;
+
+        $headers = [
+            'User-Agent: ' . self::$user_agent,
+            'Accept: */*',
+            'Content-Type: application/json',
+        ];
+
+        $this->SendDebug(__FUNCTION__, 'http-get: url=' . $url, 0);
+        $time_start = microtime(true);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        $cdata = curl_exec($ch);
+        $cerrno = curl_errno($ch);
+        $cerror = $cerrno ? curl_error($ch) : '';
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $duration = round(microtime(true) - $time_start, 2);
+        $this->SendDebug(__FUNCTION__, ' => errno=' . $cerrno . ', httpcode=' . $httpcode . ', duration=' . $duration . 's', 0);
+        $this->SendDebug(__FUNCTION__, ' => cdata=' . $cdata, 0);
+
+        $statuscode = 0;
+        $err = '';
+        $auth = '';
+        if ($cerrno) {
+            $statuscode = self::$IS_SERVERERROR;
+            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
+        } elseif ($httpcode != 200 && $httpcode != 201) {
+            if ($httpcode >= 500 && $httpcode <= 599) {
+                $statuscode = self::$IS_SERVERERROR;
+                $err = 'got http-code ' . $httpcode . ' (server error)';
+            } else {
+                $statuscode = self::$IS_HTTPERROR;
+                $err = 'got http-code ' . $httpcode;
+            }
+        } elseif ($cdata == '') {
+            $statuscode = self::$IS_INVALIDDATA;
+            $err = 'no data';
+        } else {
+            $jdata = json_decode($cdata, true);
+            if ($jdata == '') {
+                $statuscode = self::$IS_INVALIDDATA;
+                $err = 'malformed response';
+            } else {
+                if (!isset($jdata['accountStatus'])) {
+                    $statuscode = self::$IS_INVALIDDATA;
+                    $err = 'malformed response';
+                } else {
+                    if ($jdata['accountStatus'] != 'ACTIVE') {
+                        $statuscode = self::$IS_INVALIDDATA;
+                        $err = 'accountStatus=' . $jdata['accountStatus'];
+                    }
+                }
+            }
+        }
+
+        $url = 'https://' . self::$api_host . '/v1/userregistration/authenticate?country=' . $country;
 
         $postdata = [
             'Email'    => $user,
@@ -115,12 +193,10 @@ trait DysonLocalLib
         ];
 
         $headers = [
-            'User-Agent: DysonLink/29019 CFNetwork/1188 Darwin/20.0.0',
+            'User-Agent: ' . self::$user_agent,
             'Accept: */*',
             'Content-Type: application/json',
         ];
-
-        $url = 'https://' . $api_host . '/v1/userregistration/authenticate?country=' . $country;
 
         $this->SendDebug(__FUNCTION__, 'http-post: url=' . $url, 0);
         $time_start = microtime(true);
@@ -171,7 +247,12 @@ trait DysonLocalLib
                 $statuscode = self::$IS_INVALIDDATA;
                 $err = 'malformed response';
             } else {
-                $auth = $jdata['Account'] . ':' . $jdata['Password'];
+                if (!isset($jdata['Account']) || !isset($jdata['Password'])) {
+                    $statuscode = self::$IS_UNAUTHORIZED;
+                    $err = 'malformed response';
+                } else {
+                    $auth = $jdata['Account'] . ':' . $jdata['Password'];
+                }
             }
         }
 
@@ -197,12 +278,13 @@ trait DysonLocalLib
             return false;
         }
 
-        $api_host = 'appapi.cp.dyson.com'; // api.cp.dyson.com
+        $api_host = 'appapi.cp.dyson.com';
+        $user_agent = 'DysonLink/29019 CFNetwork/1188 Darwin/20.0.0';
 
         $url = 'https://' . $api_host . '/v2/provisioningservice/manifest'; //v1 ? old?
 
         $headers = [
-            'User-Agent: DysonLink/29019 CFNetwork/1188 Darwin/20.0.0',
+            'User-Agent: ' . $user_agent,
             'Accept: */*',
         ];
 

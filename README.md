@@ -179,11 +179,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.4 @ 19.02.2021 09:01 (beta)
+- 1.4 @ 28.02.2021 11:23 (beta)
   - Länderauswahl ergänzt um Österreich, Schweiz, Niederlande, Frankreich
   - Fix, um den HTTP-Error 429 (too many requests) zu verhindern, der kommt, wenn zu häufig Login-Versuch fehlgeschlagen sind
-    Das Modul wartet nun 5min, bis es erneut ein Login versucht.
-	Es scheint immer wieder mal Login-Probleme auf der Dyson-Seite zu geben (Ablehnung trotz korrekter Login-Daten)
+    Das Modul wartet nun 5 min, bis es erneut ein Login versucht.
+  - Korrektur nach Änderung der Login-API
 
 - 1.3 @ 29.01.2021 17:30
   - Modell 358 (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)) hinzugefügt
