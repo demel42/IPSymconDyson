@@ -34,6 +34,7 @@ Getestet wurde das Modul bisher mit:
 | :-- | :---------- |
 | 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
+| 438E | Dyson Pure Cool Turmventilator mit Luftreiniger (TP07) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
@@ -178,6 +179,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 1.5 @ 31.03.2021 17:18 (beta)
+  - Modell 438E (Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)) hinzugefügt
 
 - 1.4 @ 28.02.2021 20:53 (beta)
   - Länderauswahl ergänzt um Österreich, Schweiz, Niederlande, Frankreich
