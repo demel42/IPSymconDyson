@@ -180,7 +180,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.5 @ 31.03.2021 17:18 (beta)
+- 1.5 @ 31.03.2021 17:18
   - Modell 438E (Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)) hinzugefügt
 
 - 1.4 @ 28.02.2021 20:53 (beta)
