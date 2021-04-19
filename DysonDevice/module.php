@@ -252,6 +252,8 @@ class DysonDevice extends IPSModule
             $this->SetTimerInterval('UpdateStatus', 2 * 1000);
             $this->SubscribeStatus();
         }
+
+        $this->SetSummary($product_type . ' (#' . $serial . ')');
     }
 
     private function GetConnectionID()
