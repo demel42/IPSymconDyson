@@ -180,6 +180,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.6 @ 19.04.2021 20:19 (beta)
+  - Summary in der Geräteinstanz auf Typ + Seriennummer setzen
+  - Absicherung des Konfigurators
+
 - 1.5 @ 31.03.2021 17:18
   - Modell 438E (Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)) hinzugefügt
 

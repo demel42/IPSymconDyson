@@ -130,10 +130,12 @@ class DysonConfig extends IPSModule
             $guid = '{D1A42861-0280-E373-A07E-EC51D3B43951}';
             $instIDs = IPS_GetInstanceListByModuleID($guid);
             foreach ($devices as $device) {
+                $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
                 $serial = $device['Serial'];
                 $name = $device['Name'];
                 $product_type = $device['ProductType'];
-                $local_password = $this->decryptPassword($device['LocalCredentials']);
+                $local_credentials = $device['LocalCredentials'];
+                $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
 
                 $instanceID = 0;
                 foreach ($instIDs as $instID) {
