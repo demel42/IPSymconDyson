@@ -1,5 +1,3 @@
-
-
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.3+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
@@ -180,14 +178,14 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.6 @ 19.04.2021 20:19 (beta)
+- 1.6 @ 19.04.2021 20:19
   - Summary in der Geräteinstanz auf Typ + Seriennummer setzen
   - Absicherung des Konfigurators
 
 - 1.5 @ 31.03.2021 17:18
   - Modell 438E (Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)) hinzugefügt
 
-- 1.4 @ 28.02.2021 20:53 (beta)
+- 1.4 @ 28.02.2021 20:53
   - Länderauswahl ergänzt um Österreich, Schweiz, Niederlande, Frankreich
   - Fix, um den HTTP-Error 429 (too many requests) zu verhindern, der kommt, wenn zu häufig Login-Versuch fehlgeschlagen sind
     Das Modul wartet nun 5 min, bis es erneut ein Login versucht.
