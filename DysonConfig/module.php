@@ -53,6 +53,11 @@ class DysonConfig extends IPSModule
             return;
         }
 
+        if ($this->checkLogin() == false) {
+            $this->SetStatus(self::$IS_NOLOGIN);
+            return;
+        }
+
         $this->SetStatus(IS_ACTIVE);
     }
 
@@ -223,27 +228,27 @@ class DysonConfig extends IPSModule
         $opts_country = [
             [
                 'caption' => $this->Translate('England'),
-                'value'   => 'en'
+                'value'   => 'EN'
             ],
             [
                 'caption' => $this->Translate('Germany'),
-                'value'   => 'de'
+                'value'   => 'DE'
             ],
             [
                 'caption' => $this->Translate('Austria'),
-                'value'   => 'au'
+                'value'   => 'AU'
             ],
             [
                 'caption' => $this->Translate('Switzerland'),
-                'value'   => 'ch'
+                'value'   => 'CH'
             ],
             [
                 'caption' => $this->Translate('Netherlands'),
-                'value'   => 'nl'
+                'value'   => 'NL'
             ],
             [
                 'caption' => $this->Translate('France'),
-                'value'   => 'fr'
+                'value'   => 'FR'
             ],
         ];
         $items[] = [
@@ -299,17 +304,72 @@ class DysonConfig extends IPSModule
         $formActions = [];
 
         $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Relogin',
-            'onClick' => 'Dyson_ManualRelogin($id);'
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'perform login',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'    => 'Label',
+                    'caption' => 'observe dokumentation',
+                ],
+                [
+                    'type'      => 'RowLayout',
+                    'items'     => [
+                        [
+                            'type'    => 'Label',
+                            'caption' => 'Step 1',
+                        ],
+                        [
+                            'type'    => 'Button',
+                            'caption' => 'Request code',
+                            'onClick' => 'Dyson_ManualRelogin1($id);'
+                        ],
+                    ]
+                ],
+                [
+                    'type'      => 'RowLayout',
+                    'items'     => [
+                        [
+                            'type'    => 'Label',
+                            'caption' => 'Step 2',
+                        ],
+                        [
+                            'type'    => 'ValidationTextBox',
+                            'name'    => 'otpCode',
+                            'caption' => 'Code (from mail)'
+                        ],
+                        [
+                            'type'    => 'Button',
+                            'caption' => 'Verify login',
+                            'onClick' => 'Dyson_ManualRelogin2($id, $otpCode);'
+                        ]
+                    ]
+                ]
+            ]
         ];
 
         return $formActions;
     }
 
-    public function ManualRelogin()
+    public function ManualRelogin1()
     {
-        $auth = $this->doLogin(true);
-        echo $this->Translate(($auth == false ? 'Login failed' : 'Login successful'));
+        $this->SendDebug(__FUNCTION__, '', 0);
+        $msg = '';
+        $ret = $this->doLogin_2fa_1(true, $msg);
+        $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
+        if ($msg != false) {
+            echo $this->Translate($msg);
+        }
+    }
+
+    public function ManualRelogin2(string $otpCode)
+    {
+        $this->SendDebug(__FUNCTION__, 'otpCode=' . $otpCode, 0);
+        $msg = '';
+        $ret = $this->doLogin_2fa_2($otpCode, $msg);
+        $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
+        if ($msg != false) {
+            echo $this->Translate($msg);
+        }
     }
 }

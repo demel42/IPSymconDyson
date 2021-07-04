@@ -25,8 +25,14 @@
 			"Name": "Bezeichnung",
 			"Product type": "Produkt-Typ",
 
-			"Relogin": "Erneut anmelden",
-
+			"perform login": "Anmeldung durchführen",
+			"observe dokumentation": "Dokumentation beachten",
+			"Step 1": "Schritt 1",
+			"Request code": "Code anfordern",
+			"Step 2": "Schritt 2",
+			"Code (from mail)": "Code (aus Mail)",
+			"Verify login": "Anmeldung bestätigen",
+			"Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
 			"Login failed": "Anmeldung fehlgeschlagen",
 			"Login successful": "Anmeldung erfolgreich",
 
@@ -43,7 +49,9 @@
 			"Instance is inactive (invalid data)": "Instanz ist inaktiv (ungültige Daten)",
 			"Instance is inactive (no product)": "Instanz ist inaktiv (kein Produkt)",
 			"Instance is inactive (product missing)": "Instanz ist inaktiv (Produkt fehlt)",
-			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)"
+			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)",
+			"Instance is inactive (not logged in)": "Instanz ist inaktiv (nicht angemeldet)",
+			"Instance is inactive (login not verified)": "Instanz ist inaktiv (Anmeldung nicht bestätigt)"
 		}
 	}
 }

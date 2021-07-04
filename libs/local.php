@@ -12,13 +12,16 @@ trait DysonLocalLib
     public static $IS_NOPRODUCT = IS_EBASE + 6;
     public static $IS_PRODUCTMISSІNG = IS_EBASE + 7;
     public static $IS_INVALIDPREREQUISITES = IS_EBASE + 8;
+    public static $IS_NOLOGIN = IS_EBASE + 9;
+    public static $IS_NOVERIFY = IS_EBASE + 10;
 
     public static $STATUS_INVALID = 0;
     public static $STATUS_VALID = 1;
     public static $STATUS_RETRYABLE = 2;
 
     private static $api_host = 'appapi.cp.dyson.com';
-    private static $user_agent = 'DysonLink/29019 CFNetwork/1188 Darwin/20.0.0';
+    private static $user_agent = 'DysonLink/32531 CFNetwork/1240.0.4 Darwin/20.5.0';
+    private static $cainfo = __DIR__ . '/certs/DigiCert-chain.crt';
 
     private function GetFormStatus()
     {
@@ -37,6 +40,8 @@ trait DysonLocalLib
         $formStatus[] = ['code' => self::$IS_NOPRODUCT, 'icon' => 'error', 'caption' => 'Instance is inactive (no product)'];
         $formStatus[] = ['code' => self::$IS_PRODUCTMISSІNG, 'icon' => 'error', 'caption' => 'Instance is inactive (product missing)'];
         $formStatus[] = ['code' => self::$IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+        $formStatus[] = ['code' => self::$IS_NOLOGIN, 'icon' => 'error', 'caption' => 'Instance is inactive (not logged in)'];
+        $formStatus[] = ['code' => self::$IS_NOVERIFY, 'icon' => 'error', 'caption' => 'Instance is inactive (login not verified)'];
 
         return $formStatus;
     }
@@ -77,195 +82,6 @@ trait DysonLocalLib
         return $txt;
     }
 
-    /*
-
-    accountstatus = requests.get(
-            "https://{0}/v1/userregistration/userstatus".format(self._dyson_api_url),
-            params={"country": self._country, "email": self._email},
-            headers=self._headers,
-            verify=False,
-        )
-
-     */
-
-    private function doLogin($force)
-    {
-        if ($this->CheckStatus() == self::$STATUS_INVALID) {
-            $this->SendDebug(__FUNCTION__, 'status=' . $this->GetStatusText(), 0);
-            return false;
-        }
-
-        if ($force == false) {
-            $data = $this->ReadAttributeString('Auth');
-            $this->SendDebug(__FUNCTION__, 'Attribute("Auth")=' . $data, 0);
-            if ($data != '') {
-                $jdata = json_decode($data, true);
-                $auth = isset($jdata['auth']) ? $jdata['auth'] : '';
-                $tstamp = isset($jdata['tstamp']) ? $jdata['tstamp'] : 0;
-                if ($auth != false) {
-                    $this->SendDebug(__FUNCTION__, 'old auth=' . $auth, 0);
-                    return $auth;
-                } else {
-                    $now = time();
-                    $dif = $now - $tstamp;
-                    $this->SendDebug(__FUNCTION__, 'tstamp=' . date('H:i:s', $tstamp) . ', now=' . date('H:i:s', $now) . ', dif=' . $dif, 0);
-                    if ($tstamp + 300 > time()) {
-                        $this->SendDebug(__FUNCTION__, 'try not to login, last attempt was ' . date('H:i:s', $tstamp) . ' (< 5m ago)', 0);
-                        return false;
-                    }
-                }
-            }
-        }
-
-        $user = $this->ReadPropertyString('user');
-        $password = $this->ReadPropertyString('password');
-        $country = $this->ReadPropertyString('country');
-
-        $url = 'https://' . self::$api_host . '/v1/userregistration/userstatus?email=' . $user . '&country=' . $country;
-
-        $headers = [
-            'User-Agent: ' . self::$user_agent,
-            'Accept: */*',
-            'Content-Type: application/json',
-        ];
-
-        $this->SendDebug(__FUNCTION__, 'http-get: url=' . $url, 0);
-        $time_start = microtime(true);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        $cdata = curl_exec($ch);
-        $cerrno = curl_errno($ch);
-        $cerror = $cerrno ? curl_error($ch) : '';
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $duration = round(microtime(true) - $time_start, 2);
-        $this->SendDebug(__FUNCTION__, ' => errno=' . $cerrno . ', httpcode=' . $httpcode . ', duration=' . $duration . 's', 0);
-        $this->SendDebug(__FUNCTION__, ' => cdata=' . $cdata, 0);
-
-        $statuscode = 0;
-        $err = '';
-        $auth = '';
-        if ($cerrno) {
-            $statuscode = self::$IS_SERVERERROR;
-            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
-        } elseif ($httpcode != 200 && $httpcode != 201) {
-            if ($httpcode >= 500 && $httpcode <= 599) {
-                $statuscode = self::$IS_SERVERERROR;
-                $err = 'got http-code ' . $httpcode . ' (server error)';
-            } else {
-                $statuscode = self::$IS_HTTPERROR;
-                $err = 'got http-code ' . $httpcode;
-            }
-        } elseif ($cdata == '') {
-            $statuscode = self::$IS_INVALIDDATA;
-            $err = 'no data';
-        } else {
-            $jdata = json_decode($cdata, true);
-            if ($jdata == '') {
-                $statuscode = self::$IS_INVALIDDATA;
-                $err = 'malformed response';
-            } else {
-                if (!isset($jdata['accountStatus'])) {
-                    $statuscode = self::$IS_INVALIDDATA;
-                    $err = 'malformed response';
-                } else {
-                    if ($jdata['accountStatus'] != 'ACTIVE') {
-                        $statuscode = self::$IS_INVALIDDATA;
-                        $err = 'accountStatus=' . $jdata['accountStatus'];
-                    }
-                }
-            }
-        }
-
-        $url = 'https://' . self::$api_host . '/v1/userregistration/authenticate?country=' . $country;
-
-        $postdata = [
-            'Email'    => $user,
-            'Password' => $password,
-        ];
-
-        $headers = [
-            'User-Agent: ' . self::$user_agent,
-            'Accept: */*',
-            'Content-Type: application/json',
-        ];
-
-        $this->SendDebug(__FUNCTION__, 'http-post: url=' . $url, 0);
-        $time_start = microtime(true);
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        $cdata = curl_exec($ch);
-        $cerrno = curl_errno($ch);
-        $cerror = $cerrno ? curl_error($ch) : '';
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $duration = round(microtime(true) - $time_start, 2);
-        $this->SendDebug(__FUNCTION__, ' => errno=' . $cerrno . ', httpcode=' . $httpcode . ', duration=' . $duration . 's', 0);
-        $this->SendDebug(__FUNCTION__, ' => cdata=' . $cdata, 0);
-
-        $statuscode = 0;
-        $err = '';
-        $auth = '';
-        if ($cerrno) {
-            $statuscode = self::$IS_SERVERERROR;
-            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
-        } elseif ($httpcode != 200 && $httpcode != 201) {
-            if ($httpcode == 401) {
-                $statuscode = self::$IS_UNAUTHORIZED;
-                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
-            } elseif ($httpcode >= 500 && $httpcode <= 599) {
-                $statuscode = self::$IS_SERVERERROR;
-                $err = 'got http-code ' . $httpcode . ' (server error)';
-            } else {
-                $statuscode = self::$IS_HTTPERROR;
-                $err = 'got http-code ' . $httpcode;
-            }
-        } elseif ($cdata == '') {
-            $statuscode = self::$IS_INVALIDDATA;
-            $err = 'no data';
-        } else {
-            $jdata = json_decode($cdata, true);
-            if ($jdata == '') {
-                $statuscode = self::$IS_INVALIDDATA;
-                $err = 'malformed response';
-            } else {
-                if (!isset($jdata['Account']) || !isset($jdata['Password'])) {
-                    $statuscode = self::$IS_UNAUTHORIZED;
-                    $err = 'malformed response';
-                } else {
-                    $auth = $jdata['Account'] . ':' . $jdata['Password'];
-                }
-            }
-        }
-
-        $jdata = [
-            'auth'   => $auth,
-            'tstamp' => time(),
-        ];
-        $this->WriteAttributeString('Auth', json_encode($jdata));
-
-        $this->SendDebug(__FUNCTION__, 'new auth=' . $auth, 0);
-        return $auth;
-    }
-
     private function getDeviceList()
     {
         if ($this->CheckStatus() == self::$STATUS_INVALID) {
@@ -273,19 +89,25 @@ trait DysonLocalLib
             return false;
         }
 
-        $auth = $this->doLogin(false);
+        $msg = '';
+        $auth = $this->doLogin_2fa_1(false, $msg);
         if ($auth == false) {
+            $this->SendDebug(__FUNCTION__, 'doLogin_2fa_1() failed', 0);
+            return false;
+        }
+        $jdata = json_decode($auth, true);
+        $token = $this->GetArrayElem($jdata, 'token', '');
+        if ($token == '') {
+            $this->SendDebug(__FUNCTION__, 'doLogin_2fa_1() returned no token', 0);
             return false;
         }
 
-        $api_host = 'appapi.cp.dyson.com';
-        $user_agent = 'DysonLink/29019 CFNetwork/1188 Darwin/20.0.0';
-
-        $url = 'https://' . $api_host . '/v2/provisioningservice/manifest'; //v1 ? old?
+        $url = 'https://' . self::$api_host . '/v2/provisioningservice/manifest';
 
         $headers = [
-            'User-Agent: ' . $user_agent,
+            'User-Agent: ' . self::$user_agent,
             'Accept: */*',
+            'Authorization: Bearer ' . $token,
         ];
 
         $this->SendDebug(__FUNCTION__, 'http-get: url=' . $url, 0);
@@ -391,5 +213,382 @@ trait DysonLocalLib
             }
         }
         return $pwHash;
+    }
+
+    private function do_HttpRequest($func, $params, $header, $postdata, $mode, &$cdata, &$cerrno, &$cerror, &$httpcode)
+    {
+        $url = 'https://' . self::$api_host . $func;
+
+        if ($params != '') {
+            $n = 0;
+            foreach ($params as $param => $value) {
+                $url .= ($n++ ? '&' : '?') . $param . '=' . rawurlencode($value);
+            }
+        }
+
+        $time_start = microtime(true);
+
+        $this->SendDebug(__FUNCTION__, 'http-' . $mode, 0);
+        $this->SendDebug(__FUNCTION__, '... url=' . $url, 0);
+        $this->SendDebug(__FUNCTION__, '... header=' . print_r($header, true), 0);
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        switch ($mode) {
+            case 'GET':
+                break;
+            case 'POST':
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postdata));
+                $this->SendDebug(__FUNCTION__, '... postdata=' . print_r($postdata, true), 0);
+                break;
+            default:
+                break;
+        }
+        curl_setopt($ch, CURLOPT_CAINFO, self::$cainfo);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        $cdata = curl_exec($ch);
+        $cerrno = curl_errno($ch);
+        $cerror = $cerrno ? curl_error($ch) : '';
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        $duration = round(microtime(true) - $time_start, 2);
+        $this->SendDebug(__FUNCTION__, ' => errno=' . $cerrno . ', httpcode=' . $httpcode . ', duration=' . $duration . 's', 0);
+        $this->SendDebug(__FUNCTION__, ' => cdata=' . $cdata, 0);
+    }
+
+    private function checkLogin()
+    {
+        $auth = $this->ReadAttributeString('Auth');
+        $this->SendDebug(__FUNCTION__, 'read Attribute("Auth")=' . $auth, 0);
+        if ($auth != '') {
+            $jdata = json_decode($auth, true);
+            $token = $this->GetArrayElem($jdata, 'token', '');
+            if ($token != false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function doLogin_2fa_1($force, &$msg)
+    {
+        if ($force == false) {
+            $auth = $this->ReadAttributeString('Auth');
+            $this->SendDebug(__FUNCTION__, 'read Attribute("Auth")=' . $auth, 0);
+            if ($auth != '') {
+                $jdata = json_decode($auth, true);
+                $token = $this->GetArrayElem($jdata, 'token', '');
+                if ($token != false) {
+                    $tstamp = $this->GetArrayElem($jdata, 'tstamp', 0);
+                    $this->SendDebug(__FUNCTION__, 'old token=' . $token . ' from ' . date('d.m.Y H:i:s', $tstamp), 0);
+                    return $auth;
+                }
+                $lastLogin = $this->GetArrayElem($jdata, 'lastLogin', 0);
+                if ($lastLogin > 0) {
+                    $now = time();
+                    $dif = $now - $lastLogin;
+                    $this->SendDebug(__FUNCTION__, 'lastLogin=' . date('H:i:s', $lastLogin) . ', now=' . date('H:i:s', $now) . ', dif=' . $dif, 0);
+                    if ($lastLogin + 300 > time()) {
+                        $this->SendDebug(__FUNCTION__, 'try not to login, last attempt was ' . date('H:i:s', $lastLogin) . ' (< 5m ago)', 0);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        $authData = [
+            'lastLogin' => time(),
+        ];
+
+        $user = $this->ReadPropertyString('user');
+        $password = $this->ReadPropertyString('password');
+        $country = $this->ReadPropertyString('country');
+        $country = strtoupper($country);
+
+        $func = '/v3/userregistration/email/userstatus';
+
+        $params = [
+            'country' => $country
+        ];
+
+        $headers = [
+            'User-Agent: ' . self::$user_agent,
+            'Accept: */*',
+            'Content-Type: application/json',
+        ];
+
+        $postdata = [
+            'Email'    => $user
+        ];
+
+        $this->do_HttpRequest($func, $params, $headers, $postdata, 'POST', $cdata, $cerrno, $cerror, $httpcode);
+
+        $statuscode = 0;
+        $err = '';
+        $msg = '';
+        if ($cerrno) {
+            $statuscode = self::$IS_SERVERERROR;
+            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
+        } elseif ($httpcode != 200) {
+            if ($httpcode == 401) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
+            } elseif ($httpcode == 403) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (forbidden)';
+            } elseif ($httpcode == 429) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (too many requests)';
+            } elseif ($httpcode >= 500 && $httpcode <= 599) {
+                $statuscode = self::$IS_SERVERERROR;
+                $err = 'got http-code ' . $httpcode . ' (server error)';
+            } else {
+                $statuscode = self::$IS_HTTPERROR;
+                $err = 'got http-code ' . $httpcode;
+            }
+            if ($cdata != '') {
+                $jdata = json_decode($cdata, true);
+                if (isset($jdata['Message'])) {
+                    $msg = $jdata['Message'];
+                }
+            }
+        } elseif ($cdata == '') {
+            $statuscode = self::$IS_INVALIDDATA;
+            $err = 'no data';
+        } else {
+            $jdata = json_decode($cdata, true);
+            if ($jdata == '') {
+                $statuscode = self::$IS_INVALIDDATA;
+                $err = 'malformed response';
+            } else {
+                if (!isset($jdata['accountStatus'])) {
+                    $statuscode = self::$IS_INVALIDDATA;
+                    $err = 'malformed response';
+                } else {
+                    if ($jdata['accountStatus'] != 'ACTIVE') {
+                        $statuscode = self::$IS_INVALIDDATA;
+                        $err = 'accountStatus=' . $jdata['accountStatus'];
+                    }
+                    // result.data.authenticationMethod === 'EMAIL_PWD_2FA'
+                }
+            }
+        }
+
+        $auth = json_encode($authData);
+        $this->SendDebug(__FUNCTION__, 'write Attribute("Auth")=' . $auth, 0);
+        $this->WriteAttributeString('Auth', $auth);
+
+        if ($statuscode != 0) {
+            // $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
+            $this->SetStatus($statuscode);
+            if ($msg == '') {
+                $msg = 'Login failed';
+            }
+            return false;
+        }
+
+        $func = '/v3/userregistration/email/auth';
+
+        $country2locale = [
+            'EN' => 'en-GB',
+            'DE' => 'de-DE',
+            'AU' => 'de-AT',
+            'CH' => 'de-CH',
+            'NL' => 'nl-NL',
+            'FR' => 'fr-FR',
+        ];
+
+        $params = [
+            'country' => $country,
+            'culture' => isset($country2locale[$country]) ? $country2locale[$country] : 'en-US'
+        ];
+
+        $postdata = [
+            'Email'    => $user,
+            'Password' => $password
+        ];
+
+        $this->do_HttpRequest($func, $params, $headers, $postdata, 'POST', $cdata, $cerrno, $cerror, $httpcode);
+
+        $statuscode = 0;
+        $err = '';
+        if ($cerrno) {
+            $statuscode = self::$IS_SERVERERROR;
+            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
+        } elseif ($httpcode != 200) {
+            if ($httpcode == 401) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
+            } elseif ($httpcode >= 500 && $httpcode <= 599) {
+                $statuscode = self::$IS_SERVERERROR;
+                $err = 'got http-code ' . $httpcode . ' (server error)';
+            } else {
+                $statuscode = self::$IS_HTTPERROR;
+                $err = 'got http-code ' . $httpcode;
+            }
+            if ($cdata != '') {
+                $jdata = json_decode($cdata, true);
+                if (isset($jdata['Message'])) {
+                    $msg = $jdata['Message'];
+                }
+            }
+        } elseif ($cdata == '') {
+            $statuscode = self::$IS_INVALIDDATA;
+            $err = 'no data';
+        } else {
+            $jdata = json_decode($cdata, true);
+            if ($jdata == '') {
+                $statuscode = self::$IS_INVALIDDATA;
+                $err = 'malformed response';
+            } else {
+                if (!isset($jdata['challengeId'])) {
+                    $statuscode = self::$IS_INVALIDDATA;
+                    $err = 'malformed response';
+                } else {
+                    $authData['challengeId'] = $jdata['challengeId'];
+                    $msg = 'Check mailbox for mail with code';
+                }
+            }
+        }
+
+        $auth = json_encode($authData);
+        $this->SendDebug(__FUNCTION__, 'write Attribute("Auth")=' . $auth, 0);
+        $this->WriteAttributeString('Auth', $auth);
+
+        if ($statuscode != 0) {
+            // $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
+            $this->SetStatus($statuscode);
+            return false;
+        }
+
+        $this->SetStatus(self::$IS_NOVERIFY);
+        return $auth;
+    }
+
+    private function doLogin_2fa_2($otpCode, &$msg)
+    {
+        if ($otpCode == '') {
+            $this->SendDebug(__FUNCTION__, 'missing otpCode', 0);
+            return false;
+        }
+
+        $challengeId = '';
+        $auth = $this->ReadAttributeString('Auth');
+        $this->SendDebug(__FUNCTION__, 'read Attribute("Auth")=' . $auth, 0);
+        if ($auth != '') {
+            $jdata = json_decode($auth, true);
+            $challengeId = $this->GetArrayElem($jdata, 'challengeId', 0);
+            $lastLogin = $this->GetArrayElem($jdata, 'lastLogin', 0);
+            // lastLogin zu alt -> $challengeId=''
+        }
+        if ($challengeId == '') {
+            $this->SendDebug(__FUNCTION__, 'missing challengeId', 0);
+            return false;
+        }
+
+        $user = $this->ReadPropertyString('user');
+        $password = $this->ReadPropertyString('password');
+
+        $func = '/v3/userregistration/email/verify';
+
+        $params = '';
+
+        $headers = [
+            'User-Agent: ' . self::$user_agent,
+            'Accept: */*',
+            'Content-Type: application/json',
+        ];
+
+        $postdata = [
+            'Email'       => $user,
+            'Password'    => $password,
+            'challengeId' => $challengeId,
+            'otpCode'     => $otpCode,
+        ];
+
+        $this->do_HttpRequest($func, $params, $headers, $postdata, 'POST', $cdata, $cerrno, $cerror, $httpcode);
+
+        $authData = false;
+
+        $statuscode = 0;
+        $err = '';
+        $msg = '';
+        if ($cerrno) {
+            $statuscode = self::$IS_SERVERERROR;
+            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
+        } elseif ($httpcode != 200) {
+            if ($httpcode == 401) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
+            } elseif ($httpcode == 403) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (forbidden)';
+            } elseif ($httpcode == 429) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (too many requests)';
+            } elseif ($httpcode >= 500 && $httpcode <= 599) {
+                $statuscode = self::$IS_SERVERERROR;
+                $err = 'got http-code ' . $httpcode . ' (server error)';
+            } else {
+                $statuscode = self::$IS_HTTPERROR;
+                $err = 'got http-code ' . $httpcode;
+            }
+            if ($cdata != '') {
+                $jdata = json_decode($cdata, true);
+                if (isset($jdata['Message'])) {
+                    $msg = $jdata['Message'];
+                }
+            }
+        } elseif ($cdata == '') {
+            $statuscode = self::$IS_INVALIDDATA;
+            $err = 'no data';
+        } else {
+            $jdata = json_decode($cdata, true);
+            if ($jdata == '') {
+                $statuscode = self::$IS_INVALIDDATA;
+                $err = 'malformed response';
+            } else {
+                if (!isset($jdata['token'])) {
+                    $statuscode = self::$IS_INVALIDDATA;
+                    $err = 'malformed response';
+                } else {
+                    $token = $jdata['token'];
+                    $this->SendDebug(__FUNCTION__, 'new token=' . $token, 0);
+                    $authData = [
+                        'token'  => $token,
+                        'tstamp' => time()
+                    ];
+                    $msg = 'Login successful';
+                }
+            }
+        }
+
+        if ($authData != false) {
+            $auth = json_encode($authData);
+            $this->SendDebug(__FUNCTION__, 'write Attribute("Auth")=' . $auth, 0);
+            $this->WriteAttributeString('Auth', $auth);
+        }
+
+        if ($statuscode != 0) {
+            // $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
+            $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
+            $this->SetStatus($statuscode);
+            if ($msg == '') {
+                $msg = 'Login failed';
+            }
+            return false;
+        }
+
+        $this->SetStatus(IS_ACTIVE);
+        return $auth;
     }
 }

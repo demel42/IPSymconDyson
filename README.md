@@ -119,7 +119,15 @@ Alle auslösbaren Aktionen stehen per RequestAction zur Verfügung, z.B. Einscha
 
 | Bezeichnung                | Beschreibung |
 | :------------------------- | :----------- |
-| Erneut anmelden            | Test der Anmeldung an der Dyson-Cloud |
+| Anmeldung durchführen      | Anmeldung an der Dyson-Cloud |
+
+
+Die 2FA-Anmeldung funktioniert nur zusammen mit der Dyson-App
+- zuerst in der App vom Dyson-Konto abmelden
+- erneut Anmeldung beginnen mit Eingabe vom Land un der Mail-Adresse - nicht abschliessen!
+- in dem Konfigurator den Bestätigungs-Code anfordern (Schritt 1)
+- Postfach prüfen auf Mail von Dyson mit Code
+- Code eingeben und bestätigen (Schritt 2)
 
 ### DysonDevice
 
@@ -177,6 +185,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.0 @ 04.07.2021 11:14 (beta)
+  - Umstellung auf 2FA-Anmeldung (Bestätigungs-Code per Mail)
 
 - 1.6 @ 19.04.2021 20:19
   - Summary in der Geräteinstanz auf Typ + Seriennummer setzen
