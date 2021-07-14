@@ -35,6 +35,7 @@
 			"Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
 			"Login failed": "Anmeldung fehlgeschlagen",
 			"Login successful": "Anmeldung erfolgreich",
+			"Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",

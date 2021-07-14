@@ -2,7 +2,7 @@
 	"translations": {
 		"de": {
 			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
-			"Instance is disabled": "Instanz ist deaktiviert",
+			"Disable instance": "Instanz deaktivieren",
 
 			"Dyson device": "Dyson Gerät",
 
@@ -13,6 +13,10 @@
 
 			"Germany": "Deutschland",
 			"England": "England",
+			"Austria": "Österreich",
+			"Switzerland": "Schweiz",
+			"Netherlands": "Niederlande",
+			"France": "Frankreich",
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 			"Module MQTTClient": "Modul MQTTClient",
@@ -60,7 +64,6 @@
 			"Humidify automatic target value": "Luftbefeuchtung-Automatik-Zielwert",
 			"Last change": "letzte Änderung",
 			"Last update": "letzte Aktualisierung",
-			"Load configuration every X minutes": "Konfiguration alle X Minuten abrufen",
 			"Minutes": "Minuten",
 			"Night mode": "Nachtmodus",
 			"Nitrogen oxides (NOx)": "Stickoxide (NOx)",

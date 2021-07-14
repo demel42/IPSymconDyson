@@ -128,6 +128,7 @@ Die 2FA-Anmeldung funktioniert nur zusammen mit der Dyson-App
 - in dem Konfigurator den Bestätigungs-Code anfordern (Schritt 1)
 - Postfach prüfen auf Mail von Dyson mit Code
 - Code eingeben und bestätigen (Schritt 2)
+War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
 
 ### DysonDevice
 
@@ -186,8 +187,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.0 @ 04.07.2021 11:14 (beta)
+- 2.0 @ 14.07.2021 18:17 (beta)
   - Umstellung auf 2FA-Anmeldung (Bestätigungs-Code per Mail)
+  - Schalter "Instanz ist deaktiviert" umbenannt in "Instanz deaktivieren"
 
 - 1.6 @ 19.04.2021 20:19
   - Summary in der Geräteinstanz auf Typ + Seriennummer setzen

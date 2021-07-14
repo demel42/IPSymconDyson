@@ -25,10 +25,8 @@ class DysonDevice extends IPSModule
 
         $this->RegisterPropertyString('intervall', '');
 
-        $this->RegisterPropertyInteger('ReloadConfigInterval', '60');
         $this->RegisterPropertyInteger('UpdateStatusInterval', '1');
 
-        $this->RegisterTimer('ReloadConfig', 0, 'Dyson_ReloadConfig(' . $this->InstanceID . ');');
         $this->RegisterTimer('UpdateStatus', 0, 'Dyson_UpdateStatus(' . $this->InstanceID . ');');
 
         $this->RegisterMessage(0, IPS_KERNELMESSAGE);
@@ -237,7 +235,6 @@ class DysonDevice extends IPSModule
 
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
-            $this->SetTimerInterval('ReloadConfig', 0);
             $this->SetTimerInterval('UpdateStatus', 0);
             $this->SetStatus(IS_INACTIVE);
             return;
@@ -248,7 +245,6 @@ class DysonDevice extends IPSModule
         $cID = $this->GetConnectionID();
         if ($cID != false) {
             $this->RegisterMessage($cID, IM_CHANGESTATUS);
-            $this->SetTimerInterval('ReloadConfig', 1000);
             $this->SetTimerInterval('UpdateStatus', 2 * 1000);
             $this->SubscribeStatus();
         }
@@ -318,7 +314,7 @@ class DysonDevice extends IPSModule
         $formElements[] = [
             'type'    => 'CheckBox',
             'name'    => 'module_disable',
-            'caption' => 'Instance is disabled'
+            'caption' => 'Disable instance'
         ];
 
         $product_type = $this->ReadPropertyString('product_type');
@@ -389,15 +385,6 @@ class DysonDevice extends IPSModule
         $items[] = [
             'type'    => 'Label',
             'caption' => 'Load configuration every X minutes'
-        ];
-        $items[] = [
-            'type'    => 'NumberSpinner',
-            'name'    => 'ReloadConfigInterval',
-            'caption' => 'Minutes'
-        ];
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => 'Update status every X minutes'
         ];
         $items[] = [
             'type'    => 'NumberSpinner',
@@ -527,14 +514,6 @@ class DysonDevice extends IPSModule
     {
         $r = $this->loadConfig();
         echo $this->Translate(($r == false ? 'Load config failed' : 'Load config succeeded'));
-    }
-
-    public function ReloadConfig()
-    {
-        $min = $this->ReadPropertyInteger('ReloadConfigInterval');
-
-        $this->loadConfig();
-        $this->SetTimerInterval('ReloadConfig', $min * 60 * 1000);
     }
 
     private function loadConfig()
