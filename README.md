@@ -136,7 +136,7 @@ War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
 
 | Eigenschaft               | Typ      | Standardwert | Beschreibung |
 | :------------------------ | :------  | :----------- | :----------- |
-| Instanz ist deaktiviert   | boolean  | false        | Instanz temporär deaktivieren |
+| Instanz deaktivieren      | boolean  | false        | Instanz temporär deaktivieren |
 |                           |          |              | |
 | Dyson-Zugangsdaten        | string   |              | Benutzername und Passwort des Dyson-Cloud sowie das Land |
 |                           |          |              | |
