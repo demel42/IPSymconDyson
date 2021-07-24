@@ -395,6 +395,8 @@ trait DysonLocalLib
             return false;
         }
 
+        IPS_Sleep(250);
+
         $func = '/v3/userregistration/email/auth';
 
         $country2locale = [
