@@ -101,9 +101,12 @@
 			"Direct": "Direkt",
 			"Indirect": "Indirekt",
 
-			"Reload configuration and / or log in again": "Konfiguration neu laden und / oder erneute Anmeldung",
-			"Reload configuration is only required if necessary": "Konfiguration neu laden ist nur bei Bedarf erforderlich",
-			"Re-login is only required if necessary": "Eine erneute Anmeldung ist nur bei Bedarf erforderlich",
+			"Reload configuration and log in again if necessary":
+				"Konfiguration neu laden und ggf. neu anmelden",
+			"Reloading configuration is only required if necessary":
+				"Konfiguration neu zu laden ist nur bei Bedarf erforderlich",
+			"Re-login is only required if necessary":
+				"Eine Neuanmeldung muss nur durchgeführt werde, wenn erforderlich",
             "observe dokumentation": "Dokumentation beachten",
             "Step 1": "Schritt 1",
             "Request code": "Code anfordern",

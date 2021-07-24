@@ -81,13 +81,13 @@ In dem Konfigurationsdialog die Dyson-Zugangsdaten eintragen.
 Hier werden alle Dyson-Produkte, die mit dem angegebenen Dyson-Konto verknüpft sind, angeboten; aus denen wählt man ein Produkt aus.
 
 Mit den Schaltflächen _Erstellen_ bzw. _Alle erstellen_ werden das/die gewählte Produkt(e) anlegt. Dabei werden 3 Instanzen erzeugt:
-- DysonDevice
+- DysonDevice<br>
 Die Daten des Dyson-Accounts werden von DysonConfig hierhin dupliziert, Änderungen hieran müssen manuelle nachgeführt werden.
 Die Produkte werden aufgrund der _Seriennummer_ identifiziert; durch den _Produkt-Typ_ wird der Umfang der Variablen festgelegt.
-- MQTTClient
+- MQTTClient<br>
 in der Instanz wird bei der Anlage der Instanz alles konfiguriert und kann nachträglich nicht geändert werden.
 Tip: die erzeugte Instanz danach sinnvoll benennen, da für jedes Gerät eine solche Instanz angelegt wird.
-- Client Socket
+- Client Socket<br>
 in dieser Instanz muss noch der Hostname bzw. die IP-Adresse des Dyson-Gerätes eingetragen werden… die vorgegebenen Port-Nummer _1883_ darf nicht geändert werden
 
 Zu den Geräte-Instanzen werden im Rahmen der Konfiguration Produkttyp-abhängig Variablen angelegt.
@@ -140,8 +140,7 @@ War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
 |                           |          |              | |
 | Dyson-Zugangsdaten        | string   |              | Benutzername und Passwort des Dyson-Cloud sowie das Land |
 |                           |          |              | |
-| Konfiguration abrufen     | integer  | 60           | Abrufen der Daten aus der Dyson-Cloud alle X Minuten |
-| Status abrufen            | integer  | 0            | Abruf des Geräte-Status alle X Minuten |
+| Status abrufen            | integer  | 1            | Abruf des Geräte-Status alle X Minuten |
 
 Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort das Passwort zur lokalen MQTT-Kommunikation mit dem Gerät geliefert wird.
 
@@ -149,9 +148,13 @@ Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort da
 
 | Bezeichnung                | Beschreibung |
 | :------------------------- | :----------- |
-| Erneut anmelden            | Test der Anmeldung an der Dyson-Cloud |
-| Konfiguration erneut laden | Geräte-Konfiguration aus der Dyson-Cloud laden |
 | Daten aktualisieren        | Geräte-Status abfragen |
+
+### Konfiguration neu laden und ggf. neu anmelden
+
+Das erneute Laden der Konfiguration ist nur im Bedarfsfall durchzuführen - bisher war das noch nie erforderlich.
+Es werden die Daten gesetzt, die auch bei der Anlage eine Geräte-Instanz aus dem Konfigurator gesetzt weden.<br>
+Eine erneute Anmeldung ist nur erforderlich, wenn es bei dem Abruf der Konfiguration ein Authetifizierungsfehler geben würden; Vorgehen siehe Konfigurator.
 
 ### Test-Bereich
 

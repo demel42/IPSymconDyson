@@ -410,12 +410,12 @@ class DysonDevice extends IPSModule
 
         $formActions[] = [
             'type'      => 'ExpansionPanel',
-            'caption'   => 'Reload configuration and / or log in again',
+            'caption'   => 'Reload configuration and log in again if necessary',
             'expanded ' => false,
             'items'     => [
                 [
                     'type'    => 'Label',
-                    'caption' => 'Reload configuration is only required if necessary',
+                    'caption' => 'Reloading configuration is only required if necessary',
                 ],
                 [
                     'type'    => 'Button',
