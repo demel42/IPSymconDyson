@@ -142,8 +142,6 @@ War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
 |                           |          |              | |
 | Status abrufen            | integer  | 1            | Abruf des Geräte-Status alle X Minuten |
 
-Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort das Passwort zur lokalen MQTT-Kommunikation mit dem Gerät geliefert wird.
-
 #### Actions
 
 | Bezeichnung                | Beschreibung |
@@ -153,7 +151,8 @@ Der Abruf der Daten aus der Dyson-Cloud ist erforderlich, weil in der Antwort da
 ### Konfiguration neu laden und ggf. neu anmelden
 
 Das erneute Laden der Konfiguration ist nur im Bedarfsfall durchzuführen - bisher war das noch nie erforderlich.
-Es werden die Daten gesetzt, die auch bei der Anlage eine Geräte-Instanz aus dem Konfigurator gesetzt weden.<br>
+Es werden die Daten gesetzt, die auch bei der Anlage eine Geräte-Instanz aus dem Konfigurator gesetzt weden (z.Zt. nur das Passwort zur lokalen MQTT-Kommunikation).<br>
+
 Eine erneute Anmeldung ist nur erforderlich, wenn es bei dem Abruf der Konfiguration ein Authetifizierungsfehler geben würden; Vorgehen siehe Konfigurator.
 
 ### Test-Bereich
