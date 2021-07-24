@@ -101,9 +101,22 @@
 			"Direct": "Direkt",
 			"Indirect": "Indirekt",
 
-			"Login failed": "Anmeldung fehlgeschlagen",
-			"Login successful": "Anmeldung erfolgreich",
+			"Reload configuration and / or log in again": "Konfiguration neu laden und / oder erneute Anmeldung",
+			"Reload configuration is only required if necessary": "Konfiguration neu laden ist nur bei Bedarf erforderlich",
+			"Re-login is only required if necessary": "Eine erneute Anmeldung ist nur bei Bedarf erforderlich",
+            "observe dokumentation": "Dokumentation beachten",
+            "Step 1": "Schritt 1",
+            "Request code": "Code anfordern",
+            "Step 2": "Schritt 2",
+            "Code (from mail)": "Code (aus Mail)",
+            "Verify login": "Anmeldung bestätigen",
+            "Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
+            "Login failed": "Anmeldung fehlgeschlagen",
+            "Login successful": "Anmeldung erfolgreich",
+            "Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
+
 			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
+
 			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
 
 			"Instance getting created": "Instanz wird erstellt",

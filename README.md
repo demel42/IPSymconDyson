@@ -187,7 +187,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.0 @ 14.07.2021 18:17 (beta)
+- 2.0 @ 24.07.2021 17:46 (beta)
   - Umstellung auf 2FA-Anmeldung (Bestätigungs-Code per Mail)
   - Schalter "Instanz ist deaktiviert" umbenannt in "Instanz deaktivieren"
 
