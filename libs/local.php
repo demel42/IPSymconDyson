@@ -250,6 +250,8 @@ trait DysonLocalLib
         curl_setopt($ch, CURLOPT_CAINFO, self::$cainfo);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         $cdata = curl_exec($ch);
         $cerrno = curl_errno($ch);

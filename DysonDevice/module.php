@@ -32,9 +32,7 @@ class DysonDevice extends IPSModule
         $this->RegisterAttributeString('localPassword', '');
         $this->RegisterAttributeString('Auth', '');
 
-        if (IPS_ModuleExists('{EE0D345A-CF31-428A-A613-33CE98E752DD}')) {
-            $this->RequireParent('{EE0D345A-CF31-428A-A613-33CE98E752DD}');
-        }
+        $this->RequireParent('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
 
         $associations = [];
         $associations[] = ['Wert' => false, 'Name' => $this->Translate('Back'), 'Farbe' => -1];
@@ -244,7 +242,6 @@ class DysonDevice extends IPSModule
         if ($cID != false) {
             $this->RegisterMessage($cID, IM_CHANGESTATUS);
             $this->SetTimerInterval('UpdateStatus', 2 * 1000);
-            $this->SubscribeStatus();
         }
 
         $this->SetSummary($product_type . ' (#' . $serial . ')');
@@ -262,10 +259,6 @@ class DysonDevice extends IPSModule
     {
         $s = '';
         $r = [];
-
-        if (IPS_ModuleExists('{EE0D345A-CF31-428A-A613-33CE98E752DD}') == false) {
-            $r[] = $this->Translate('Module MQTTClient');
-        }
 
         if ($r != []) {
             $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
@@ -402,106 +395,114 @@ class DysonDevice extends IPSModule
     {
         $formActions = [];
 
-        $formActions[] = [
-            'type'    => 'Button',
-            'caption' => 'Update Status',
-            'onClick' => 'Dyson_ManualUpdateStatus($id);'
-        ];
+        if ($this->IsInternalMQTTClient() == false) {
+            $formActions[] = [
+                'type'    => 'Button',
+                'caption' => 'Convert MQTT-Client',
+                'onClick' => 'Dyson_ConvertSplitter($id);'
+            ];
+        } else {
+            $formActions[] = [
+                'type'    => 'Button',
+                'caption' => 'Update Status',
+                'onClick' => 'Dyson_ManualUpdateStatus($id);'
+            ];
 
-        $formActions[] = [
-            'type'      => 'ExpansionPanel',
-            'caption'   => 'Reload configuration and log in again if necessary',
-            'expanded ' => false,
-            'items'     => [
-                [
-                    'type'    => 'Label',
-                    'caption' => 'Reloading configuration is only required if necessary',
-                ],
-                [
-                    'type'    => 'Button',
-                    'caption' => 'Reload Config',
-                    'onClick' => 'Dyson_ManualReloadConfig($id);'
-                ],
-                [
-                    'type'    => 'Label',
-                    'caption' => 'Re-login is only required if necessary',
-                ],
-                [
-                    'type'    => 'Label',
-                    'caption' => 'observe dokumentation',
-                ],
-                [
-                    'type'      => 'RowLayout',
-                    'items'     => [
-                        [
-                            'type'    => 'Label',
-                            'caption' => 'Step 1',
-                        ],
-                        [
-                            'type'    => 'Button',
-                            'caption' => 'Request code',
-                            'onClick' => 'Dyson_ManualRelogin1($id);'
-                        ],
-                    ]
-                ],
-                [
-                    'type'      => 'RowLayout',
-                    'items'     => [
-                        [
-                            'type'    => 'Label',
-                            'caption' => 'Step 2',
-                        ],
-                        [
-                            'type'    => 'ValidationTextBox',
-                            'name'    => 'otpCode',
-                            'caption' => 'Code (from mail)'
-                        ],
-                        [
-                            'type'    => 'Button',
-                            'caption' => 'Verify login',
-                            'onClick' => 'Dyson_ManualRelogin2($id, $otpCode);'
+            $formActions[] = [
+                'type'      => 'ExpansionPanel',
+                'caption'   => 'Reload configuration and log in again if necessary',
+                'expanded ' => false,
+                'items'     => [
+                    [
+                        'type'    => 'Label',
+                        'caption' => 'Reloading configuration is only required if necessary',
+                    ],
+                    [
+                        'type'    => 'Button',
+                        'caption' => 'Reload Config',
+                        'onClick' => 'Dyson_ManualReloadConfig($id);'
+                    ],
+                    [
+                        'type'    => 'Label',
+                        'caption' => 'Re-login is only required if necessary',
+                    ],
+                    [
+                        'type'    => 'Label',
+                        'caption' => 'observe dokumentation',
+                    ],
+                    [
+                        'type'      => 'RowLayout',
+                        'items'     => [
+                            [
+                                'type'    => 'Label',
+                                'caption' => 'Step 1',
+                            ],
+                            [
+                                'type'    => 'Button',
+                                'caption' => 'Request code',
+                                'onClick' => 'Dyson_ManualRelogin1($id);'
+                            ],
+                        ]
+                    ],
+                    [
+                        'type'      => 'RowLayout',
+                        'items'     => [
+                            [
+                                'type'    => 'Label',
+                                'caption' => 'Step 2',
+                            ],
+                            [
+                                'type'    => 'ValidationTextBox',
+                                'name'    => 'otpCode',
+                                'caption' => 'Code (from mail)'
+                            ],
+                            [
+                                'type'    => 'Button',
+                                'caption' => 'Verify login',
+                                'onClick' => 'Dyson_ManualRelogin2($id, $otpCode);'
+                            ]
                         ]
                     ]
                 ]
-            ]
-        ];
+            ];
 
-        $formActions[] = [
-            'type'      => 'ExpansionPanel',
-            'caption'   => 'Test area',
-            'expanded ' => false,
-            'items'     => [
-                [
-                    'type'    => 'TestCenter',
+            $formActions[] = [
+                'type'      => 'ExpansionPanel',
+                'caption'   => 'Test area',
+                'expanded ' => false,
+                'items'     => [
+                    [
+                        'type'    => 'TestCenter',
+                    ]
                 ]
-            ]
-        ];
+            ];
 
-        $formActions[] = [
-            'type'      => 'ExpansionPanel',
-            'caption'   => 'Expert area',
-            'expanded ' => false,
-            'items'     => [
-                [
-                    'type'    => 'Label',
-                    'caption' => 'Test own \'SET-STATE\' command; the command has to be a JSON-coded string (see documentation)',
-                ],
-                [
-                    'type'    => 'Label',
-                    'caption' => 'Examine the debug-window for information about \'ExecuteSetState\'',
-                ],
-                [
-                    'type'    => 'ValidationTextBox',
-                    'name'    => 'cmd',
-                    'caption' => 'Command'
-                ],
-                [
-                    'type'    => 'Button',
-                    'caption' => 'Execute',
-                    'onClick' => 'Dyson_ExecuteSetState($id, $cmd);'
-                ],
-            ]
-        ];
+            $formActions[] = [
+                'type'      => 'ExpansionPanel',
+                'caption'   => 'Expert area',
+                'expanded ' => false,
+                'items'     => [
+                    [
+                        'type'    => 'Label',
+                        'caption' => 'Test own \'SET-STATE\' command; the command has to be a JSON-coded string (see documentation)',
+                    ],
+                    [
+                        'type'    => 'Label',
+                        'caption' => 'Examine the debug-window for information about \'ExecuteSetState\'',
+                    ],
+                    [
+                        'type'    => 'ValidationTextBox',
+                        'name'    => 'cmd',
+                        'caption' => 'Command'
+                    ],
+                    [
+                        'type'    => 'Button',
+                        'caption' => 'Execute',
+                        'onClick' => 'Dyson_ExecuteSetState($id, $cmd);'
+                    ],
+                ]
+            ];
+        }
 
         return $formActions;
     }
@@ -530,22 +531,9 @@ class DysonDevice extends IPSModule
 
     public function GetConfigurationForParent()
     {
-        $serial = $this->ReadPropertyString('serial');
-        $oldPw = $this->ReadAttributeString('localPassword');
-
-        // siehe DysonConfig::getConfiguratorValues
-        $formElements = [
-            'User'          => $serial,
-            'Password'      => $oldPw,
-            'ModuleType'    => 2,
-            'script'        => 0,
-            'TLS'           => false,
-            'AutoSubscribe' => false,
-            'MQTTVersion'   => 2,
-            'ClientID'      => 'symcon',
-            'PingInterval'  => 30
-        ];
-        return json_encode($formElements);
+        $r = IPS_GetConfiguration($this->GetConnectionID());
+        $this->SendDebug(__FUNCTION__, print_r($r, true), 0);
+        return $r;
     }
 
     public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
@@ -555,8 +543,7 @@ class DysonDevice extends IPSModule
         switch ($Message) {
             case IM_CHANGESTATUS:
                 if ($SenderID == $this->GetConnectionID() && $Data[0] == IS_ACTIVE) {
-                    $this->SendDebug(__FUNCTION__, 'MQTTClient changed to active', 0);
-                    $this->SubscribeStatus();
+                    $this->SendDebug(__FUNCTION__, 'MQTT-Client changed to active', 0);
                 }
                 break;
             case IPS_KERNELSTARTED:
@@ -1455,9 +1442,8 @@ class DysonDevice extends IPSModule
         }
 
         $jdata = json_decode($data, true);
-        $buf = json_decode($jdata['Buffer'], true);
-        if (isset($buf['Payload'])) {
-            $payload = json_decode($buf['Payload'], true);
+        if (isset($jdata['Payload'])) {
+            $payload = json_decode($jdata['Payload'], true);
             $this->SendDebug(__FUNCTION__, 'payload=' . print_r($payload, true), 0);
 
             $msg = $payload['msg'];
@@ -1481,44 +1467,8 @@ class DysonDevice extends IPSModule
         $this->SetStatus(IS_ACTIVE);
     }
 
-    public function RenewSubscribe()
-    {
-        $this->SubscribeStatus();
-    }
-
-    private function SubscribeStatus()
-    {
-        if ($this->GetStatus() == IS_INACTIVE) {
-            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
-            return;
-        }
-
-        if ($this->HasActiveParent() == false) {
-            $this->SendDebug(__FUNCTION__, 'has no active parent instance', 0);
-            $this->LogMessage('has no active parent instance', KL_WARNING);
-            return;
-        }
-
-        $serial = $this->ReadPropertyString('serial');
-        $product_type = $this->ReadPropertyString('product_type');
-
-        $topic = $product_type . '/' . $serial . '/status/current';
-
-        $cmd = [
-            'Function'  => 'Subscribe',
-            'Topic'     => $topic,
-        ];
-        $json = [
-            'DataID'    => '{97475B04-67C3-A74D-C970-E9409B0EFA1D}',
-            'Buffer'    => json_encode($cmd)
-        ];
-        $this->SendDebug(__FUNCTION__, 'cmd=' . print_r($json, true), 0);
-        parent::SendDataToParent(json_encode($json));
-    }
-
     public function ManualUpdateStatus()
     {
-        $this->SubscribeStatus();
         $this->RequestStateCommand();
     }
 
@@ -1527,7 +1477,6 @@ class DysonDevice extends IPSModule
         $min = $this->ReadPropertyInteger('UpdateStatusInterval');
 
         $this->SendDebug(__FUNCTION__, '', 0);
-        $this->SubscribeStatus();
         $this->RequestStateCommand();
         $this->SetTimerInterval('UpdateStatus', $min * 60 * 1000);
     }
@@ -1563,18 +1512,15 @@ class DysonDevice extends IPSModule
 
         $serial = $this->ReadPropertyString('serial');
         $product_type = $this->ReadPropertyString('product_type');
-
         $topic = $product_type . '/' . $serial . '/command';
 
-        $cmd = [
-            'Function'  => 'Publish',
-            'Topic'     => $topic,
-            'Payload'   => utf8_encode($payload),
-            'Retain'    => false
-        ];
         $json = [
-            'DataID'    => '{97475B04-67C3-A74D-C970-E9409B0EFA1D}',
-            'Buffer'    => json_encode($cmd),
+            'DataID'           => '{043EA491-0325-4ADD-8FC2-A30C8EEB4D3F}',
+            'PacketType'       => 3,
+            'QualityOfService' => 0,
+            'Retain'           => false,
+            'Topic'            => $topic,
+            'Payload'          => utf8_encode($payload)
         ];
 
         $this->SendDebug(__FUNCTION__, 'func=' . $func . ', cmd=' . print_r($json, true), 0);
@@ -2390,5 +2336,68 @@ class DysonDevice extends IPSModule
         if ($chg) {
             $this->ReloadForm();
         }
+    }
+
+    public function IsInternalMQTTClient()
+    {
+        $inst = IPS_GetInstance($this->InstanceID);
+        $cID = $inst['ConnectionID'];
+        if ($cID == false) {
+            return false;
+        }
+        $inst = IPS_GetInstance($cID);
+        $moduleID = $inst['ModuleInfo']['ModuleID'];
+        return $moduleID == '{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}';
+    }
+
+    public function ConvertSplitter()
+    {
+        if ($this->IsInternalMQTTClient()) {
+            return;
+        }
+
+        // Parent vom MQTTClient auslesen
+        $inst = IPS_GetInstance($this->InstanceID);
+        $splitterID = $inst['ConnectionID'];
+
+        $inst = IPS_GetInstance($splitterID);
+        $ioID = $inst['ConnectionID'];
+
+        // "User" und "Password" aus MQTTClient-Instanz holen
+        $user = IPS_GetProperty($splitterID, 'User');
+        $password = IPS_GetProperty($splitterID, 'Password');
+
+        // Konfiguration der IO-Instanz
+        $ioCfg = IPS_GetConfiguration($ioID);
+
+        // Instanz anlegen
+        $instID = IPS_CreateInstance('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
+        $inst = IPS_GetInstance($instID);
+        $cID = $inst['ConnectionID'];
+        $name = 'MQTT Client (DysonDevice #' . $cID . ')';
+        IPS_SetName($instID, $name);
+        IPS_SetProperty($instID, 'UserName', $user);
+        IPS_SetProperty($instID, 'Password', $password);
+        IPS_SetProperty($instID, 'ClientID', 'symcon');
+        $product_type = $this->ReadPropertyString('product_type');
+        $serial = $this->ReadPropertyString('serial');
+        $topic = $product_type . '/' . $serial . '/status/current';
+        IPS_SetProperty($instID, 'Subscriptions', json_encode([['Topic'=> $topic, 'QoS'=> 0]]));
+        IPS_ApplyChanges($instID);
+
+        IPS_SetConfiguration($cID, $ioCfg);
+        IPS_ApplyChanges($cID);
+
+        // DysonDevice verbinden mit MQTT Client
+        IPS_DisconnectInstance($this->InstanceID);
+        IPS_ConnectInstance($this->InstanceID, $instID);
+
+        // alte MQTT-Instanz löschen
+        IPS_DeleteInstance($splitterID);
+
+        // alte IO-Instanz löschen
+        IPS_DeleteInstance($ioID);
+
+        $this->ReloadForm();
     }
 }

@@ -141,6 +141,8 @@ class DysonConfig extends IPSModule
                 $product_type = $device['ProductType'];
                 $local_credentials = $device['LocalCredentials'];
                 $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
+                $this->SendDebug(__FUNCTION__, 'local_password=' . $local_password, 0);
+                $topic = $product_type . '/' . $serial . '/status/current';
 
                 $instanceID = 0;
                 foreach ($instIDs as $instID) {
@@ -165,19 +167,13 @@ class DysonConfig extends IPSModule
                         ]
                     ],
                     [
-                        'moduleID'      => '{EE0D345A-CF31-428A-A613-33CE98E752DD}', // MQTTClient
+                        'moduleID'      => '{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}', // MQTT Client
                         'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
-                        // siehe DysonDevice::GetConfigurationForParent
                         'configuration' => [
-                            'User'          => $serial,
+                            'UserName'      => $serial,
                             'Password'      => $local_password,
-                            'ModuleType'    => 2,
-                            'script'        => 0,
-                            'TLS'           => false,
-                            'AutoSubscribe' => false,
-                            'MQTTVersion'   => 2,
                             'ClientID'      => 'symcon',
-                            'PingInterval'  => 30
+                            'Subscriptions' => json_encode([['Topic'=> $topic, 'QoS'=> 0]])
                         ],
                     ],
                     [

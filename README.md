@@ -22,9 +22,8 @@ Der Funktionsumfang unterscheidet sich natürlich je nach Gerätetyp, grundsätz
 
 ## 2. Voraussetzungen
 
-- IP-Symcon ab Version 5.3
+- IP-Symcon ab Version 5.5
 - ein Dyson-Produkt, das Wifi und MQTT unterstützt, das ist offensichtlich bei Lüftern und Staubsaugern der Fall, die mit der _Dyson Link App_ verknüpft werden können.
-- das installierte Modul _MQTTClient_ von **Kai Schnittcher**
 
 Getestet wurde das Modul bisher mit:
 
@@ -84,7 +83,7 @@ Mit den Schaltflächen _Erstellen_ bzw. _Alle erstellen_ werden das/die gewählt
 - DysonDevice<br>
 Die Daten des Dyson-Accounts werden von DysonConfig hierhin dupliziert, Änderungen hieran müssen manuelle nachgeführt werden.
 Die Produkte werden aufgrund der _Seriennummer_ identifiziert; durch den _Produkt-Typ_ wird der Umfang der Variablen festgelegt.
-- MQTTClient<br>
+- MQTT Client<br>
 in der Instanz wird bei der Anlage der Instanz alles konfiguriert und kann nachträglich nicht geändert werden.
 Tip: die erzeugte Instanz danach sinnvoll benennen, da für jedes Gerät eine solche Instanz angelegt wird.
 - Client Socket<br>
@@ -188,6 +187,10 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.1 @ 04.09.2021 14:03 (beta)
+  - Umstellung auf internen MQTT-Client
+    Achtung: nach der Aktualisierung die AKtion "MQTT-Client akualisieren" auslösen
 
 - 2.0 @ 24.07.2021 17:46
   - Umstellung auf 2FA-Anmeldung (Bestätigungs-Code per Mail)

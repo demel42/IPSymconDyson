@@ -21,6 +21,8 @@
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
 			"Module MQTTClient": "Modul MQTTClient",
 
+			"Convert MQTT-Client": "MQTT-Client anpassen",
+
 			"Dyson Pure Humidify+Cool desk fan (PH01)": "Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)",
 			"Dyson Pure Cool purifier fan tower (TP04)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP04)",
 			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02)",
