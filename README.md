@@ -188,7 +188,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.1 @ 04.09.2021 16:19 (beta)
+- 2.1 @ 04.09.2021 17:31 (beta)
   - Umstellung auf internen MQTT-Client
     Achtung: nach der Aktualisierung die AKtion "MQTT-Client akualisieren" auslösen
 

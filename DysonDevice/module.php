@@ -331,11 +331,27 @@ class DysonDevice extends IPSModule
         $opts_country = [
             [
                 'caption' => $this->Translate('England'),
-                'value'   => 'en'
+                'value'   => 'EN'
             ],
             [
                 'caption' => $this->Translate('Germany'),
-                'value'   => 'de'
+                'value'   => 'DE'
+            ],
+            [
+                'caption' => $this->Translate('Austria'),
+                'value'   => 'AU'
+            ],
+            [
+                'caption' => $this->Translate('Switzerland'),
+                'value'   => 'CH'
+            ],
+            [
+                'caption' => $this->Translate('Netherlands'),
+                'value'   => 'NL'
+            ],
+            [
+                'caption' => $this->Translate('France'),
+                'value'   => 'FR'
             ],
         ];
         $items[] = [
