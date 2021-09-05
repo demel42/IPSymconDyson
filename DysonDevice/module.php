@@ -434,6 +434,10 @@ class DysonDevice extends IPSModule
                         'caption' => 'Reloading configuration is only required if necessary',
                     ],
                     [
+                        'type'    => 'Label',
+                        'caption' => 'This action also adjusts configuration of the MQTT-Client',
+                    ],
+                    [
                         'type'    => 'Button',
                         'caption' => 'Reload Config',
                         'onClick' => 'Dyson_ManualReloadConfig($id);'
@@ -578,44 +582,62 @@ class DysonDevice extends IPSModule
 
     public function ManualReloadConfig()
     {
-        $r = $this->loadConfig();
-        echo $this->Translate(($r == false ? 'Load config failed' : 'Load config succeeded'));
-    }
-
-    private function loadConfig()
-    {
-        if ($this->GetStatus() == IS_INACTIVE) {
-            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+        $cID = $this->GetConnectionID();
+        if ($cID == false) {
+            $this->SendDebug(__FUNCTION__, 'has no parent instance', 0);
+            echo $this->Translate('has no parent instance');
             return;
         }
 
-        $oldPw = $this->ReadAttributeString('localPassword');
+        $doApply = false;
 
         $serial = $this->ReadPropertyString('serial');
         $device = $this->getDevice($serial);
-        if ($device != false) {
-            $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
-            $newPw = $this->decryptPassword($device['LocalCredentials']);
-            if ($newPw != false && $newPw != $oldPw) {
-                $this->WriteAttributeString('localPassword', $newPw);
-
-                /*
-                    Ausnahme zu Punkt 13 der Reviewrichtlinien, wurde per Mail vom 07.07.2020 von Niels genehmigt
-                    Grund: das Passwort, das im MQTTClient als Property gesetzt werden muss, kann sich ändern. Der aktuelle
-                    Wert wird zyklisch per HTTP von der Dyson-Cloud geholt und bei Änderungen in der MQTTClient-Instanz gesetzt.
-                 */
-                $cID = $this->GetConnectionID();
-                $this->SendDebug(__FUNCTION__, 'set property "Password" of instance ' . $cID . ' to "' . $newPw . '"', 0);
-                if ($cID != false) {
-                    if (IPS_SetProperty($cID, 'Password', $newPw)) {
-                        IPS_ApplyChanges($cID);
-                    }
-                }
+        if ($device == false) {
+            echo $this->Translate('Load config failed');
+            return;
+        }
+        $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
+        $oldPw = $this->ReadAttributeString('localPassword');
+        $newPw = $this->decryptPassword($device['LocalCredentials']);
+        if ($newPw != false && $newPw != $oldPw) {
+            $this->WriteAttributeString('localPassword', $newPw);
+            $this->SendDebug(__FUNCTION__, 'set property "Password" of instance ' . $cID . ' to "' . $newPw . '"', 0);
+            if (IPS_SetProperty($cID, 'Password', $newPw)) {
+                $doApply = true;
             }
-            return true;
         }
 
-        return false;
+        $user = $this->ReadPropertyString('user');
+        if (IPS_GetProperty($cID, 'UserName') != $user && IPS_SetProperty($cID, 'UserName', $user)) {
+            $doApply = true;
+        }
+
+        if (IPS_GetProperty($cID, 'ClientID') != 'symcon' && IPS_SetProperty($cID, 'ClientID', 'symcon')) {
+            $doApply = true;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $serial = $this->ReadPropertyString('serial');
+        $topic = $product_type . '/' . $serial . '/status/current';
+        $subscriptions = json_encode([['Topic'=> $topic, 'QoS'=> 0]]);
+        if (IPS_GetProperty($cID, 'Subscriptions') != $subscriptions && IPS_SetProperty($cID, 'Subscriptions', $subscriptions)) {
+            $doApply = true;
+        }
+
+        /*
+            Ausnahme zu Punkt 13 der Reviewrichtlinien, wurde per Mail vom 07.07.2020 von Niels genehmigt
+            Grund: das Passwort, das im MQTTClient als Property gesetzt werden muss, kann sich ändern. Der aktuelle
+            Wert wird zyklisch per HTTP von der Dyson-Cloud geholt und bei Änderungen in der MQTTClient-Instanz gesetzt.
+         */
+        if ($doApply) {
+            IPS_ApplyChanges($cID);
+        }
+
+        $name = 'MQTT Client (DysonDevice #' . $cID . ')';
+        IPS_SetName($cID, $name);
+
+        echo $this->Translate('Load config succeeded');
     }
 
     private function DecodeState($payload, $changeState)

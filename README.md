@@ -121,13 +121,14 @@ Alle auslösbaren Aktionen stehen per RequestAction zur Verfügung, z.B. Einscha
 | Anmeldung durchführen      | Anmeldung an der Dyson-Cloud |
 
 
-Die 2FA-Anmeldung funktioniert nur zusammen mit der Dyson-App
-- zuerst in der App vom Dyson-Konto abmelden
+Die 2FA-Anmeldung funktioniert nur zusammen mit der Dyson-App auf dem Mobilgerät.
+Manchmal reicht es aus, einfach die Dyson-App zu starten, manchmal muss man etwas mehr machen:
+- in der App vom Dyson-Konto abmelden
 - erneut Anmeldung beginnen mit Eingabe vom Land un der Mail-Adresse - nicht abschliessen!
 - in dem Konfigurator den Bestätigungs-Code anfordern (Schritt 1)
 - Postfach prüfen auf Mail von Dyson mit Code
 - Code eingeben und bestätigen (Schritt 2)
-War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
+War das erfolgreich, kann man sich in der Dyson-App wieder vollständig anmelden.
 
 ### DysonDevice
 
@@ -149,8 +150,8 @@ War das erfolgreich kann man sich in der Dyson-App wieder vollständig anmelden.
 
 ### Konfiguration neu laden und ggf. neu anmelden
 
-Das erneute Laden der Konfiguration ist nur im Bedarfsfall durchzuführen - bisher war das noch nie erforderlich.
-Es werden die Daten gesetzt, die auch bei der Anlage eine Geräte-Instanz aus dem Konfigurator gesetzt weden (z.Zt. nur das Passwort zur lokalen MQTT-Kommunikation).<br>
+Das erneute Laden der Konfiguration ist nur im Bedarfsfall durchzuführen - bisher war das noch nie erforderlich.<br>
+Es werden die Daten im MQTT-Client gesetzt, die auch bei der Anlage eine Geräte-Instanz aus dem Konfigurator gesetzt werden.
 
 Eine erneute Anmeldung ist nur erforderlich, wenn es bei dem Abruf der Konfiguration ein Authetifizierungsfehler geben würden; Vorgehen siehe Konfigurator.
 
@@ -188,9 +189,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.1 @ 04.09.2021 17:31 (beta)
+- 2.1 @ 05.09.2021 12:04
   - Umstellung auf internen MQTT-Client
-    Achtung: nach der Aktualisierung die AKtion "MQTT-Client akualisieren" auslösen
+    Achtung: nach der Aktualisierung die Aktion "MQTT-Client akualisieren" auslösen
+  - erneute Parametrierung des MQTT-Clients durch die Aktion "Konfiguration erneut laden"
 
 - 2.0 @ 24.07.2021 17:46
   - Umstellung auf 2FA-Anmeldung (Bestätigungs-Code per Mail)

@@ -6,6 +6,15 @@
 
 			"Dyson device": "Dyson Gerät",
 
+			"Dyson Pure Humidify+Cool desk fan (PH01)": "Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)",
+			"Dyson Pure Cool purifier fan tower (TP04)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP04)",
+			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02)",
+			"Dyson Pure Cool purifier desk fan (DP02)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP02)",
+			"Dyson Pure Cool purifier fan tower (TP02)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP02)",
+			"Dyson Pure Cool purifier desk fan (DP04)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP04)",
+			"Dyson Pure Hot+Cool purifying heater + fan (HP04)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04)",
+			"Dyson Pure Cool purifier fan tower (TP07)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)",
+
 			"Dyson Account-Details": "Dyson Konto-Details",
 			"User": "Benutzer",
 			"Password": "Passwort",
@@ -23,14 +32,31 @@
 
 			"Convert MQTT-Client": "MQTT-Client anpassen",
 
-			"Dyson Pure Humidify+Cool desk fan (PH01)": "Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)",
-			"Dyson Pure Cool purifier fan tower (TP04)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP04)",
-			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02)",
-			"Dyson Pure Cool purifier desk fan (DP02)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP02)",
-			"Dyson Pure Cool purifier fan tower (TP02)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP02)",
-			"Dyson Pure Cool purifier desk fan (DP04)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP04)",
-			"Dyson Pure Hot+Cool purifying heater + fan (HP04)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04)",
-			"Dyson Pure Cool purifier fan tower (TP07)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)",
+			"Reload Config": "Konfiguration erneut laden",
+			"This action also adjusts configuration of the MQTT-Client":
+				"Diese Aktion passt auch die Konfiguration des MQTT-Clients an",
+			"has no parent instance": "has no parent instance",
+
+			"Relogin": "Erneut anmelden",
+			"Reload configuration and log in again if necessary":
+				"Konfiguration neu laden und ggf. neu anmelden",
+			"Reloading configuration is only required if necessary":
+				"Konfiguration neu zu laden ist nur bei Bedarf erforderlich",
+			"Re-login is only required if necessary":
+				"Eine Neuanmeldung muss nur durchgeführt werde, wenn erforderlich",
+			"observe dokumentation": "Dokumentation beachten",
+			"Step 1": "Schritt 1",
+			"Request code": "Code anfordern",
+			"Step 2": "Schritt 2",
+			"Code (from mail)": "Code (aus Mail)",
+			"Verify login": "Anmeldung bestätigen",
+			"Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
+			"Login failed": "Anmeldung fehlgeschlagen",
+			"Login successful": "Anmeldung erfolgreich",
+			"Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
+
+			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
+			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
 
 			"Test area": "Test-Bereich",
 
@@ -73,8 +99,6 @@
 			"Particulate matter (PM 2.5)": "Feinstaub (PM 2.5)",
 			"Power": "Zustand",
 			"Product type": "Produkt-Typ",
-			"Reload Config": "Konfiguration erneut laden",
-			"Relogin": "Erneut anmelden",
 			"Rotation angle": "Drehwinkel",
 			"Rotation mode": "Drehmodus",
 			"Rotation start": "Drehstartpunkt",
@@ -102,27 +126,6 @@
 
 			"Direct": "Direkt",
 			"Indirect": "Indirekt",
-
-			"Reload configuration and log in again if necessary":
-				"Konfiguration neu laden und ggf. neu anmelden",
-			"Reloading configuration is only required if necessary":
-				"Konfiguration neu zu laden ist nur bei Bedarf erforderlich",
-			"Re-login is only required if necessary":
-				"Eine Neuanmeldung muss nur durchgeführt werde, wenn erforderlich",
-            "observe dokumentation": "Dokumentation beachten",
-            "Step 1": "Schritt 1",
-            "Request code": "Code anfordern",
-            "Step 2": "Schritt 2",
-            "Code (from mail)": "Code (aus Mail)",
-            "Verify login": "Anmeldung bestätigen",
-            "Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
-            "Login failed": "Anmeldung fehlgeschlagen",
-            "Login successful": "Anmeldung erfolgreich",
-            "Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
-
-			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
-
-			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
