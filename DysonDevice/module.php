@@ -2416,7 +2416,9 @@ class DysonDevice extends IPSModule
         IPS_SetName($instID, $name);
         IPS_SetProperty($instID, 'UserName', $user);
         IPS_SetProperty($instID, 'Password', $password);
-        IPS_SetProperty($instID, 'ClientID', 'symcon');
+		if (IPS_GetKernelVersion() >= 6) {
+			IPS_SetProperty($instID, 'ClientID', 'symcon');
+		}
         $product_type = $this->ReadPropertyString('product_type');
         $serial = $this->ReadPropertyString('serial');
         $topic = $product_type . '/' . $serial . '/status/current';
