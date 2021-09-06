@@ -634,9 +634,6 @@ class DysonDevice extends IPSModule
             IPS_ApplyChanges($cID);
         }
 
-        $name = 'MQTT Client (DysonDevice #' . $cID . ')';
-        IPS_SetName($cID, $name);
-
         echo $this->Translate('Load config succeeded');
     }
 
@@ -2412,13 +2409,11 @@ class DysonDevice extends IPSModule
         $instID = IPS_CreateInstance('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
         $inst = IPS_GetInstance($instID);
         $cID = $inst['ConnectionID'];
-        $name = 'MQTT Client (DysonDevice #' . $cID . ')';
-        IPS_SetName($instID, $name);
         IPS_SetProperty($instID, 'UserName', $user);
         IPS_SetProperty($instID, 'Password', $password);
-		if (IPS_GetKernelVersion() >= 6) {
-			IPS_SetProperty($instID, 'ClientID', 'symcon');
-		}
+        if (IPS_GetKernelVersion() >= 6) {
+            IPS_SetProperty($instID, 'ClientID', 'symcon');
+        }
         $product_type = $this->ReadPropertyString('product_type');
         $serial = $this->ReadPropertyString('serial');
         $topic = $product_type . '/' . $serial . '/status/current';
