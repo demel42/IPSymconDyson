@@ -192,6 +192,7 @@ GUIDs
 
 - 2.2 @ 04.01.2022 13:46 (beta)
   - Modell 358E (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)) hinzugefügt
+  - Anzeige der Modul/Bibliotheks-Informationen
 
 - 2.1 @ 06.09.2021 14:05
   - Umstellung auf internen MQTT-Client
