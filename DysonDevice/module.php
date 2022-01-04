@@ -2173,6 +2173,7 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 break;
             case '358':
+            case '358E':
                 $options['rssi'] = true;
                 $options['power'] = true;
                 $options['airflow_rate'] = true;
@@ -2273,14 +2274,15 @@ class DysonDevice extends IPSModule
     private function product2name($product_type)
     {
         $product2name = [
-            '358'  => 'Dyson Pure Humidify+Cool desk fan (PH01)',
-            '438'  => 'Dyson Pure Cool purifier fan tower (TP04)',
-            '438E' => 'Dyson Pure Cool purifier fan tower (TP07)',
-            '455'  => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
-            '469'  => 'Dyson Pure Cool purifier desk fan (DP02)',
-            '475'  => 'Dyson Pure Cool purifier fan tower (TP02)',
-            '520'  => 'Dyson Pure Cool purifier desk fan (DP04)',
-            '527'  => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
+            '358'   => 'Dyson Pure Humidify+Cool desk fan (PH01)',
+            '358E'  => 'Dyson Pure Humidify+Cool desk fan (PH03)',
+            '438'   => 'Dyson Pure Cool purifier fan tower (TP04)',
+            '438E'  => 'Dyson Pure Cool purifier fan tower (TP07)',
+            '455'   => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
+            '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
+            '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',
+            '520'   => 'Dyson Pure Cool purifier desk fan (DP04)',
+            '527'   => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
         ];
 
         if (isset($product2name[$product_type])) {

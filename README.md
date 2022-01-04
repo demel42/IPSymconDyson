@@ -37,6 +37,7 @@ Getestet wurde das Modul bisher mit:
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
+| 358E | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -188,6 +189,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.2 @ 04.01.2022 13:46 (beta)
+  - Modell 358E (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)) hinzugefügt
 
 - 2.1 @ 06.09.2021 14:05
   - Umstellung auf internen MQTT-Client
