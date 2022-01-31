@@ -806,33 +806,46 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['rotation_mode2']) {
+            // oson - oscillation on (OFF|ON)
+            $oson = $this->GetArrayElem($payload, 'product-state.oson', '');
+            if ($oson != '') {
+                $used_fields[] = 'product-state.oson';
+            } else {
+                $missing_fields[] = 'product-state.oson';
+            }
+
             // ancp - fan focus (OFF|45|90|BRZE)
             $ancp = $this->GetArrayElem($payload, 'product-state.ancp', '');
             if ($ancp != '') {
                 $used_fields[] = 'product-state.ancp';
+            } else {
+                $missing_fields[] = 'product-state.ancp';
+            }
+
+            if ($oson != '' && $ancp != '') {
                 if ($changeState) {
-                    $do = $ancp[0] != $ancp[1];
+                    $do = ($oson[0] != $oson[1]) || ($ancp[0] != $ancp[1]);
+                    $oson = $oson[1];
                     $ancp = $ancp[1];
                 } else {
                     $do = true;
                 }
                 if ($do) {
-                    switch ($ancp) {
-                        case 'OFF':
-                            $mode = 0;
-                            break;
-                        case 'BRZE':
-                            $mode = 360;
-                            break;
-                        default:
-                            $MODE = (int) ancp;
-                            break;
+                    if ($oson == 'OFF') {
+                        $mode = 0;
+                    } else {
+                        switch ($ancp) {
+                            case 'BRZE':
+                                $mode = 360;
+                                break;
+                            default:
+                                $mode = (int) ancp;
+                                break;
+                        }
                     }
-                    $this->SendDebug(__FUNCTION__, '... oscillation mode (ancp)=' . $ancp . ' => ' . $mode, 0);
+                    $this->SendDebug(__FUNCTION__, '... oscillation mode (oson)=' . $oson . ', (ancp)=' . $ancp . ' => mode=' . $mode, 0);
                     $this->SaveValue('RotationMode2', $mode, $is_changed);
                 }
-            } else {
-                $missing_fields[] = 'product-state.ancp';
             }
 
             // osal - oscillation angle low (5..309)
@@ -861,7 +874,7 @@ class DysonDevice extends IPSModule
 
             if ($osal != '' && $osau != '') {
                 if ($changeState) {
-                    $do = $osal[0] != $osal[1] || $osau[0] != $osau[1];
+                    $do = ($osal[0] != $osal[1]) || ($osau[0] != $osau[1]);
                     $osal = $osal[1];
                     $osau = $osau[1];
                 } else {
