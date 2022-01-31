@@ -81,6 +81,13 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => 350, 'Name' => '350', 'Farbe' => -1];
         $this->CreateVarProfile('Dyson.RotationAngle', VARIABLETYPE_INTEGER, '°', 0, 9, 0, 0, '', $associations);
 
+        $associations = [];
+        $associations[] = ['Wert' =>   0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
+        $associations[] = ['Wert' =>  45, 'Name' => '45°', 'Farbe' => -1];
+        $associations[] = ['Wert' =>  90, 'Name' => '90°', 'Farbe' => -1];
+        $associations[] = ['Wert' => 360, 'Name' => $this->Translate('Breeze'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.RotationMode2', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations);
+
         $this->CreateVarProfile('Dyson.RotationStart', VARIABLETYPE_INTEGER, '°', 0, 359, 1, 0, '');
 
         $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '');
@@ -171,6 +178,10 @@ class DysonDevice extends IPSModule
         if ($options['rotation_angle']) {
             $this->MaintainAction('RotationAngle', true);
             $this->MaintainAction('RotationStart', true);
+        }
+        $this->MaintainVariable('RotationMode2', $this->Translate('Rotation mode'), VARIABLETYPE_INTEGER, 'Dyson.RotationMode2', $vpos++, $options['rotation_mode2']);
+        if ($options['rotation_mode2']) {
+            $this->MaintainAction('RotationMode2', true);
         }
         $this->MaintainVariable('AirflowDirection', $this->Translate('Airflow direction'), VARIABLETYPE_BOOLEAN, 'Dyson.AirflowDirection', $vpos++, $options['airflow_direction']);
         if ($options['airflow_direction']) {
@@ -792,6 +803,43 @@ class DysonDevice extends IPSModule
                     $missing_fields[] = 'product-state.oscs';
                 }
             }
+        }
+
+        if ($options['rotation_mode2']) {
+            // ancp - fan focus (OFF|45|90|BRZE)
+            $ancp = $this->GetArrayElem($payload, 'product-state.ancp', '');
+            if ($ancp != '') {
+                $used_fields[] = 'product-state.ancp';
+                if ($changeState) {
+                    $do = $ancp[0] != $ancp[1];
+                    $ancp = $ancp[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    switch ($ancp) {
+                        case 'OFF':
+                            $mode = 0;
+                            break;
+                        case 'BRZE':
+                            $mode = 360;
+                            break;
+                        default:
+                            $MODE = (int) ancp;
+                            break;
+                    }
+                    $this->SendDebug(__FUNCTION__, '... oscillation mode (ancp)=' . $ancp . ' => ' . $mode, 0);
+                    $this->SaveValue('RotationMode2', $mode, $is_changed);
+                }
+            } else {
+                $missing_fields[] = 'product-state.ancp';
+            }
+
+            // osal - oscillation angle low (5..309)
+            $ignored_fields[] = 'product-state.osal';
+
+            // osau - oscillation angle up (50..354)
+            $ignored_fields[] = 'product-state.osau';
         }
 
         if ($options['rotation_angle']) {
@@ -1606,6 +1654,11 @@ class DysonDevice extends IPSModule
                     $enabled = true;
                 }
                 break;
+            case 'SwitchRotationMode2':
+                if ($options['rotation_mode2']) {
+                    $enabled = true;
+                }
+                break;
             case 'SetRotationAngle':
                 if ($options['rotation_angle']) {
                     $enabled = true;
@@ -1851,6 +1904,39 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
+    private function SwitchRotationMode2(int $mode)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        $mode = (int) $this->GetValue('RotationMode2');
+        switch ($mode) {
+                case 0:
+                    $data = [
+                        'oson' => 'OFF',
+                    ];
+                    break;
+                case 360:
+                    $data = [
+                        'oson' => 'ON',
+                        'ancp' => 'BRZE',
+                    ];
+                    break;
+                default:
+                    $data = [
+                        'oson' => 'ON',
+                        'ancp' => sprintf('%04d', $mode),
+                    ];
+                    break;
+            }
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
     private function SetRotationAngle(int $angle)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
@@ -2060,6 +2146,10 @@ class DysonDevice extends IPSModule
                 $r = $this->SwitchRotationMode((bool) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
+            case 'RotationMode2':
+                $r = $this->SwitchRotationMode2((int) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
             case 'RotationAngle':
                 $r = $this->SetRotationAngle((int) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
@@ -2113,6 +2203,7 @@ class DysonDevice extends IPSModule
         $options['airflow_off_use_fmod'] = false;
         $options['rotation_mode'] = false;
         $options['rotation_mode_use_oson'] = false;
+        $options['rotation_mode2'] = false;
         $options['rotation_angle'] = false;
         $options['airflow_direction'] = false;
         $options['airflow_distribution'] = false;
@@ -2168,12 +2259,32 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 break;
             case '358':
-            case '358E':
                 $options['rssi'] = true;
                 $options['power'] = true;
                 $options['airflow_rate'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_angle'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+                $options['humidify'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['hepa_filter'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['voc'] = true;
+                $options['nox'] = true;
+                break;
+            case '358E':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode2'] = true;
                 $options['airflow_direction'] = true;
                 $options['automatic_mode'] = true;
                 $options['night_mode'] = true;
@@ -2347,6 +2458,9 @@ class DysonDevice extends IPSModule
         }
         if ($options['rotation_mode']) {
             $chg |= $this->AdjustAction('RotationMode', $mode);
+        }
+        if ($options['rotation_mode2']) {
+            $chg |= $this->AdjustAction('RotationMode2', $mode);
         }
         if ($options['rotation_angle']) {
             $chg |= $this->AdjustAction('RotationAngle', $mode);

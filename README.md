@@ -172,7 +172,8 @@ Es werden folgende Variablenprofile angelegt:
 Dyson.AirflowDirection, Dyson.AirflowDistribution
 
 * Integer<br>
-Dyson.AirflowRate, Dyson.AQT, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.Dust-Index, Dyson.RotationAngle, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.VOC-Index, Dyson.Wifi
+Dyson.AirflowRate, Dyson.AQT, Dyson.RotationMode2, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.Dust-Index, Dyson.RotationAngle,
+Dyson.Rotation, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.VOC-Index, Dyson.Wifi
 
 * Float<br>
 Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
@@ -189,6 +190,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.2.1 @ 31.01.2022 10:16 (beta)
+  - Korrektur Drehmodus für Modell 358E
 
 - 2.2 @ 04.01.2022 13:46 (beta)
   - Modell 358E (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)) hinzugefügt
