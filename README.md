@@ -191,10 +191,13 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.1 @ 31.01.2022 10:16 (beta)
+- 2.2.2 @ 01.02.2022 14:08 (beta)
+  - Korrektur Luftstromstärke "Auto"
+
+- 2.2.1 @ 31.01.2022 10:16
   - Korrektur Drehmodus für Modell 358E
 
-- 2.2 @ 04.01.2022 13:46 (beta)
+- 2.2 @ 04.01.2022 13:46
   - Modell 358E (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)) hinzugefügt
   - Anzeige der Modul/Bibliotheks-Informationen
 

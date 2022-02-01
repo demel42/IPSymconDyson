@@ -150,7 +150,7 @@ class DysonDevice extends IPSModule
             $this->MaintainAction('Power', true);
         }
 
-        $this->MaintainVariable('AutomaticMode', $this->Translate('Automatic mode'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['automatic_mode']);
+        $this->MaintainVariable('AutomaticMode', $this->Translate('Air purification automatic mode'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['automatic_mode']);
         if ($options['automatic_mode']) {
             $this->MaintainAction('AutomaticMode', true);
         }
@@ -839,7 +839,7 @@ class DysonDevice extends IPSModule
                                 $mode = 360;
                                 break;
                             default:
-                                $mode = (int) ancp;
+                                $mode = (int) $ancp;
                                 break;
                         }
                     }
@@ -1823,6 +1823,13 @@ class DysonDevice extends IPSModule
             return false;
         }
 
+        if ($min < 0) {
+            $min = 0;
+        }
+        if ($min > 540) {
+            $min = 540;
+        }
+
         $data = [
             'sltm' => sprintf('%04d', $min)
         ];
@@ -1848,14 +1855,28 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
-        if ($val == 0 && $options['automatic_mode_use_fmod']) {
-            $data = [
-                'fmod' => 'OFF'
-            ];
-        } else {
-            $data = [
-                'fnsp' => sprintf('%04d', $val)
-            ];
+        switch ($val) {
+            case -1:
+                $data = [
+                    'auto' => 'ON'
+                ];
+                break;
+            case 0:
+                if ($options['automatic_mode_use_fmod']) {
+                    $data = [
+                        'fmod' => 'OFF'
+                    ];
+                } else {
+                    $data = [
+                        'fnsp' => '0000'
+                    ];
+                }
+                break;
+            default:
+                $data = [
+                    'fnsp' => sprintf('%04d', $val)
+                ];
+                break;
         }
 
         return $this->SetStateCommand(__FUNCTION__, $data);
@@ -1926,7 +1947,6 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
-        $mode = (int) $this->GetValue('RotationMode2');
         switch ($mode) {
                 case 0:
                     $data = [
@@ -2490,6 +2510,10 @@ class DysonDevice extends IPSModule
         }
         if ($options['air_quality_target']) {
             $chg |= $this->AdjustAction('AirQualityTarget', $mode);
+        }
+        if ($options['humidify']) {
+            $chg |= $this->AdjustAction('HumidifyAutomaticMode', $mode);
+            $chg |= $this->AdjustAction('HumidifyTarget', $mode);
         }
 
         if ($chg) {

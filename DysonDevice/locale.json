@@ -79,7 +79,7 @@
 			"Airflow distribution": "Luftstromverteilung",
 			"Airflow rate": "Luftstromstärke",
 			"Air qualitiy target": "Zielwert der Luftqualität",
-			"Automatic mode": "Automatik-Modus",
+			"Air purification automatic mode": "Luftreinigung-Automatik",
 			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
 			"Call settings": "Kommunikations-Einstellungen",
 			"Duration until next deep cleaning cycle": "Dauer bis zum nächsten Tiefenreinigungszyklus",
@@ -87,7 +87,7 @@
 			"Filter lifetime": "Filter-Lebensdauer",
 			"Heater mode": "Heizung",
 			"Heating temperature": "Heiztemperatur",
-			"Humidify automatic mode": "Lufbefeuchtung-Automatik",
+			"Humidify automatic mode": "Luftbefeuchtung-Automatik",
 			"Humidify target value": "Luftbefeuchtung-Zielwert",
 			"Humidity": "Luftfeuchte",
 			"Humidify automatic target value": "Luftbefeuchtung-Automatik-Zielwert",
@@ -118,7 +118,7 @@
 
 			"Off": "Aus",
 
-			"Breeze": "Briese",
+			"Breeze": "Brise",
 
 			"Low": "gering",
 			"Average": "mittel",
