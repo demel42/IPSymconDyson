@@ -191,7 +191,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.2 @ 01.02.2022 14:08 (beta)
+- 2.2.2 @ 01.02.2022 17:15 (beta)
   - Korrektur Luftstromstärke "Auto"
 
 - 2.2.1 @ 31.01.2022 10:16

@@ -2132,6 +2132,7 @@ class DysonDevice extends IPSModule
         $options = $this->product2options($product_type);
 
         $data = [
+            'hume' => 'HUMD',
             'humt' => sprintf('%04d', (int) $hum)
         ];
 
