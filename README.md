@@ -191,7 +191,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.2 @ 01.02.2022 17:15 (beta)
+- 2.2.3 @ 05.02.2022 12:49 (beta)
+  - Korrektur Luftfeuchte für Modell 358E
+  - Korrektur Luftstromstärke = AUS
+
+- 2.2.2 @ 01.02.2022 17:15
   - Korrektur Luftstromstärke "Auto"
 
 - 2.2.1 @ 31.01.2022 10:16

@@ -66,6 +66,7 @@
 				"Eigene 'SET-STATE'-Kommandos testen; das Kommando muss eine JSON-kodierte Zeichenkette sein (siehe Dokumentation)",
 			"Examine the debug-window for information about 'ExecuteSetState'":
 				"Überprüfen Sie das Debug-Fenster auf Informationen zu 'ExecuteSetState'",
+			"Re-install variable-profiles": "Variablenprofile erneut einrichten",
 
 			"Command": "Kommando",
 			"Execute": "Ausführen",
@@ -87,6 +88,7 @@
 			"Filter lifetime": "Filter-Lebensdauer",
 			"Heater mode": "Heizung",
 			"Heating temperature": "Heiztemperatur",
+			"Humidification": "Luftbefeuchtung",
 			"Humidify automatic mode": "Luftbefeuchtung-Automatik",
 			"Humidify target value": "Luftbefeuchtung-Zielwert",
 			"Humidity": "Luftfeuchte",

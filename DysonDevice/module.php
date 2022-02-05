@@ -10,6 +10,97 @@ class DysonDevice extends IPSModule
     use DysonCommonLib;
     use DysonLocalLib;
 
+    public function InstallVarProfiles(bool $reInstall = false)
+    {
+        if ($reInstall) {
+            $this->SendDebug(__FUNCTION__, 'reInstall=' . $this->bool2str($reInstall), 0);
+        }
+
+        $associations = [];
+        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Back'), 'Farbe' => -1];
+        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Front'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.AirflowDirection', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1];
+        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Direct'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.AirflowDistribution', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations, $reInstall);
+
+        $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity', '', $reInstall);
+        $this->CreateVarProfile('Dyson.PM', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', '', $reInstall);
+        $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
+        $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
+
+        $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
+        $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
+
+        $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock', '', $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.SleepTimer', VARIABLETYPE_INTEGER, '', 0, 539, 1, 0, '', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 3, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 5, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1];
+        $associations[] = ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.AirflowRate', VARIABLETYPE_INTEGER, '', 0, 9, 0, 0, '', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' =>  45, 'Name' => '45', 'Farbe' => -1];
+        $associations[] = ['Wert' =>  90, 'Name' => '90', 'Farbe' => -1];
+        $associations[] = ['Wert' => 180, 'Name' => '180', 'Farbe' => -1];
+        $associations[] = ['Wert' => 350, 'Name' => '350', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.RotationAngle', VARIABLETYPE_INTEGER, '°', 0, 9, 0, 0, '', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' =>   0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
+        $associations[] = ['Wert' =>  45, 'Name' => '45°', 'Farbe' => -1];
+        $associations[] = ['Wert' =>  90, 'Name' => '90°', 'Farbe' => -1];
+        $associations[] = ['Wert' => 360, 'Name' => $this->Translate('Breeze'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.RotationMode2', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations, $reInstall);
+
+        $this->CreateVarProfile('Dyson.RotationStart', VARIABLETYPE_INTEGER, '°', 0, 359, 1, 0, '', '', $reInstall);
+
+        $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '', '', $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('High'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1];
+        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.AQT', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Flag', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
+        $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations, $reInstall);
+
+        $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 1, 37, 1, 0, 'Temperature', '', $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
+        $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 30, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations[] = ['Wert' => 40, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations[] = ['Wert' => 50, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations[] = ['Wert' => 60, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations[] = ['Wert' => 70, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
+    }
+
     public function Create()
     {
         parent::Create();
@@ -34,83 +125,7 @@ class DysonDevice extends IPSModule
 
         $this->RequireParent('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
 
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Back'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Front'), 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.AirflowDirection', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Direct'), 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.AirflowDistribution', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations);
-
-        $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity');
-        $this->CreateVarProfile('Dyson.PM', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow');
-        $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
-        $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
-
-        $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
-        $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge');
-
-        $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock');
-
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.SleepTimer', VARIABLETYPE_INTEGER, '', 0, 539, 1, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 3, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 5, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.AirflowRate', VARIABLETYPE_INTEGER, '', 0, 9, 0, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' =>  45, 'Name' => '45', 'Farbe' => -1];
-        $associations[] = ['Wert' =>  90, 'Name' => '90', 'Farbe' => -1];
-        $associations[] = ['Wert' => 180, 'Name' => '180', 'Farbe' => -1];
-        $associations[] = ['Wert' => 350, 'Name' => '350', 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.RotationAngle', VARIABLETYPE_INTEGER, '°', 0, 9, 0, 0, '', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' =>   0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  45, 'Name' => '45°', 'Farbe' => -1];
-        $associations[] = ['Wert' =>  90, 'Name' => '90°', 'Farbe' => -1];
-        $associations[] = ['Wert' => 360, 'Name' => $this->Translate('Breeze'), 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.RotationMode2', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations);
-
-        $this->CreateVarProfile('Dyson.RotationStart', VARIABLETYPE_INTEGER, '°', 0, 359, 1, 0, '');
-
-        $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '');
-
-        $associations = [];
-        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('High'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.AQT', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Flag', $associations);
-
-        $associations = [];
-        $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations);
-
-        $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 1, 37, 1, 0, 'Temperature');
-
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
-        $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations);
-
-        $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 100, 0, 'Drops', '');
+        $this->InstallVarProfiles(false);
     }
 
     public function ApplyChanges()
@@ -199,13 +214,12 @@ class DysonDevice extends IPSModule
             $this->MaintainAction('HeatingTemperature', true);
         }
 
-        /* Humifidy */
+        $this->MaintainVariable('Humidification', $this->Translate('Humidification'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['humidify']);
         $this->MaintainVariable('HumidifyAutomaticMode', $this->Translate('Humidify automatic mode'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['humidify']);
-        if ($options['humidify']) {
-            $this->MaintainAction('HumidifyAutomaticMode', true);
-        }
         $this->MaintainVariable('HumidifyTarget', $this->Translate('Humidify target value'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
         if ($options['humidify']) {
+            $this->MaintainAction('Humidification', true);
+            $this->MaintainAction('HumidifyAutomaticMode', true);
             $this->MaintainAction('HumidifyTarget', true);
         }
         $this->MaintainVariable('HumidifyAutomaticTarget', $this->Translate('Humidify automatic target value'), VARIABLETYPE_FLOAT, 'Dyson.Humidify', $vpos++, $options['humidify']);
@@ -515,7 +529,15 @@ class DysonDevice extends IPSModule
                         'caption' => 'Execute',
                         'onClick' => 'Dyson_ExecuteSetState($id, $cmd);'
                     ],
-                ]
+                    [
+                        'type'    => 'Label',
+                    ],
+                    [
+                        'type'    => 'Button',
+                        'caption' => 'Re-install variable-profiles',
+                        'onClick' => 'Dyson_InstallVarProfiles($id, true);'
+                    ]
+                ],
             ];
         }
 
@@ -981,13 +1003,40 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['humidify']) {
+            // hume - humidification (HUMD|OFF)
+            $hume = $this->GetArrayElem($payload, 'product-state.hume', '');
+            if ($hume != '') {
+                $used_fields[] = 'product-state.hume';
+                if ($changeState) {
+                    $do = $hume[0] != $hume[1];
+                    $hume = $hume[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    $b = $this->str2bool($hume);
+                    $this->SendDebug(__FUNCTION__, '... humidification (hume)=' . $hume . ' => ' . $this->bool2str($b), 0);
+                    $this->SaveValue('Humidification', $b, $is_changed);
+                }
+            } else {
+                $missing_fields[] = 'product-state.hume';
+            }
+
             // humt - humidify target
             $humt = $this->GetArrayElem($payload, 'product-state.humt', '');
             if ($humt != '') {
                 $used_fields[] = 'product-state.humt';
-                $hum = (int) $humt;
-                $this->SendDebug(__FUNCTION__, '... humidify target (humt)=' . $hum, 0);
-                $this->SaveValue('HumidifyTarget', $hum, $is_changed);
+                if ($changeState) {
+                    $do = $humt[0] != $humt[1];
+                    $humt = $humt[1];
+                } else {
+                    $do = true;
+                }
+                if ($do) {
+                    $hum = (int) $humt;
+                    $this->SendDebug(__FUNCTION__, '... humidify target (humt)=' . $hum, 0);
+                    $this->SaveValue('HumidifyTarget', $hum, $is_changed);
+                }
             } else {
                 $missing_fields[] = 'product-state.humt';
             }
@@ -1004,7 +1053,7 @@ class DysonDevice extends IPSModule
                 }
                 if ($do) {
                     $b = $this->str2bool($haut);
-                    $this->SendDebug(__FUNCTION__, '... automatic mode (haut)=' . $auto . ' => ' . $this->bool2str($b), 0);
+                    $this->SendDebug(__FUNCTION__, '... automatic mode (haut)=' . $haut . ' => ' . $this->bool2str($b), 0);
                     $this->SaveValue('HumidifyAutomaticMode', $b, $is_changed);
                 }
             } else {
@@ -1702,6 +1751,11 @@ class DysonDevice extends IPSModule
                     $enabled = true;
                 }
                 break;
+            case 'SwitchHumidification':
+                if ($options['humidify']) {
+                    $enabled = true;
+                }
+                break;
             case 'SwitchHumidifyAutomaticMode':
                 if ($options['humidify']) {
                     $enabled = true;
@@ -1868,7 +1922,7 @@ class DysonDevice extends IPSModule
                     ];
                 } else {
                     $data = [
-                        'fnsp' => '0000'
+                        'fpwr' => 'OFF'
                     ];
                 }
                 break;
@@ -1948,24 +2002,24 @@ class DysonDevice extends IPSModule
         $options = $this->product2options($product_type);
 
         switch ($mode) {
-                case 0:
-                    $data = [
-                        'oson' => 'OFF',
-                    ];
-                    break;
-                case 360:
-                    $data = [
-                        'oson' => 'ON',
-                        'ancp' => 'BRZE',
-                    ];
-                    break;
-                default:
-                    $data = [
-                        'oson' => 'ON',
-                        'ancp' => sprintf('%04d', $mode),
-                    ];
-                    break;
-            }
+            case 0:
+                $data = [
+                    'oson' => 'OFF',
+                ];
+                break;
+            case 360:
+                $data = [
+                    'oson' => 'ON',
+                    'ancp' => 'BRZE',
+                ];
+                break;
+            default:
+                $data = [
+                    'oson' => 'ON',
+                    'ancp' => sprintf('%04d', $mode),
+                ];
+                break;
+        }
 
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
@@ -2082,6 +2136,19 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
+    private function SwitchHumidification(bool $mode)
+    {
+        if (!$this->checkAction(__FUNCTION__, true)) {
+            return false;
+        }
+
+        $data = [
+            'hume' => ($mode ? 'HUMD' : 'OFF')
+        ];
+
+        return $this->SetStateCommand(__FUNCTION__, $data);
+    }
+
     private function SwitchHumidifyAutomaticMode(bool $mode)
     {
         if (!$this->checkAction(__FUNCTION__, true)) {
@@ -2093,6 +2160,7 @@ class DysonDevice extends IPSModule
 
         if ($mode) {
             $data = [
+                'hume' => 'HUMD',
                 'haut' => 'ON'
             ];
             $power = (bool) $this->GetValue('Power');
@@ -2206,6 +2274,10 @@ class DysonDevice extends IPSModule
                 break;
             case 'AirQualityTarget':
                 $r = $this->SetAirQualityTarget((int) $Value);
+                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                break;
+            case 'Humidification':
+                $r = $this->SwitchHumidification((bool) $Value);
                 $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
                 break;
             case 'HumidifyAutomaticMode':
@@ -2513,6 +2585,7 @@ class DysonDevice extends IPSModule
             $chg |= $this->AdjustAction('AirQualityTarget', $mode);
         }
         if ($options['humidify']) {
+            $chg |= $this->AdjustAction('Humidification', $mode);
             $chg |= $this->AdjustAction('HumidifyAutomaticMode', $mode);
             $chg |= $this->AdjustAction('HumidifyTarget', $mode);
         }

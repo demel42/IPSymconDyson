@@ -49,8 +49,11 @@ trait DysonCommonLib
         return $ret;
     }
 
-    private function CreateVarProfile($Name, $ProfileType, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Icon, $Associations = '')
+    private function CreateVarProfile($Name, $ProfileType, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits, $Icon, $Associations = '', $doReinstall)
     {
+        if ($doReinstall && IPS_VariableProfileExists($Name)) {
+            IPS_DeleteVariableProfile($Name);
+        }
         if (!IPS_VariableProfileExists($Name)) {
             IPS_CreateVariableProfile($Name, $ProfileType);
             IPS_SetVariableProfileText($Name, '', $Suffix);
