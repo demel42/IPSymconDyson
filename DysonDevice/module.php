@@ -632,24 +632,33 @@ class DysonDevice extends IPSModule
             $this->WriteAttributeString('localPassword', $newPw);
             $this->SendDebug(__FUNCTION__, 'set property "Password" of instance ' . $cID . ' to "' . $newPw . '"', 0);
             if (IPS_SetProperty($cID, 'Password', $newPw)) {
+                $this->SendDebug(__FUNCTION__, 'Password=' . $newPw, 0);
                 $doApply = true;
             }
         }
 
-        $user = $this->ReadPropertyString('user');
-        if (IPS_GetProperty($cID, 'UserName') != $user && IPS_SetProperty($cID, 'UserName', $user)) {
+        if (IPS_GetProperty($cID, 'UserName') != $serial && IPS_SetProperty($cID, 'UserName', $serial)) {
+            $this->SendDebug(__FUNCTION__, 'UserName=' . $serial, 0);
             $doApply = true;
         }
 
         if (IPS_GetProperty($cID, 'ClientID') != 'symcon' && IPS_SetProperty($cID, 'ClientID', 'symcon')) {
+            $this->SendDebug(__FUNCTION__, 'ClientID=' . 'symcon', 0);
             $doApply = true;
         }
 
         $product_type = $this->ReadPropertyString('product_type');
         $serial = $this->ReadPropertyString('serial');
-        $topic = $product_type . '/' . $serial . '/status/current';
-        $subscriptions = json_encode([['Topic'=> $topic, 'QoS'=> 0]]);
+        $topics = [];
+        foreach (['current', 'faults', 'connection', 'software', 'summary'] as $sub) {
+            $topics[] = [
+                'Topic' => $product_type . '/' . $serial . '/status/' . $sub,
+                'QoS'   => 0
+            ];
+        }
+        $subscriptions = json_encode($topics);
         if (IPS_GetProperty($cID, 'Subscriptions') != $subscriptions && IPS_SetProperty($cID, 'Subscriptions', $subscriptions)) {
+            $this->SendDebug(__FUNCTION__, 'Subscriptions=' . $subscriptions, 0);
             $doApply = true;
         }
 
@@ -2638,8 +2647,14 @@ class DysonDevice extends IPSModule
         }
         $product_type = $this->ReadPropertyString('product_type');
         $serial = $this->ReadPropertyString('serial');
-        $topic = $product_type . '/' . $serial . '/status/current';
-        IPS_SetProperty($instID, 'Subscriptions', json_encode([['Topic'=> $topic, 'QoS'=> 0]]));
+        $topics = [];
+        foreach (['current', 'faults', 'connection', 'software', 'summary'] as $sub) {
+            $topics[] = [
+                'Topic' => $product_type . '/' . $serial . '/status/' . $sub,
+                'QoS'   => 0
+            ];
+        }
+        IPS_SetProperty($instID, 'Subscriptions', json_encode($topics));
         IPS_ApplyChanges($instID);
 
         IPS_SetConfiguration($cID, $ioCfg);

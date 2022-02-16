@@ -122,7 +122,13 @@ class DysonConfig extends IPSModule
                 $local_credentials = $device['LocalCredentials'];
                 $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
                 $this->SendDebug(__FUNCTION__, 'local_password=' . $local_password, 0);
-                $topic = $product_type . '/' . $serial . '/status/current';
+                $topics = [];
+                foreach (['current', 'faults', 'connection', 'software', 'summary'] as $sub) {
+                    $topics[] = [
+                        'Topic' => $product_type . '/' . $serial . '/status/' . $sub,
+                        'QoS'   => 0
+                    ];
+                }
 
                 $instanceID = 0;
                 foreach ($instIDs as $instID) {
@@ -153,7 +159,7 @@ class DysonConfig extends IPSModule
                             'UserName'      => $serial,
                             'Password'      => $local_password,
                             'ClientID'      => 'symcon',
-                            'Subscriptions' => json_encode([['Topic'=> $topic, 'QoS'=> 0]])
+                            'Subscriptions' => json_encode($topics)
                         ],
                     ],
                     [
