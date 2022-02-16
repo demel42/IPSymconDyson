@@ -1622,7 +1622,7 @@ class DysonDevice extends IPSModule
                     $txt .= $this->fault2text($var) . PHP_EOL;
                 }
             }
-            $this->SendDebug(__FNCTION__, '... ' . $lvl . '=' . $txt, 0);
+            $this->SendDebug(__FUNCTION__, '... ' . $lvl . '=' . $txt, 0);
             $this->SaveValue($lvl, $txt, $is_changed);
         }
         $this->WriteAttributeString('Faults', json_encode($faults));
