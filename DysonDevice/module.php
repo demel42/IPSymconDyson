@@ -123,6 +123,8 @@ class DysonDevice extends IPSModule
         $this->RegisterAttributeString('localPassword', '');
         $this->RegisterAttributeString('Auth', '');
 
+        $this->RegisterAttributeString('Faults', '');
+
         $this->RequireParent('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
 
         $this->InstallVarProfiles(false);
@@ -253,6 +255,9 @@ class DysonDevice extends IPSModule
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
         $this->MaintainVariable('LastChange', $this->Translate('Last change'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
+
+        $this->MaintainVariable('warnings', $this->Translate('Warnings'), VARIABLETYPE_STRING, '', $vpos++, true);
+        $this->MaintainVariable('errors', $this->Translate('Errors'), VARIABLETYPE_STRING, '', $vpos++, true);
 
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
@@ -689,7 +694,7 @@ class DysonDevice extends IPSModule
         $this->SendDebug(__FUNCTION__, 'used variables', 0);
 
         $msg = $payload['msg'];
-        $msg = $used_fields[] = 'msg';
+        $used_fields[] = 'msg';
 
         $ts = strtotime($payload['time']);
         $used_fields[] = 'time';
@@ -1397,7 +1402,7 @@ class DysonDevice extends IPSModule
         $this->SendDebug(__FUNCTION__, 'used variables', 0);
 
         $msg = $payload['msg'];
-        $msg = $used_fields[] = 'msg';
+        $used_fields[] = 'msg';
 
         $ts = strtotime($payload['time']);
         $used_fields[] = 'time';
@@ -1581,6 +1586,54 @@ class DysonDevice extends IPSModule
         }
     }
 
+    private function DecodeFaults($payload, $changeState)
+    {
+        $now = time();
+        $is_changed = false;
+
+        $product_type = $this->ReadPropertyString('product_type');
+        $options = $this->product2options($product_type);
+
+        $this->SendDebug(__FUNCTION__, 'used variables', 0);
+
+        $msg = $payload['msg'];
+        $ts = strtotime($payload['time']);
+        $this->SendDebug(__FUNCTION__, '... msg=' . $msg . ', time=' . date('d.m.y H:i:s', $ts), 0);
+
+        $faults = json_decode($this->ReadAttributeString('Faults'), true);
+        if ($faults == false) {
+            $faults = [];
+        }
+        foreach (['errors', 'warnings'] as $lvl) {
+            $txt = '';
+            foreach (['product', 'module'] as $typ) {
+                $fld = $typ . '-' . $lvl;
+                foreach ($payload[$fld] as $var => $val) {
+                    if (is_array($val)) {
+                        continue;
+                    }
+                    if ($changeState) {
+                        $val = $val[1];
+                    }
+                    $faults[$fld][$var] = $val;
+                    if ($val == 'OK') {
+                        continue;
+                    }
+                    $txt .= $this->fault2text($var) . PHP_EOL;
+                }
+            }
+            $this->SendDebug(__FNCTION__, '... ' . $lvl . '=' . $txt, 0);
+            $this->SaveValue($lvl, $txt, $is_changed);
+        }
+        $this->WriteAttributeString('Faults', json_encode($faults));
+        $this->SendDebug(__FUNCTION__, 'faults=' . print_r($faults, true), 0);
+
+        $this->SetValue('LastUpdate', $now);
+        if ($is_changed) {
+            $this->SetValue('LastChange', $ts);
+        }
+    }
+
     public function ReceiveData($data)
     {
         $this->SendDebug(__FUNCTION__, 'data=' . $data, 0);
@@ -1606,6 +1659,12 @@ class DysonDevice extends IPSModule
                     break;
                 case 'ENVIRONMENTAL-CURRENT-SENSOR-DATA':
                     $this->DecodeSensorData($payload);
+                    break;
+                case 'CURRENT-FAULTS':
+                    $this->DecodeFaults($payload, false);
+                    break;
+                case 'FAULTS-CHANGE':
+                    $this->DecodeFaults($payload, true);
                     break;
                 default:
                     $this->SendDebug(__FUNCTION__, 'unknown msg=' . $msg . ', time=' . date('d.m.y H:i:s', $ts), 0);
@@ -2512,6 +2571,21 @@ class DysonDevice extends IPSModule
             $name = $this->Translate('unknown Dyson product') . ' ' . $product_type;
         }
         return $name;
+    }
+
+    private function fault2text($val)
+    {
+        $fault2text = [
+            'tnke' => 'Tank empty',
+            'tnkp' => 'Tank not detected',
+        ];
+
+        if (isset($fault2text[$val])) {
+            $s = $this->Translate($fault2text[$val]);
+        } else {
+            $s = $this->Translate('Unknown error code') . ' "' . $val . '"';
+        }
+        return $s;
     }
 
     private function adjust_rotation(&$angle, &$start, &$end)

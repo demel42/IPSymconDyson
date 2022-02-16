@@ -132,6 +132,13 @@
 			"Direct": "Direkt",
 			"Indirect": "Indirekt",
 
+			"Warnings": "Warnungen",
+			"Errors": "Fehler",
+
+			"Tank empty": "Tank leer",
+			"Tank not detected": "Tank nicht erkannt",
+			"Unknown error code": "Unbekannter Fehlercode",
+
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
 			"Instance is deleted": "Instanz wird gelöscht",

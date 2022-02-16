@@ -41,7 +41,7 @@ class DysonConfig extends IPSModule
         $propertyNames = ['ImportCategoryID'];
         foreach ($propertyNames as $name) {
             $oid = $this->ReadPropertyInteger($name);
-            if ($oid > 0) {
+            if ($oid >= 10000) {
                 $this->RegisterReference($oid);
             }
         }
@@ -76,16 +76,16 @@ class DysonConfig extends IPSModule
 
     private function SetLocation()
     {
-        $category = $this->ReadPropertyInteger('ImportCategoryID');
+        $catID = $this->ReadPropertyInteger('ImportCategoryID');
         $tree_position = [];
-        if ($category > 0 && IPS_ObjectExists($category)) {
-            $tree_position[] = IPS_GetName($category);
-            $parent = IPS_GetObject($category)['ParentID'];
-            while ($parent > 0) {
-                if ($parent > 0) {
-                    $tree_position[] = IPS_GetName($parent);
+        if ($catID >= 10000 && IPS_ObjectExists($catID)) {
+            $tree_position[] = IPS_GetName($catID);
+            $parID = IPS_GetObject($catID)['ParentID'];
+            while ($parID > 0) {
+                if ($parID > 0) {
+                    $tree_position[] = IPS_GetName($parID);
                 }
-                $parent = IPS_GetObject($parent)['ParentID'];
+                $parID = IPS_GetObject($parID)['ParentID'];
             }
             $tree_position = array_reverse($tree_position);
         }

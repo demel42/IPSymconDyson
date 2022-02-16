@@ -191,9 +191,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.4 @ 16.02.2022 10:25 (beta)
+- 2.2.4 @ 16.02.2022 16:52 (beta)
   - MQTT-Subscription um zusätzliche Topics erweitert
   Zum aktivieren: "Konfiguration erneut laden" + Client-Socket neu starten (Inaktiv/Aktiv schalten)
+  - neue Variablen "Warnungen" und "Fehler"
+  - Anpassungen an IPS 6.1 (Prüfung auf ungültige ID's)
 
 - 2.2.3 @ 05.02.2022 12:49
   - Korrektur Luftfeuchte für Modell 358E
