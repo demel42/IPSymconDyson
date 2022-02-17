@@ -74,21 +74,6 @@ class DysonDevice extends IPSModule
         $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => '#FF4500'];
         $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => '#FF0000'];
         $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
-        /*
-        Maps the values of the sensors to the relative values described in the app (1 - 5 => Good, Medium, Bad, Very Bad, Extremely Bad)
-        const pm25Quality = pm25 <= 35 ? 1 : (pm25 <= 53 ? 2 : (pm25 <= 70 ? 3 : (pm25 <= 150 ? 4 : 5)));
-        const pm10Quality = pm10 <= 50 ? 1 : (pm10 <= 75 ? 2 : (pm10 <= 100 ? 3 : (pm10 <= 350 ? 4 : 5)));
-
-        Maps the VOC values to a self-created scale (as described values in the app don't fit)
-        const va10Quality = (va10 * 0.125) <= 3 ? 1 : ((va10 * 0.125) <= 6 ? 2 : ((va10 * 0.125) <= 8 ? 3 : 4));
-
-        Maps the NO2 value ti a self-created scale
-        const noxlQuality = noxl <= 30 ? 1 : (noxl <= 60 ? 2 : (noxl <= 80 ? 3 : (noxl <= 90 ? 4 : 5)));
-
-        Maps the values of the sensors to the relative values, these operations are copied from the newer devices as the app does not specify the correct values
-        const pQuality = p <= 2 ? 1 : (p <= 4 ? 2 : (p <= 7 ? 3 : (p <= 9 ? 4 : 5)));
-        const vQuality = (v * 0.125) <= 3 ? 1 : ((v * 0.125) <= 6 ? 2 : ((v * 0.125) <= 8 ? 3 : 4));
-         */
 
         $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock', '', $reInstall);
 
@@ -1566,6 +1551,7 @@ class DysonDevice extends IPSModule
             $noxl = $this->GetArrayElem($payload, 'data.noxl', 0);
             if ($noxl != '') {
                 $used_fields[] = 'data.noxl';
+                $nox = (int) $noxl;
                 $this->SendDebug(__FUNCTION__, '... NOx (noxl)=' . $nox, 0);
                 $this->SaveValue('NOx', $nox, $is_changed);
             } else {
