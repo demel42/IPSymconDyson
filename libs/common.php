@@ -68,6 +68,9 @@ trait DysonCommonLib
                     $n = isset($a['Name']) ? $a['Name'] : '';
                     $i = isset($a['Icon']) ? $a['Icon'] : '';
                     $f = isset($a['Farbe']) ? $a['Farbe'] : 0;
+                    if (preg_match('/^(#|0x)([0-9A-Za-z]+)$/', (string) $f, $r) == true) {
+                        $f = hexdec($r[2]);
+                    }
                     IPS_SetVariableProfileAssociation($Name, $w, $n, $i, $f);
                 }
             }

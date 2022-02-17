@@ -27,12 +27,68 @@ class DysonDevice extends IPSModule
         $this->CreateVarProfile('Dyson.AirflowDistribution', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity', '', $reInstall);
-        $this->CreateVarProfile('Dyson.PM', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', '', $reInstall);
-        $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
-        $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
 
-        $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
-        $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', '', $reInstall);
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 36, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 54, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 71, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $associations[] = ['Wert' => 151, 'Name' => '%d', 'Farbe' => '#FF00FF'];
+        $associations[] = ['Wert' => 251, 'Name' => '%d', 'Farbe' => '#A020F0'];
+        $this->CreateVarProfile('Dyson.PM25', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 51, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 76, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 101, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $associations[] = ['Wert' => 351, 'Name' => '%d', 'Farbe' => '#FF00FF'];
+        $associations[] = ['Wert' => 421, 'Name' => '%d', 'Farbe' => '#A020F0'];
+        $this->CreateVarProfile('Dyson.PM10', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => '#FF00FF'];
+        $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
+
+        $associations = [];
+        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => '#228B22'];
+        $associations[] = ['Wert' => 3, 'Name' => '%d', 'Farbe' => '#FFA500'];
+        $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => '#FF4500'];
+        $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => '#FF0000'];
+        $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
+        /*
+        Maps the values of the sensors to the relative values described in the app (1 - 5 => Good, Medium, Bad, Very Bad, Extremely Bad)
+        const pm25Quality = pm25 <= 35 ? 1 : (pm25 <= 53 ? 2 : (pm25 <= 70 ? 3 : (pm25 <= 150 ? 4 : 5)));
+        const pm10Quality = pm10 <= 50 ? 1 : (pm10 <= 75 ? 2 : (pm10 <= 100 ? 3 : (pm10 <= 350 ? 4 : 5)));
+
+        Maps the VOC values to a self-created scale (as described values in the app don't fit)
+        const va10Quality = (va10 * 0.125) <= 3 ? 1 : ((va10 * 0.125) <= 6 ? 2 : ((va10 * 0.125) <= 8 ? 3 : 4));
+
+        Maps the NO2 value ti a self-created scale
+        const noxlQuality = noxl <= 30 ? 1 : (noxl <= 60 ? 2 : (noxl <= 80 ? 3 : (noxl <= 90 ? 4 : 5)));
+
+        Maps the values of the sensors to the relative values, these operations are copied from the newer devices as the app does not specify the correct values
+        const pQuality = p <= 2 ? 1 : (p <= 4 ? 2 : (p <= 7 ? 3 : (p <= 9 ? 4 : 5)));
+        const vQuality = (v * 0.125) <= 3 ? 1 : ((v * 0.125) <= 6 ? 2 : ((v * 0.125) <= 8 ? 3 : 4));
+         */
 
         $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock', '', $reInstall);
 
@@ -229,8 +285,8 @@ class DysonDevice extends IPSModule
 
         $this->MaintainVariable('Temperature', $this->Translate('Temperature'), VARIABLETYPE_FLOAT, 'Dyson.Temperature', $vpos++, $options['temperature']);
         $this->MaintainVariable('Humidity', $this->Translate('Humidity'), VARIABLETYPE_FLOAT, 'Dyson.Humidity', $vpos++, $options['humidity']);
-        $this->MaintainVariable('PM25', $this->Translate('Particulate matter (PM 2.5)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm25']);
-        $this->MaintainVariable('PM10', $this->Translate('Particulate matter (PM 10)'), VARIABLETYPE_INTEGER, 'Dyson.PM', $vpos++, $options['pm10']);
+        $this->MaintainVariable('PM25', $this->Translate('Particulate matter (PM 2.5)'), VARIABLETYPE_INTEGER, 'Dyson.PM25', $vpos++, $options['pm25']);
+        $this->MaintainVariable('PM10', $this->Translate('Particulate matter (PM 10)'), VARIABLETYPE_INTEGER, 'Dyson.PM10', $vpos++, $options['pm10']);
         $this->MaintainVariable('VOC', $this->Translate('Volatile organic compounds (VOC)'), VARIABLETYPE_INTEGER, 'Dyson.VOC', $vpos++, $options['voc']);
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
         $this->MaintainVariable('DustIndex', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.DustIndex', $vpos++, $options['dust_index']);
@@ -1435,7 +1491,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['pm25']) {
-            // pm25 - PM 10 ?
+            // pm25 - PM25 ?
             $ignored_fields[] = 'data.pm25';
 
             // p25r - PM 2.5 real
@@ -1451,7 +1507,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['pm10']) {
-            // pm10 - PM 10 ?
+            // pm10 - PM10 ?
             $ignored_fields[] = 'data.pm10';
 
             // p10r - PM 10 real
@@ -1484,7 +1540,7 @@ class DysonDevice extends IPSModule
             $va10 = $this->GetArrayElem($payload, 'data.va10', '');
             if ($va10 != '') {
                 $used_fields[] = 'data.va10';
-                $voc = (int) $va10;
+                $voc = floor((int) $va10 * 0.125);
                 $this->SendDebug(__FUNCTION__, '... VOC (va10)=' . $voc, 0);
                 $this->SaveValue('VOC', $voc, $is_changed);
             } else {
@@ -1510,7 +1566,6 @@ class DysonDevice extends IPSModule
             $noxl = $this->GetArrayElem($payload, 'data.noxl', 0);
             if ($noxl != '') {
                 $used_fields[] = 'data.noxl';
-                $nox = (int) $noxl;
                 $this->SendDebug(__FUNCTION__, '... NOx (noxl)=' . $nox, 0);
                 $this->SaveValue('NOx', $nox, $is_changed);
             } else {
@@ -1609,9 +1664,6 @@ class DysonDevice extends IPSModule
             foreach (['product', 'module'] as $typ) {
                 $fld = $typ . '-' . $lvl;
                 foreach ($payload[$fld] as $var => $val) {
-                    if (is_array($val)) {
-                        continue;
-                    }
                     if ($changeState) {
                         $val = $val[1];
                     }
@@ -2578,6 +2630,7 @@ class DysonDevice extends IPSModule
         $fault2text = [
             'tnke' => 'Tank empty',
             'tnkp' => 'Tank not detected',
+            'uled' => 'Pump error',
         ];
 
         if (isset($fault2text[$val])) {

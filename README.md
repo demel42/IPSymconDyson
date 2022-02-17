@@ -172,8 +172,8 @@ Es werden folgende Variablenprofile angelegt:
 Dyson.AirflowDirection, Dyson.AirflowDistribution
 
 * Integer<br>
-Dyson.AirflowRate, Dyson.AQT, Dyson.RotationMode2, Dyson.NOx, Dyson.Percent, Dyson.PM, Dyson.Dust-Index, Dyson.RotationAngle,
-Dyson.Rotation, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.VOC-Index, Dyson.Wifi
+Dyson.AirflowRate, Dyson.AQT, Dyson.RotationMode2, Dyson.NOx, Dyson.Percent, Dyson.PM10, Dyson.PM25, Dyson.Dust-Index,
+Dyson.RotationAngle, Dyson.Rotation, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.VOC-Index, Dyson.Wifi
 
 * Float<br>
 Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
@@ -182,6 +182,8 @@ Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
 
 Quellen
 - https://github.com/CharlesBlonde/libpurecoollink
+- https://github.com/JanJaapKo/DysonPureLink
+- https://github.com/lukasroegner/homebridge-dyson-pure-cool
 
 GUIDs
 - Modul: `{20E34F64-7545-2129-AF26-58F098F3ECC5}`
@@ -191,10 +193,14 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.4 @ 16.02.2022 17:32 (beta)
+- 2.2.4 @ 17.02.2022 11:06 (beta)
   - MQTT-Subscription um zusätzliche Topics erweitert
   Zum aktivieren: "Konfiguration erneut laden" + Client-Socket neu starten (Inaktiv/Aktiv schalten)
   - neue Variablen "Warnungen" und "Fehler"
+  Hinweis: bei unbekannten Fehler, bitte Info an mich
+  - Variablenprofile für PM10, PM25, VOX, NOx überarbeitet
+  zum Aktivieren: "Variablenprofile erneut einrichten" sowie Variablen PM10 und PM25 löschen und neu anlegen lassen
+  - Berechnung NOx und VOC verbessert
   - Anpassungen an IPS 6.1 (Prüfung auf ungültige ID's)
 
 - 2.2.3 @ 05.02.2022 12:49
