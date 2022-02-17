@@ -193,7 +193,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.4 @ 17.02.2022 11:06 (beta)
+- 2.2.4 @ 17.02.2022 11:06
   - MQTT-Subscription um zusätzliche Topics erweitert
   Zum aktivieren: "Konfiguration erneut laden" + Client-Socket neu starten (Inaktiv/Aktiv schalten)
   - neue Variablen "Warnungen" und "Fehler"
