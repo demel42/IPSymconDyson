@@ -193,7 +193,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.2.5 @ 03.03.2022 10:08
+- 2.2.5 @ 03.03.2022 16:02
   - libs/common.php -> CommonStubs
   - Möglichkeit der Anzeige der Instanz-Referenzen
 
