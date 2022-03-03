@@ -193,6 +193,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.2.5 @ 03.03.2022 10:08
+  - libs/common.php -> CommonStubs
+  - Möglichkeit der Anzeige der Instanz-Referenzen
+
 - 2.2.4 @ 20.02.2022 18:15
   - MQTT-Subscription um zusätzliche Topics erweitert
   Zum aktivieren: "Konfiguration erneut laden" + Client-Socket neu starten (Inaktiv/Aktiv schalten)
@@ -201,7 +205,7 @@ GUIDs
   - Variablenprofile für PM10, PM25, VOX, NOx überarbeitet
   zum Aktivieren: "Variablenprofile erneut einrichten" sowie Variablen PM10 und PM25 löschen und neu anlegen lassen
   - Berechnung NOx und VOC verbessert
-  - Anpassungen an IPS 6.1 (Prüfung auf ungültige ID's)
+  - Anpassungen an IPS 6.2 (Prüfung auf ungültige ID's)
 
 - 2.2.3 @ 05.02.2022 12:49
   - Korrektur Luftfeuchte für Modell 358E
