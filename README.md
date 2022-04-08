@@ -193,6 +193,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.3 08.04.2022 17:23
+  - Konfigurator zeigt nun auch Instanzen an, die nicht mehr zu den vorhandenen Geräten passen
+
 - 2.2.5 @ 17.03.2022 17:53
   - libs/common.php -> CommonStubs
   - Möglichkeit der Anzeige der Instanz-Referenzen
