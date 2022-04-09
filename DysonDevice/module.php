@@ -39,23 +39,36 @@ class DysonDevice extends IPSModule
         $this->InstallVarProfiles(false);
     }
 
+    private function CheckConfiguration()
+    {
+        $s = '';
+        $r = [];
+
+        $user = $this->ReadPropertyString('user');
+        if ($user == '') {
+            $this->SendDebug(__FUNCTION__, '"user" is needed', 0);
+            $r[] = $this->Translate('Username must be specified');
+        }
+
+        $password = $this->ReadPropertyString('password');
+        if ($password == '') {
+            $this->SendDebug(__FUNCTION__, '"password" is needed', 0);
+            $r[] = $this->Translate('Password must be specified');
+        }
+
+        if ($r != []) {
+            $s = $this->Translate('The following points of the configuration are incorrect') . ':' . PHP_EOL;
+            foreach ($r as $p) {
+                $s .= '- ' . $p . PHP_EOL;
+            }
+        }
+
+        return $s;
+    }
+
     public function ApplyChanges()
     {
         parent::ApplyChanges();
-
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
-            $this->LogMessage($s, KL_WARNING);
-            return;
-        }
-
-        $user = $this->ReadPropertyString('user');
-        $password = $this->ReadPropertyString('password');
-        if ($user == '' || $password == '') {
-            $this->SetStatus(self::$IS_UNAUTHORIZED);
-            return;
-        }
 
         $serial = $this->ReadPropertyString('serial');
         $product_type = $this->ReadPropertyString('product_type');
@@ -64,7 +77,6 @@ class DysonDevice extends IPSModule
             return;
         }
 
-        $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
         $this->SendDebug(__FUNCTION__, 'option=' . print_r($options, true), 0);
@@ -175,6 +187,12 @@ class DysonDevice extends IPSModule
             return;
         }
 
+        if ($this->CheckConfiguration() != false) {
+            $this->SetTimerInterval('UpdateStatus', 0);
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            return;
+        }
+
         $this->SetStatus(IS_ACTIVE);
 
         $cID = $this->GetConnectionID();
@@ -186,34 +204,30 @@ class DysonDevice extends IPSModule
         $this->SetSummary($product_type . ' (#' . $serial . ')');
     }
 
-    private function CheckPrerequisites()
-    {
-        $s = '';
-        $r = [];
-
-        if ($r != []) {
-            $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
-        }
-
-        $this->SendDebug(__FUNCTION__, $s, 0);
-        return $s;
-    }
-
     private function GetFormElements()
     {
         $formElements = [];
 
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => $s,
-            ];
-        }
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Dyson device'
+        ];
+
         if ($this->HasActiveParent() == false) {
             $formElements[] = [
                 'type'    => 'Label',
                 'caption' => 'Instance has no active parent instance',
+            ];
+        }
+
+        @$s = $this->CheckConfiguration();
+        if ($s != '') {
+            $formElements[] = [
+                'type'    => 'Label',
+                'caption' => $s
+            ];
+            $formElements[] = [
+                'type'    => 'Label',
             ];
         }
 
@@ -226,11 +240,6 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $product_name = $this->product2name($product_type);
 
-        $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Dyson device'
-        ];
-
         $items = [];
         $items[] = [
             'type'    => 'ValidationTextBox',
@@ -242,38 +251,36 @@ class DysonDevice extends IPSModule
             'name'    => 'password',
             'caption' => 'Password'
         ];
-        //  US, FR, NL, GB, AU. Other codes should be supported.
-        $opts_country = [
-            [
-                'caption' => $this->Translate('England'),
-                'value'   => 'EN'
-            ],
-            [
-                'caption' => $this->Translate('Germany'),
-                'value'   => 'DE'
-            ],
-            [
-                'caption' => $this->Translate('Austria'),
-                'value'   => 'AU'
-            ],
-            [
-                'caption' => $this->Translate('Switzerland'),
-                'value'   => 'CH'
-            ],
-            [
-                'caption' => $this->Translate('Netherlands'),
-                'value'   => 'NL'
-            ],
-            [
-                'caption' => $this->Translate('France'),
-                'value'   => 'FR'
-            ],
-        ];
         $items[] = [
             'type'    => 'Select',
             'name'    => 'country',
             'caption' => 'Country',
-            'options' => $opts_country
+            'options' => [
+                [
+                    'caption' => $this->Translate('England'),
+                    'value'   => 'EN'
+                ],
+                [
+                    'caption' => $this->Translate('Germany'),
+                    'value'   => 'DE'
+                ],
+                [
+                    'caption' => $this->Translate('Austria'),
+                    'value'   => 'AU'
+                ],
+                [
+                    'caption' => $this->Translate('Switzerland'),
+                    'value'   => 'CH'
+                ],
+                [
+                    'caption' => $this->Translate('Netherlands'),
+                    'value'   => 'NL'
+                ],
+                [
+                    'caption' => $this->Translate('France'),
+                    'value'   => 'FR'
+                ],
+            ],
         ];
         $items[] = [
             'type'    => 'Label',
@@ -2165,9 +2172,9 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function RequestAction($Ident, $Value)
+    public function RequestAction($ident, $value)
     {
-        if ($this->CommonRequestAction($Ident, $Value)) {
+        if ($this->CommonRequestAction($ident, $value)) {
             return;
         }
 
@@ -2177,81 +2184,81 @@ class DysonDevice extends IPSModule
         }
 
         $r = false;
-        switch ($Ident) {
+        switch ($ident) {
             case 'Power':
-                $r = $this->SwitchPower((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchPower((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'AutomaticMode':
-                $r = $this->SwitchAutomaticMode((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchAutomaticMode((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'NightMode':
-                $r = $this->SwitchNightMode((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchNightMode((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'SleepTimer':
-                $r = $this->SetSleepTimer((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetSleepTimer((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'AirflowRate':
-                $r = $this->SetAirflowRate((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetAirflowRate((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'AirflowDirection':
-                $r = $this->SwitchAirflowDirection((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchAirflowDirection((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'AirflowDistribution':
-                $r = $this->SwitchAirflowDistribution((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchAirflowDistribution((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'RotationMode':
-                $r = $this->SwitchRotationMode((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchRotationMode((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'RotationMode2':
-                $r = $this->SwitchRotationMode2((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchRotationMode2((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'RotationAngle':
-                $r = $this->SetRotationAngle((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetRotationAngle((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'RotationStart':
-                $r = $this->SetRotationStart((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetRotationStart((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'StandbyMonitoring':
-                $r = $this->SwitchStandbyMonitoring((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchStandbyMonitoring((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'HeaterMode':
-                $r = $this->SwitchHeater((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchHeater((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'HeatingTemperature':
-                $r = $this->SetHeatingTemperature((float) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetHeatingTemperature((float) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'AirQualityTarget':
-                $r = $this->SetAirQualityTarget((int) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetAirQualityTarget((int) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'Humidification':
-                $r = $this->SwitchHumidification((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchHumidification((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'HumidifyAutomaticMode':
-                $r = $this->SwitchHumidifyAutomaticMode((bool) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SwitchHumidifyAutomaticMode((bool) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             case 'HumidifyTarget':
-                $r = $this->SetHumidifyTarget((float) $Value);
-                $this->SendDebug(__FUNCTION__, $Ident . '=' . $Value . ' => ret=' . $r, 0);
+                $r = $this->SetHumidifyTarget((float) $value);
+                $this->SendDebug(__FUNCTION__, $ident . '=' . $value . ' => ret=' . $r, 0);
                 break;
             default:
-                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $Ident, 0);
+                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
                 break;
         }
     }

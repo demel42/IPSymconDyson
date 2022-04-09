@@ -193,8 +193,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.3 @ 08.04.2022 17:23
+- 2.3 @ 09.04.2022 17:16
   - Konfigurator zeigt nun auch Instanzen an, die nicht mehr zu den vorhandenen Geräten passen
+  - CheckConfiguration etabliert
 
 - 2.2.5 @ 17.03.2022 17:53
   - libs/common.php -> CommonStubs

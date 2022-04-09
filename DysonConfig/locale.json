@@ -15,8 +15,10 @@
 			"Netherlands": "Niederlande",
 			"France": "Frankreich",
 
-			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
-			"Module MQTTClient": "Modul MQTTClient",
+			"The following points of the configuration are incorrect":
+				"Die folgenden Punkte der Konfiguration sind fehlerhaft",
+			"Username must be specified": "Benutzer muss angegeben sein",
+			"Password must be specified": "Passwort muss angegeben sein",
 
 			"category": "Kategorie",
 
@@ -74,7 +76,7 @@
 			"Instance is inactive (invalid data)": "Instanz ist inaktiv (ungültige Daten)",
 			"Instance is inactive (no product)": "Instanz ist inaktiv (kein Produkt)",
 			"Instance is inactive (product missing)": "Instanz ist inaktiv (Produkt fehlt)",
-			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)",
+			"Instance is inactive (invalid configuration)": "Instanz ist inaktiv (ungültige Konfiguration)",
 			"Instance is inactive (not logged in)": "Instanz ist inaktiv (nicht angemeldet)",
 			"Instance is inactive (login not verified)": "Instanz ist inaktiv (Anmeldung nicht bestätigt)"
 		}

@@ -23,16 +23,36 @@ class DysonConfig extends IPSModule
         $this->RegisterAttributeString('Auth', '');
     }
 
+    private function CheckConfiguration()
+    {
+        $s = '';
+        $r = [];
+
+        $user = $this->ReadPropertyString('user');
+        if ($user == '') {
+            $this->SendDebug(__FUNCTION__, '"user" is needed', 0);
+            $r[] = $this->Translate('Username must be specified');
+        }
+
+        $password = $this->ReadPropertyString('password');
+        if ($password == '') {
+            $this->SendDebug(__FUNCTION__, '"password" is needed', 0);
+            $r[] = $this->Translate('Password must be specified');
+        }
+
+        if ($r != []) {
+            $s = $this->Translate('The following points of the configuration are incorrect') . ':' . PHP_EOL;
+            foreach ($r as $p) {
+                $s .= '- ' . $p . PHP_EOL;
+            }
+        }
+
+        return $s;
+    }
+
     public function ApplyChanges()
     {
         parent::ApplyChanges();
-
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
-            $this->LogMessage($s, KL_WARNING);
-            return;
-        }
 
         $refs = $this->GetReferenceList();
         foreach ($refs as $ref) {
@@ -46,10 +66,8 @@ class DysonConfig extends IPSModule
             }
         }
 
-        $user = $this->ReadPropertyString('user');
-        $password = $this->ReadPropertyString('password');
-        if ($user == '' || $password == '') {
-            $this->SetStatus(self::$IS_UNAUTHORIZED);
+        if ($this->CheckConfiguration() != false) {
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
             return;
         }
 
@@ -59,19 +77,6 @@ class DysonConfig extends IPSModule
         }
 
         $this->SetStatus(IS_ACTIVE);
-    }
-
-    private function CheckPrerequisites()
-    {
-        $s = '';
-        $r = [];
-
-        if ($r != []) {
-            $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
-        }
-
-        $this->SendDebug(__FUNCTION__, $s, 0);
-        return $s;
     }
 
     private function SetLocation()
@@ -215,53 +220,63 @@ class DysonConfig extends IPSModule
     {
         $formElements = [];
 
-        $s = $this->CheckPrerequisites();
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Dyson configurator'
+        ];
+
+        @$s = $this->CheckConfiguration();
         if ($s != '') {
             $formElements[] = [
                 'type'    => 'Label',
-                'caption' => $s,
+                'caption' => $s
             ];
             $formElements[] = [
                 'type'    => 'Label',
             ];
         }
 
-        $formElements[] = ['type' => 'Label', 'caption' => 'Dyson configurator'];
-
         $items = [];
-        $items[] = ['type' => 'ValidationTextBox', 'name' => 'user', 'caption' => 'User'];
-        $items[] = ['type' => 'ValidationTextBox', 'name' => 'password', 'caption' => 'Password'];
-        $opts_country = [
-            [
-                'caption' => $this->Translate('England'),
-                'value'   => 'EN'
-            ],
-            [
-                'caption' => $this->Translate('Germany'),
-                'value'   => 'DE'
-            ],
-            [
-                'caption' => $this->Translate('Austria'),
-                'value'   => 'AU'
-            ],
-            [
-                'caption' => $this->Translate('Switzerland'),
-                'value'   => 'CH'
-            ],
-            [
-                'caption' => $this->Translate('Netherlands'),
-                'value'   => 'NL'
-            ],
-            [
-                'caption' => $this->Translate('France'),
-                'value'   => 'FR'
-            ],
+        $items[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'user',
+            'caption' => 'User'
+        ];
+        $items[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'password',
+            'caption' => 'Password'
         ];
         $items[] = [
             'type'    => 'Select',
             'name'    => 'country',
             'caption' => 'Country',
-            'options' => $opts_country
+            'options' => [
+                [
+                    'caption' => $this->Translate('England'),
+                    'value'   => 'EN'
+                ],
+                [
+                    'caption' => $this->Translate('Germany'),
+                    'value'   => 'DE'
+                ],
+                [
+                    'caption' => $this->Translate('Austria'),
+                    'value'   => 'AU'
+                ],
+                [
+                    'caption' => $this->Translate('Switzerland'),
+                    'value'   => 'CH'
+                ],
+                [
+                    'caption' => $this->Translate('Netherlands'),
+                    'value'   => 'NL'
+                ],
+                [
+                    'caption' => $this->Translate('France'),
+                    'value'   => 'FR'
+                ],
+            ],
         ];
         $formElements[] = [
             'type'    => 'ExpansionPanel',
@@ -269,7 +284,11 @@ class DysonConfig extends IPSModule
             'caption' => 'Dyson Account-Details'
         ];
 
-        $formElements[] = ['name' => 'ImportCategoryID', 'type' => 'SelectCategory', 'caption' => 'category'];
+        $formElements[] = [
+            'name'    => 'ImportCategoryID',
+            'type'    => 'SelectCategory',
+            'caption' => 'category'
+        ];
 
         $entries = $this->getConfiguratorValues();
         $configurator = [
@@ -360,14 +379,14 @@ class DysonConfig extends IPSModule
         return $formActions;
     }
 
-    public function RequestAction($Ident, $Value)
+    public function RequestAction($ident, $value)
     {
-        if ($this->CommonRequestAction($Ident, $Value)) {
+        if ($this->CommonRequestAction($ident, $value)) {
             return;
         }
-        switch ($Ident) {
+        switch ($ident) {
             default:
-                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $Ident, 0);
+                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
                 break;
         }
     }

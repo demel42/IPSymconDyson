@@ -11,7 +11,7 @@ trait DysonLocalLib
     public static $IS_INVALIDDATA = IS_EBASE + 5;
     public static $IS_NOPRODUCT = IS_EBASE + 6;
     public static $IS_PRODUCTMISSІNG = IS_EBASE + 7;
-    public static $IS_INVALIDPREREQUISITES = IS_EBASE + 8;
+    public static $IS_INVALIDCONFIG = IS_EBASE + 8;
     public static $IS_NOLOGIN = IS_EBASE + 9;
     public static $IS_NOVERIFY = IS_EBASE + 10;
 
@@ -39,7 +39,7 @@ trait DysonLocalLib
         $formStatus[] = ['code' => self::$IS_INVALIDDATA, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid data)'];
         $formStatus[] = ['code' => self::$IS_NOPRODUCT, 'icon' => 'error', 'caption' => 'Instance is inactive (no product)'];
         $formStatus[] = ['code' => self::$IS_PRODUCTMISSІNG, 'icon' => 'error', 'caption' => 'Instance is inactive (product missing)'];
-        $formStatus[] = ['code' => self::$IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
+        $formStatus[] = ['code' => self::$IS_INVALIDCONFIG, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid configuration)'];
         $formStatus[] = ['code' => self::$IS_NOLOGIN, 'icon' => 'error', 'caption' => 'Instance is inactive (not logged in)'];
         $formStatus[] = ['code' => self::$IS_NOVERIFY, 'icon' => 'error', 'caption' => 'Instance is inactive (login not verified)'];
 
