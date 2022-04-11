@@ -182,13 +182,13 @@ class DysonDevice extends IPSModule
 
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
-            $this->SetTimerInterval('UpdateStatus', 0);
+            $this->MaintainTimer('UpdateStatus', 0);
             $this->SetStatus(IS_INACTIVE);
             return;
         }
 
         if ($this->CheckConfiguration() != false) {
-            $this->SetTimerInterval('UpdateStatus', 0);
+            $this->MaintainTimer('UpdateStatus', 0);
             $this->SetStatus(self::$IS_INVALIDCONFIG);
             return;
         }
@@ -198,7 +198,7 @@ class DysonDevice extends IPSModule
         $cID = $this->GetConnectionID();
         if ($cID != false) {
             $this->RegisterMessage($cID, IM_CHANGESTATUS);
-            $this->SetTimerInterval('UpdateStatus', 2 * 1000);
+            $this->MaintainTimer('UpdateStatus', 2 * 1000);
         }
 
         $this->SetSummary($product_type . ' (#' . $serial . ')');
@@ -1579,11 +1579,10 @@ class DysonDevice extends IPSModule
 
     public function UpdateStatus()
     {
-        $min = $this->ReadPropertyInteger('UpdateStatusInterval');
-
-        $this->SendDebug(__FUNCTION__, '', 0);
         $this->RequestStateCommand();
-        $this->SetTimerInterval('UpdateStatus', $min * 60 * 1000);
+
+        $min = $this->ReadPropertyInteger('UpdateStatusInterval');
+        $this->MaintainTimer('UpdateStatus', $min * 60 * 1000);
     }
 
     private function RequestStateCommand()
