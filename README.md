@@ -193,6 +193,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.3.1 @ 13.04.2022 15:54
+  - potentieller Namenskonflikt behoben (trait CommonStubs)
+
 - 2.3 @ 11.04.2022 11:36
   - Konfigurator zeigt nun auch Instanzen an, die nicht mehr zu den vorhandenen Geräten passen
   - CheckConfiguration etabliert
