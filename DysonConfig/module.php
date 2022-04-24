@@ -21,11 +21,12 @@ class DysonConfig extends IPSModule
         $this->RegisterPropertyString('country', '');
 
         $this->RegisterAttributeString('Auth', '');
+
+        $this->RegisterAttributeString('UpdateInfo', '');
     }
 
     private function CheckConfiguration()
     {
-        $s = '';
         $r = [];
 
         $user = $this->ReadPropertyString('user');
@@ -40,39 +41,28 @@ class DysonConfig extends IPSModule
             $r[] = $this->Translate('Password must be specified');
         }
 
-        if ($r != []) {
-            $s = $this->Translate('The following points of the configuration are incorrect') . ':' . PHP_EOL;
-            foreach ($r as $p) {
-                $s .= '- ' . $p . PHP_EOL;
-            }
-        }
-
-        return $s;
+        return $r;
     }
 
     public function ApplyChanges()
     {
         parent::ApplyChanges();
 
-        $refs = $this->GetReferenceList();
-        foreach ($refs as $ref) {
-            $this->UnregisterReference($ref);
-        }
         $propertyNames = ['ImportCategoryID'];
-        foreach ($propertyNames as $name) {
-            $oid = $this->ReadPropertyInteger($name);
-            if ($oid >= 10000) {
-                $this->RegisterReference($oid);
-            }
+        $this->MaintainReferences($propertyNames);
+
+        if ($this->CheckPrerequisites() != false) {
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
+            return;
+        }
+
+        if ($this->CheckUpdate() != false) {
+            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            return;
         }
 
         if ($this->CheckConfiguration() != false) {
             $this->SetStatus(self::$IS_INVALIDCONFIG);
-            return;
-        }
-
-        if ($this->checkLogin() == false) {
-            $this->SetStatus(self::$IS_NOLOGIN);
             return;
         }
 
@@ -218,70 +208,58 @@ class DysonConfig extends IPSModule
 
     private function GetFormElements()
     {
-        $formElements = [];
+        $formElements = $this->GetCommonFormElements('Dyson configurator');
 
-        $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Dyson configurator'
-        ];
-
-        @$s = $this->CheckConfiguration();
-        if ($s != '') {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => $s
-            ];
-            $formElements[] = [
-                'type'    => 'Label',
-            ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            return $formElements;
         }
 
-        $items = [];
-        $items[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'user',
-            'caption' => 'User'
-        ];
-        $items[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'password',
-            'caption' => 'Password'
-        ];
-        $items[] = [
-            'type'    => 'Select',
-            'name'    => 'country',
-            'caption' => 'Country',
-            'options' => [
-                [
-                    'caption' => $this->Translate('England'),
-                    'value'   => 'EN'
-                ],
-                [
-                    'caption' => $this->Translate('Germany'),
-                    'value'   => 'DE'
-                ],
-                [
-                    'caption' => $this->Translate('Austria'),
-                    'value'   => 'AU'
-                ],
-                [
-                    'caption' => $this->Translate('Switzerland'),
-                    'value'   => 'CH'
-                ],
-                [
-                    'caption' => $this->Translate('Netherlands'),
-                    'value'   => 'NL'
-                ],
-                [
-                    'caption' => $this->Translate('France'),
-                    'value'   => 'FR'
-                ],
-            ],
-        ];
         $formElements[] = [
             'type'    => 'ExpansionPanel',
-            'items'   => $items,
-            'caption' => 'Dyson Account-Details'
+            'items'   => [
+                [
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'user',
+                    'caption' => 'User'
+                ],
+                [
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'password',
+                    'caption' => 'Password'
+                ],
+                [
+                    'type'    => 'Select',
+                    'name'    => 'country',
+                    'caption' => 'Country',
+                    'options' => [
+                        [
+                            'caption' => $this->Translate('England'),
+                            'value'   => 'EN'
+                        ],
+                        [
+                            'caption' => $this->Translate('Germany'),
+                            'value'   => 'DE'
+                        ],
+                        [
+                            'caption' => $this->Translate('Austria'),
+                            'value'   => 'AU'
+                        ],
+                        [
+                            'caption' => $this->Translate('Switzerland'),
+                            'value'   => 'CH'
+                        ],
+                        [
+                            'caption' => $this->Translate('Netherlands'),
+                            'value'   => 'NL'
+                        ],
+                        [
+                            'caption' => $this->Translate('France'),
+                            'value'   => 'FR'
+                        ],
+                    ],
+                ],
+            ],
+            'caption' => 'Dyson Account-Details',
         ];
 
         $formElements[] = [
@@ -328,6 +306,15 @@ class DysonConfig extends IPSModule
     {
         $formActions = [];
 
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            $formActions[] = $this->GetCompleteUpdateFormAction();
+
+            $formActions[] = $this->GetInformationFormAction();
+            $formActions[] = $this->GetReferencesFormAction();
+
+            return $formActions;
+        }
+
         $formActions[] = [
             'type'      => 'ExpansionPanel',
             'caption'   => 'perform login',
@@ -347,7 +334,7 @@ class DysonConfig extends IPSModule
                         [
                             'type'    => 'Button',
                             'caption' => 'Request code',
-                            'onClick' => 'Dyson_ManualRelogin1($id);'
+                            'onClick' => $this->GetModulePrefix() . '_ManualRelogin1($id);'
                         ],
                     ]
                 ],
@@ -366,15 +353,15 @@ class DysonConfig extends IPSModule
                         [
                             'type'    => 'Button',
                             'caption' => 'Verify login',
-                            'onClick' => 'Dyson_ManualRelogin2($id, $otpCode);'
+                            'onClick' => $this->GetModulePrefix() . '_ManualRelogin2($id, $otpCode);'
                         ]
                     ]
                 ]
             ]
         ];
 
-        $formActions[] = $this->GetInformationForm();
-        $formActions[] = $this->GetReferencesForm();
+        $formActions[] = $this->GetInformationFormAction();
+        $formActions[] = $this->GetReferencesFormAction();
 
         return $formActions;
     }

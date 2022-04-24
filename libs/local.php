@@ -4,33 +4,19 @@ declare(strict_types=1);
 
 trait DysonLocalLib
 {
-    public static $IS_NODATA = IS_EBASE + 1;
-    public static $IS_UNAUTHORIZED = IS_EBASE + 2;
-    public static $IS_SERVERERROR = IS_EBASE + 3;
-    public static $IS_HTTPERROR = IS_EBASE + 4;
-    public static $IS_INVALIDDATA = IS_EBASE + 5;
-    public static $IS_NOPRODUCT = IS_EBASE + 6;
-    public static $IS_PRODUCTMISSІNG = IS_EBASE + 7;
-    public static $IS_INVALIDCONFIG = IS_EBASE + 8;
-    public static $IS_NOLOGIN = IS_EBASE + 9;
-    public static $IS_NOVERIFY = IS_EBASE + 10;
-
-    public static $STATUS_INVALID = 0;
-    public static $STATUS_VALID = 1;
-    public static $STATUS_RETRYABLE = 2;
-
-    private static $api_host = 'appapi.cp.dyson.com';
-    private static $user_agent = 'DysonLink/32531 CFNetwork/1240.0.4 Darwin/20.5.0';
-    private static $cainfo = __DIR__ . '/certs/DigiCert-chain.crt';
+    public static $IS_NODATA = IS_EBASE + 10;
+    public static $IS_UNAUTHORIZED = IS_EBASE + 11;
+    public static $IS_SERVERERROR = IS_EBASE + 12;
+    public static $IS_HTTPERROR = IS_EBASE + 13;
+    public static $IS_INVALIDDATA = IS_EBASE + 14;
+    public static $IS_NOPRODUCT = IS_EBASE + 15;
+    public static $IS_PRODUCTMISSІNG = IS_EBASE + 16;
+    public static $IS_NOLOGIN = IS_EBASE + 17;
+    public static $IS_NOVERIFY = IS_EBASE + 18;
 
     private function GetFormStatus()
     {
-        $formStatus = [];
-        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
-        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
-        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
-        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
-        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+        $formStatus = $this->GetCommonFormStatus();
 
         $formStatus[] = ['code' => self::$IS_NODATA, 'icon' => 'error', 'caption' => 'Instance is inactive (no data)'];
         $formStatus[] = ['code' => self::$IS_UNAUTHORIZED, 'icon' => 'error', 'caption' => 'Instance is inactive (unauthorized)'];
@@ -39,12 +25,15 @@ trait DysonLocalLib
         $formStatus[] = ['code' => self::$IS_INVALIDDATA, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid data)'];
         $formStatus[] = ['code' => self::$IS_NOPRODUCT, 'icon' => 'error', 'caption' => 'Instance is inactive (no product)'];
         $formStatus[] = ['code' => self::$IS_PRODUCTMISSІNG, 'icon' => 'error', 'caption' => 'Instance is inactive (product missing)'];
-        $formStatus[] = ['code' => self::$IS_INVALIDCONFIG, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid configuration)'];
         $formStatus[] = ['code' => self::$IS_NOLOGIN, 'icon' => 'error', 'caption' => 'Instance is inactive (not logged in)'];
         $formStatus[] = ['code' => self::$IS_NOVERIFY, 'icon' => 'error', 'caption' => 'Instance is inactive (login not verified)'];
 
         return $formStatus;
     }
+
+    public static $STATUS_INVALID = 0;
+    public static $STATUS_VALID = 1;
+    public static $STATUS_RETRYABLE = 2;
 
     private function CheckStatus()
     {
@@ -73,131 +62,151 @@ trait DysonLocalLib
             $this->SendDebug(__FUNCTION__, 'reInstall=' . $this->bool2str($reInstall), 0);
         }
 
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Back'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Front'), 'Farbe' => -1];
+        $associations = [
+            ['Wert' => false, 'Name' => $this->Translate('Back'), 'Farbe' => -1],
+            ['Wert' => true, 'Name' => $this->Translate('Front'), 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.AirflowDirection', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => false, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1];
-        $associations[] = ['Wert' => true, 'Name' => $this->Translate('Direct'), 'Farbe' => -1];
+        $associations = [
+            ['Wert' => false, 'Name' => $this->Translate('Indirect'), 'Farbe' => -1],
+            ['Wert' => true, 'Name' => $this->Translate('Direct'), 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.AirflowDistribution', VARIABLETYPE_BOOLEAN, '', 0, 0, 0, 0, '', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.Wifi', VARIABLETYPE_INTEGER, ' dBm', 0, 0, 0, 0, 'Intensity', '', $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 36, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 54, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 71, 'Name' => '%d', 'Farbe' => 0xFF0000];
-        $associations[] = ['Wert' => 151, 'Name' => '%d', 'Farbe' => 0xFF00FF];
-        $associations[] = ['Wert' => 251, 'Name' => '%d', 'Farbe' => 0xA020F0];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 36, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 54, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 71, 'Name' => '%d', 'Farbe' => 0xFF0000],
+            ['Wert' => 151, 'Name' => '%d', 'Farbe' => 0xFF00FF],
+            ['Wert' => 251, 'Name' => '%d', 'Farbe' => 0xA020F0],
+        ];
         $this->CreateVarProfile('Dyson.PM25', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 51, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 76, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 101, 'Name' => '%d', 'Farbe' => 0xFF0000];
-        $associations[] = ['Wert' => 351, 'Name' => '%d', 'Farbe' => 0xFF00FF];
-        $associations[] = ['Wert' => 421, 'Name' => '%d', 'Farbe' => 0xA020F0];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 51, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 76, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 101, 'Name' => '%d', 'Farbe' => 0xFF0000],
+            ['Wert' => 351, 'Name' => '%d', 'Farbe' => 0xFF00FF],
+            ['Wert' => 421, 'Name' => '%d', 'Farbe' => 0xA020F0],
+        ];
         $this->CreateVarProfile('Dyson.PM10', VARIABLETYPE_INTEGER, ' µg/m³', 0, 0, 0, 0, 'Snow', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF0000];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF0000],
+        ];
         $this->CreateVarProfile('Dyson.VOC', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF0000];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF0000],
+        ];
         $this->CreateVarProfile('Dyson.NOx', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF0000];
-        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF00FF];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 2, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 4, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 7, 'Name' => '%d', 'Farbe' => 0xFF0000],
+            ['Wert' => 9, 'Name' => '%d', 'Farbe' => 0xFF00FF],
+        ];
         $this->CreateVarProfile('Dyson.DustIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22];
-        $associations[] = ['Wert' => 3, 'Name' => '%d', 'Farbe' => 0xFFA500];
-        $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => 0xFF4500];
-        $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => 0xFF0000];
+        $associations = [
+            ['Wert' => 0, 'Name' => '%d', 'Farbe' => 0x228B22],
+            ['Wert' => 3, 'Name' => '%d', 'Farbe' => 0xFFA500],
+            ['Wert' => 6, 'Name' => '%d', 'Farbe' => 0xFF4500],
+            ['Wert' => 8, 'Name' => '%d', 'Farbe' => 0xFF0000],
+        ];
         $this->CreateVarProfile('Dyson.VOCIndex', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Gauge', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.Hours', VARIABLETYPE_INTEGER, ' h', 0, 0, 0, 0, 'Clock', '', $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
+        $associations = [
+            ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1],
+            ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.SleepTimer', VARIABLETYPE_INTEGER, '', 0, 539, 1, 0, '', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 3, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 4, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 5, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 6, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1];
-        $associations[] = ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1];
+        $associations = [
+            ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1],
+            ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1],
+            ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 3, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 4, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 5, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 6, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.AirflowRate', VARIABLETYPE_INTEGER, '', 0, 9, 0, 0, '', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' =>  45, 'Name' => '45', 'Farbe' => -1];
-        $associations[] = ['Wert' =>  90, 'Name' => '90', 'Farbe' => -1];
-        $associations[] = ['Wert' => 180, 'Name' => '180', 'Farbe' => -1];
-        $associations[] = ['Wert' => 350, 'Name' => '350', 'Farbe' => -1];
+        $associations = [
+            ['Wert' =>  45, 'Name' => '45', 'Farbe' => -1],
+            ['Wert' => 90, 'Name' => '90', 'Farbe' => -1],
+            ['Wert' => 180, 'Name' => '180', 'Farbe' => -1],
+            ['Wert' => 350, 'Name' => '350', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.RotationAngle', VARIABLETYPE_INTEGER, '°', 0, 9, 0, 0, '', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' =>   0, 'Name' => $this->Translate('Off'), 'Farbe' => -1];
-        $associations[] = ['Wert' =>  45, 'Name' => '45°', 'Farbe' => -1];
-        $associations[] = ['Wert' =>  90, 'Name' => '90°', 'Farbe' => -1];
-        $associations[] = ['Wert' => 360, 'Name' => $this->Translate('Breeze'), 'Farbe' => -1];
+        $associations = [
+            ['Wert' =>   0, 'Name' => $this->Translate('Off'), 'Farbe' => -1],
+            ['Wert' => 45, 'Name' => '45°', 'Farbe' => -1],
+            ['Wert' => 90, 'Name' => '90°', 'Farbe' => -1],
+            ['Wert' => 360, 'Name' => $this->Translate('Breeze'), 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.RotationMode2', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, '', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.RotationStart', VARIABLETYPE_INTEGER, '°', 0, 359, 1, 0, '', '', $reInstall);
 
         $this->CreateVarProfile('Dyson.Percent', VARIABLETYPE_INTEGER, ' %', 0, 0, 0, 0, '', '', $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 1, 'Name' => $this->Translate('High'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1];
-        $associations[] = ['Wert' => 4, 'Name' => $this->Translate('Low'), 'Farbe' => -1];
+        $associations = [
+            ['Wert' => 1, 'Name' => $this->Translate('High'), 'Farbe' => -1],
+            ['Wert' => 3, 'Name' => $this->Translate('Average'), 'Farbe' => -1],
+            ['Wert' => 4, 'Name' => $this->Translate('Low'), 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.AQT', VARIABLETYPE_INTEGER, '', 0, 0, 0, 0, 'Flag', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1];
+        $associations = [
+            ['Wert' => -273.15, 'Name' => '-', 'Farbe' => -1],
+            ['Wert' => -272, 'Name' => '%.0f °C', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.Temperature', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Temperature', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.HeatingTemperature', VARIABLETYPE_FLOAT, ' °C', 1, 37, 1, 0, 'Temperature', '', $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 0, 'Name' => '-', 'Farbe' => -1];
-        $associations[] = ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations = [
+            ['Wert' => 0, 'Name' => '-', 'Farbe' => -1],
+            ['Wert' => 1, 'Name' => '%.0f %%', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
 
-        $associations = [];
-        $associations[] = ['Wert' => 30, 'Name' => '%.0f %%', 'Farbe' => -1];
-        $associations[] = ['Wert' => 40, 'Name' => '%.0f %%', 'Farbe' => -1];
-        $associations[] = ['Wert' => 50, 'Name' => '%.0f %%', 'Farbe' => -1];
-        $associations[] = ['Wert' => 60, 'Name' => '%.0f %%', 'Farbe' => -1];
-        $associations[] = ['Wert' => 70, 'Name' => '%.0f %%', 'Farbe' => -1];
+        $associations = [
+            ['Wert' => 30, 'Name' => '%.0f %%', 'Farbe' => -1],
+            ['Wert' => 40, 'Name' => '%.0f %%', 'Farbe' => -1],
+            ['Wert' => 50, 'Name' => '%.0f %%', 'Farbe' => -1],
+            ['Wert' => 60, 'Name' => '%.0f %%', 'Farbe' => -1],
+            ['Wert' => 70, 'Name' => '%.0f %%', 'Farbe' => -1],
+        ];
         $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
     }
+
+    private static $api_host = 'appapi.cp.dyson.com';
+    private static $user_agent = 'DysonLink/32531 CFNetwork/1240.0.4 Darwin/20.5.0';
+    private static $cainfo = __DIR__ . '/certs/DigiCert-chain.crt';
 
     private function getDeviceList()
     {

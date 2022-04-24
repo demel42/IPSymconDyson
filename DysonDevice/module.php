@@ -25,7 +25,7 @@ class DysonDevice extends IPSModule
 
         $this->RegisterPropertyInteger('UpdateStatusInterval', '1');
 
-        $this->RegisterTimer('UpdateStatus', 0, 'Dyson_UpdateStatus(' . $this->InstanceID . ');');
+        $this->RegisterTimer('UpdateStatus', 0, $this->GetModulePrefix() . '_UpdateStatus(' . $this->InstanceID . ');');
 
         $this->RegisterMessage(0, IPS_KERNELMESSAGE);
 
@@ -34,6 +34,8 @@ class DysonDevice extends IPSModule
 
         $this->RegisterAttributeString('Faults', '');
 
+        $this->RegisterAttributeString('UpdateInfo', '');
+
         $this->RequireParent('{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}');
 
         $this->InstallVarProfiles(false);
@@ -41,7 +43,6 @@ class DysonDevice extends IPSModule
 
     private function CheckConfiguration()
     {
-        $s = '';
         $r = [];
 
         $user = $this->ReadPropertyString('user');
@@ -56,27 +57,34 @@ class DysonDevice extends IPSModule
             $r[] = $this->Translate('Password must be specified');
         }
 
-        if ($r != []) {
-            $s = $this->Translate('The following points of the configuration are incorrect') . ':' . PHP_EOL;
-            foreach ($r as $p) {
-                $s .= '- ' . $p . PHP_EOL;
-            }
-        }
-
-        return $s;
+        return $r;
     }
 
     public function ApplyChanges()
     {
         parent::ApplyChanges();
 
-        $serial = $this->ReadPropertyString('serial');
-        $product_type = $this->ReadPropertyString('product_type');
-        if ($serial == '' || $product_type == '') {
-            $this->SetStatus(self::$IS_NOPRODUCT);
+        $this->MaintainReferences();
+
+        if ($this->CheckPrerequisites() != false) {
+            $this->MaintainTimer('UpdateStatus', 0);
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
             return;
         }
 
+        if ($this->CheckUpdate() != false) {
+            $this->MaintainTimer('UpdateStatus', 0);
+            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            return;
+        }
+
+        if ($this->CheckConfiguration() != false) {
+            $this->MaintainTimer('UpdateStatus', 0);
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            return;
+        }
+
+        $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
         $this->SendDebug(__FUNCTION__, 'option=' . print_r($options, true), 0);
@@ -183,15 +191,12 @@ class DysonDevice extends IPSModule
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
             $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(IS_INACTIVE);
+            $this->SetStatus(self::$IS_DEACTIVATED);
             return;
         }
 
-        if ($this->CheckConfiguration() != false) {
-            $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(self::$IS_INVALIDCONFIG);
-            return;
-        }
+        $serial = $this->ReadPropertyString('serial');
+        $this->SetSummary($product_type . ' (#' . $serial . ')');
 
         $this->SetStatus(IS_ACTIVE);
 
@@ -200,35 +205,14 @@ class DysonDevice extends IPSModule
             $this->RegisterMessage($cID, IM_CHANGESTATUS);
             $this->MaintainTimer('UpdateStatus', 2 * 1000);
         }
-
-        $this->SetSummary($product_type . ' (#' . $serial . ')');
     }
 
     private function GetFormElements()
     {
-        $formElements = [];
+        $formElements = $this->GetCommonFormElements('Dyson device');
 
-        $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Dyson device'
-        ];
-
-        if ($this->HasActiveParent() == false) {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => 'Instance has no active parent instance',
-            ];
-        }
-
-        @$s = $this->CheckConfiguration();
-        if ($s != '') {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => $s
-            ];
-            $formElements[] = [
-                'type'    => 'Label',
-            ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            return $formElements;
         }
 
         $formElements[] = [
@@ -239,91 +223,84 @@ class DysonDevice extends IPSModule
 
         $product_type = $this->ReadPropertyString('product_type');
         $product_name = $this->product2name($product_type);
-
-        $items = [];
-        $items[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'user',
-            'caption' => 'User'
-        ];
-        $items[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'password',
-            'caption' => 'Password'
-        ];
-        $items[] = [
-            'type'    => 'Select',
-            'name'    => 'country',
-            'caption' => 'Country',
-            'options' => [
-                [
-                    'caption' => $this->Translate('England'),
-                    'value'   => 'EN'
-                ],
-                [
-                    'caption' => $this->Translate('Germany'),
-                    'value'   => 'DE'
-                ],
-                [
-                    'caption' => $this->Translate('Austria'),
-                    'value'   => 'AU'
-                ],
-                [
-                    'caption' => $this->Translate('Switzerland'),
-                    'value'   => 'CH'
-                ],
-                [
-                    'caption' => $this->Translate('Netherlands'),
-                    'value'   => 'NL'
-                ],
-                [
-                    'caption' => $this->Translate('France'),
-                    'value'   => 'FR'
-                ],
-            ],
-        ];
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => ''
-        ];
-        $items[] = [
-            'type'    => 'RowLayout',
+        $formElements[] = [
+            'type'    => 'ExpansionPanel',
             'items'   => [
                 [
                     'type'    => 'ValidationTextBox',
-                    'name'    => 'product_type',
-                    'caption' => 'Product type'
+                    'name'    => 'user',
+                    'caption' => 'User'
+                ],
+                [
+                    'type'    => 'ValidationTextBox',
+                    'name'    => 'password',
+                    'caption' => 'Password'
+                ],
+                [
+                    'type'    => 'Select',
+                    'name'    => 'country',
+                    'caption' => 'Country',
+                    'options' => [
+                        [
+                            'caption' => $this->Translate('England'),
+                            'value'   => 'EN'
+                        ],
+                        [
+                            'caption' => $this->Translate('Germany'),
+                            'value'   => 'DE'
+                        ],
+                        [
+                            'caption' => $this->Translate('Austria'),
+                            'value'   => 'AU'
+                        ],
+                        [
+                            'caption' => $this->Translate('Switzerland'),
+                            'value'   => 'CH'
+                        ],
+                        [
+                            'caption' => $this->Translate('Netherlands'),
+                            'value'   => 'NL'
+                        ],
+                        [
+                            'caption' => $this->Translate('France'),
+                            'value'   => 'FR'
+                        ],
+                    ],
                 ],
                 [
                     'type'    => 'Label',
-                    'caption' => $product_name
-                ]
-            ]
-        ];
-        $formElements[] = [
-            'type'    => 'ExpansionPanel',
-            'items'   => $items,
+                    'caption' => ''
+                ],
+                [
+                    'type'    => 'RowLayout',
+                    'items'   => [
+                        [
+                            'type'    => 'ValidationTextBox',
+                            'name'    => 'product_type',
+                            'caption' => 'Product type'
+                        ],
+                        [
+                            'type'    => 'Label',
+                            'caption' => $product_name
+                        ]
+                    ]
+                ],
+            ],
             'caption' => 'Basic configuration (don\'t change)',
         ];
 
-        $items = [];
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => ''
-        ];
-        $items[] = [
-            'type'    => 'Label',
-            'caption' => 'Update status every X minutes'
-        ];
-        $items[] = [
-            'type'    => 'NumberSpinner',
-            'name'    => 'UpdateStatusInterval',
-            'caption' => 'Minutes'
-        ];
         $formElements[] = [
             'type'    => 'ExpansionPanel',
-            'items'   => $items,
-            'caption' => 'Call settings'
+            'items'   => [
+                [
+                    'type'    => 'NumberSpinner',
+                    'name'    => 'UpdateStatusInterval',
+                    'minimum' => 0,
+                    'suffix'  => 'Minutes',
+                    'caption' => 'Update interval',
+                ],
+            ],
+            'caption' => 'Call settings',
         ];
 
         return $formElements;
@@ -331,19 +308,26 @@ class DysonDevice extends IPSModule
 
     private function GetFormActions()
     {
-        $formActions = [];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            $formActions[] = $this->GetCompleteUpdateFormAction();
+
+            $formActions[] = $this->GetInformationFormAction();
+            $formActions[] = $this->GetReferencesFormAction();
+
+            return $formActions;
+        }
 
         if ($this->IsInternalMQTTClient() == false) {
             $formActions[] = [
                 'type'    => 'Button',
                 'caption' => 'Convert MQTT-Client',
-                'onClick' => 'Dyson_ConvertSplitter($id);'
+                'onClick' => $this->GetModulePrefix() . '_ConvertSplitter($id);'
             ];
         } else {
             $formActions[] = [
                 'type'    => 'Button',
                 'caption' => 'Update Status',
-                'onClick' => 'Dyson_ManualUpdateStatus($id);'
+                'onClick' => $this->GetModulePrefix() . '_ManualUpdateStatus($id);'
             ];
 
             $formActions[] = [
@@ -362,7 +346,7 @@ class DysonDevice extends IPSModule
                     [
                         'type'    => 'Button',
                         'caption' => 'Reload Config',
-                        'onClick' => 'Dyson_ManualReloadConfig($id);'
+                        'onClick' => $this->GetModulePrefix() . '_ManualReloadConfig($id);'
                     ],
                     [
                         'type'    => 'Label',
@@ -382,7 +366,7 @@ class DysonDevice extends IPSModule
                             [
                                 'type'    => 'Button',
                                 'caption' => 'Request code',
-                                'onClick' => 'Dyson_ManualRelogin1($id);'
+                                'onClick' => $this->GetModulePrefix() . '_ManualRelogin1($id);'
                             ],
                         ]
                     ],
@@ -401,7 +385,7 @@ class DysonDevice extends IPSModule
                             [
                                 'type'    => 'Button',
                                 'caption' => 'Verify login',
-                                'onClick' => 'Dyson_ManualRelogin2($id, $otpCode);'
+                                'onClick' => $this->GetModulePrefix() . '_ManualRelogin2($id, $otpCode);'
                             ]
                         ]
                     ]
@@ -440,7 +424,7 @@ class DysonDevice extends IPSModule
                     [
                         'type'    => 'Button',
                         'caption' => 'Execute',
-                        'onClick' => 'Dyson_ExecuteSetState($id, $cmd);'
+                        'onClick' => $this->GetModulePrefix() . '_ExecuteSetState($id, $cmd);'
                     ],
                     [
                         'type'    => 'Label',
@@ -448,14 +432,14 @@ class DysonDevice extends IPSModule
                     [
                         'type'    => 'Button',
                         'caption' => 'Re-install variable-profiles',
-                        'onClick' => 'Dyson_InstallVarProfiles($id, true);'
+                        'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
                     ]
                 ],
             ];
         }
 
-        $formActions[] = $this->GetInformationForm();
-        $formActions[] = $this->GetReferencesForm();
+        $formActions[] = $this->GetInformationFormAction();
+        $formActions[] = $this->GetReferencesFormAction();
 
         return $formActions;
     }

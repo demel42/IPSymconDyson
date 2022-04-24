@@ -1,10 +1,28 @@
 {
 	"translations": {
 		"de": {
-			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
-			"Disable instance": "Instanz deaktivieren",
-
 			"Dyson device": "Dyson Gerät",
+
+			"Instance has no active parent instance": "Instanz hat keine aktive übergeordnete Instanz",
+
+			"The following points of the configuration are incorrect": "Die folgenden Punkte der Konfiguration sind fehlerhaft",
+			"Username must be specified": "Benutzer muss angegeben sein",
+			"Password must be specified": "Passwort muss angegeben sein",
+
+			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
+
+			"Still something to do to complete the update": "Es ist noch etwas zu tun, um das Update abzuschließen",
+			"old version": "alte Version",
+			"new version": "neue Version",
+			"unknwon": "unbekannt",
+			"The use of possible affected status variables can be checked in the expansion panel \"References\"":
+				"Die Verwendung möglicherweise betroffener Statusvariablen kann im Erweiterungspanel \"Referenzen\" überprüft werden",
+			"Press button 'Complete update' to carry out the required work": "Taste 'Update abschliessen' betätigen um die erforderlichen Arbeiten auszuführen",
+			"Complete update": "Update abschliessen",
+			"Unable to complete the update": "Das Update kann nicht abgeschlossen werden",
+			"please contact the author": "Bitte kontaktieren Sie den Autor",
+
+			"Disable instance": "Instanz deaktivieren",
 
 			"Dyson Pure Cool purifier desk fan (DP02)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP02)",
 			"Dyson Pure Cool purifier desk fan (DP04)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP04)",
@@ -28,16 +46,10 @@
 			"Netherlands": "Niederlande",
 			"France": "Frankreich",
 
-			"The following points of the configuration are incorrect":
-				"Die folgenden Punkte der Konfiguration sind fehlerhaft",
-			"Username must be specified": "Benutzer muss angegeben sein",
-			"Password must be specified": "Passwort muss angegeben sein",
-
 			"Convert MQTT-Client": "MQTT-Client anpassen",
 
 			"Reload Config": "Konfiguration erneut laden",
-			"This action also adjusts configuration of the MQTT-Client":
-				"Diese Aktion passt auch die Konfiguration des MQTT-Clients an",
+			"This action also adjusts configuration of the MQTT-Client": "Diese Aktion passt auch die Konfiguration des MQTT-Clients an",
 			"has no parent instance": "has no parent instance",
 
 			"Relogin": "Erneut anmelden",
@@ -60,18 +72,6 @@
 
 			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
 			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
-
-			"Test area": "Test-Bereich",
-
-			"Expert area": "Experten-Bereich",
-			"Test own 'SET-STATE' command; the command has to be a JSON-coded string (see documentation)":
-				"Eigene 'SET-STATE'-Kommandos testen; das Kommando muss eine JSON-kodierte Zeichenkette sein (siehe Dokumentation)",
-			"Examine the debug-window for information about 'ExecuteSetState'":
-				"Überprüfen Sie das Debug-Fenster auf Informationen zu 'ExecuteSetState'",
-			"Re-install variable-profiles": "Variablenprofile erneut einrichten",
-
-			"Command": "Kommando",
-			"Execute": "Ausführen",
 
 			"Standby monitoring": "kontinuierliche Überwachung",
 
@@ -97,7 +97,6 @@
 			"Humidify automatic target value": "Luftbefeuchtung-Automatik-Zielwert",
 			"Last change": "letzte Änderung",
 			"Last update": "letzte Aktualisierung",
-			"Minutes": "Minuten",
 			"Night mode": "Nachtmodus",
 			"Nitrogen oxides (NOx)": "Stickoxide (NOx)",
 			"Particulate matter (PM 10)": "Feinstaub (PM 10)",
@@ -110,29 +109,14 @@
 			"Sleep timer": "Timer",
 			"Start deep cleaning": "Tiefenreinigung durchführen",
 			"Temperature": "Temperatur",
-			"Update status every X minutes": "Status alle X Minuten abrufen",
-			"Update Status": "Status aktualisieren",
 			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",
 			"Volatile organic compounds (VOC) index": "Flüchtige Organische Verbindungen (VOC)-Index",
 			"Wifi signal strenght": "Wifi Signalstärke",
 
+			"Update interval": "Aktualisierungsintervall",
+			"Minutes": "Minuten",
+
 			"hours": "Stunden",
-
-			"Auto": "Auto",
-
-			"Off": "Aus",
-
-			"Breeze": "Brise",
-
-			"Low": "gering",
-			"Average": "mittel",
-			"High": "hoch",
-
-			"Front": "Vorderseite",
-			"Back": "Rückseite",
-
-			"Direct": "Direkt",
-			"Indirect": "Indirekt",
 
 			"Warnings": "Warnungen",
 			"Errors": "Fehler",
@@ -141,6 +125,43 @@
 			"Tank not detected": "Tank nicht erkannt",
 			"Pump error": "Pumpenfehler",
 			"Unknown error code": "Unbekannter Fehlercode",
+
+			"__variableprofile__": "Dyson.AirflowDirection",
+			"Front": "Vorderseite",
+			"Back": "Rückseite",
+
+			"__variableprofile__": "Dyson.AirflowDistribution",
+			"Direct": "Direkt",
+			"Indirect": "Indirekt",
+
+			"__variableprofile__": "Dyson.SleepTimer",
+			"Off": "Aus",
+
+			"__variableprofile__": "Dyson.AirflowRate",
+			"Off": "Aus",
+			"Auto": "Auto",
+
+			"__variableprofile__": "Dyson.RotationMode2",
+			"Off": "Aus",
+
+			"__variableprofile__": "Dyson.AQT",
+			"Low": "gering",
+			"Average": "mittel",
+			"High": "hoch",
+
+			"Update Status": "Status aktualisieren",
+
+			"Test area": "Test-Bereich",
+
+			"Expert area": "Experten-Bereich",
+			"Test own 'SET-STATE' command; the command has to be a JSON-coded string (see documentation)":
+				"Eigene 'SET-STATE'-Kommandos testen; das Kommando muss eine JSON-kodierte Zeichenkette sein (siehe Dokumentation)",
+			"Examine the debug-window for information about 'ExecuteSetState'":
+				"Überprüfen Sie das Debug-Fenster auf Informationen zu 'ExecuteSetState'",
+			"Re-install variable-profiles": "Variablenprofile erneut einrichten",
+
+			"Command": "Kommando",
+			"Execute": "Ausführen",
 
 			"Information": "Information",
 
@@ -170,12 +191,19 @@
 			"Next run": "nächste Ausführung",
 			"Last run": "letzte Ausführung",
 			"Timer information": "Timer-Information",
+			"Refresh references panel": "Referenzen-Panel aktualisieren",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
 			"Instance is deleted": "Instanz wird gelöscht",
 			"Instance is inactive": "Instanz ist inaktiv",
 			"Instance is not created": "Instanz wurde nicht erzeugt",
+
+			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)",
+			"Instance is inactive (update not completed)": "Instanz ist inaktiv (Update nicht abgeschlossen)",
+			"Instance is inactive (invalid configuration)": "Instanz ist inaktiv (ungültige Konfiguration)",
+			"Instance is inactive (deactivated)": "Instanz ist inaktiv (deaktiviert)",
+			"Instance is inactive (no Symcon-Connect)": "Instanz ist inaktiv (kein Symcon-Connect)",
 
 			"Instance is inactive (no data)": "Instanz ist inaktiv (keine Daten)",
 			"Instance is inactive (unauthorized)": "Instanz ist inaktiv (Authorisierung fehlerhaft)",
@@ -184,7 +212,6 @@
 			"Instance is inactive (invalid data)": "Instanz ist inaktiv (ungültige Daten)",
 			"Instance is inactive (no product)": "Instanz ist inaktiv (kein Produkt)",
 			"Instance is inactive (product missing)": "Instanz ist inaktiv (Produkt fehlt)",
-			"Instance is inactive (invalid configuration)": "Instanz ist inaktiv (ungültige Konfiguration)",
 			"Instance is inactive (not logged in)": "Instanz ist inaktiv (nicht angemeldet)",
 			"Instance is inactive (login not verified)": "Instanz ist inaktiv (Anmeldung nicht bestätigt)"
 		}
