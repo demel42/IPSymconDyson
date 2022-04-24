@@ -41,7 +41,7 @@ class DysonDevice extends IPSModule
         $this->InstallVarProfiles(false);
     }
 
-    private function CheckConfiguration()
+    private function CheckModuleConfiguration()
     {
         $r = [];
 

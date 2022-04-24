@@ -25,7 +25,7 @@ class DysonConfig extends IPSModule
         $this->RegisterAttributeString('UpdateInfo', '');
     }
 
-    private function CheckConfiguration()
+    private function CheckModuleConfiguration()
     {
         $r = [];
 
