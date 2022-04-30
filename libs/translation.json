@@ -1,0 +1,41 @@
+{
+	"translations": {
+		"de": {
+			"__variableprofile__": "Dyson.AirflowDirection",
+			"Front": "Vorderseite",
+			"Back": "Rückseite",
+
+			"__variableprofile__": "Dyson.AirflowDistribution",
+			"Direct": "Direkt",
+			"Indirect": "Indirekt",
+
+			"__variableprofile__": "Dyson.SleepTimer",
+			"Off": "Aus",
+
+			"__variableprofile__": "Dyson.AirflowRate",
+			"Off": "Aus",
+			"Auto": "Auto",
+
+			"__variableprofile__": "Dyson.RotationMode2",
+			"Off": "Aus",
+
+			"__variableprofile__": "Dyson.AQT",
+			"Low": "gering",
+			"Average": "mittel",
+			"High": "hoch",
+
+			"__status__": "",
+			"Instance is inactive (no data)": "Instanz ist inaktiv (keine Daten)",
+			"Instance is inactive (unauthorized)": "Instanz ist inaktiv (Authorisierung fehlerhaft)",
+			"Instance is inactive (server error)": "Instanz ist inaktiv (Serverfehler)",
+			"Instance is inactive (http error)": "Instanz ist inaktiv (HTTP-Fehler)",
+			"Instance is inactive (invalid data)": "Instanz ist inaktiv (ungültige Daten)",
+			"Instance is inactive (no product)": "Instanz ist inaktiv (kein Produkt)",
+			"Instance is inactive (product missing)": "Instanz ist inaktiv (Produkt fehlt)",
+			"Instance is inactive (not logged in)": "Instanz ist inaktiv (nicht angemeldet)",
+			"Instance is inactive (login not verified)": "Instanz ist inaktiv (Anmeldung nicht bestätigt)",
+
+			"__end__": ""
+		}
+	}
+}

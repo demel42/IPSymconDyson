@@ -1,0 +1,49 @@
+{
+	"translations": {
+		"de": {
+			"Dyson configurator": "Dyson Konfigurator",
+
+			"__function__": "CheckConfiguration",
+			"Username must be specified": "Benutzer muss angegeben sein",
+			"Password must be specified": "Passwort muss angegeben sein",
+
+			"__elements__": "",
+			"Dyson Account-Details": "Dyson Konto-Details",
+			"User": "Benutzer",
+			"Password": "Passwort",
+			"Country": "Land",
+
+			"__options__": "country",
+			"Germany": "Deutschland",
+			"England": "England",
+			"Austria": "Österreich",
+			"Switzerland": "Schweiz",
+			"Netherlands": "Niederlande",
+			"France": "Frankreich",
+
+			"category for products to be created": "Kategorie für anzulegende Produkte",
+
+			"Product": "Produkt",
+			"Serial": "Seriennummer",
+			"Name": "Bezeichnung",
+			"Product type": "Produkt-Typ",
+
+			"__actions__": "",
+			"perform login": "Anmeldung durchführen",
+			"observe dokumentation": "Dokumentation beachten",
+			"Step 1": "Schritt 1",
+			"Request code": "Code anfordern",
+			"Step 2": "Schritt 2",
+			"Code (from mail)": "Code (aus Mail)",
+			"Verify login": "Anmeldung bestätigen",
+			"Check mailbox for mail with code": "Postfach prüfen auf Mail mit Code",
+
+			"__function__": "ManualRelogin1 / ManualRelogin2",
+			"Login failed": "Anmeldung fehlgeschlagen",
+			"Login successful": "Anmeldung erfolgreich",
+			"Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
+
+			"__end__": ""
+		}
+	}
+}

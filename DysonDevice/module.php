@@ -10,6 +10,15 @@ class DysonDevice extends IPSModule
     use Dyson\StubsCommonLib;
     use DysonLocalLib;
 
+    private $ModuleDir;
+
+    public function __construct(string $InstanceID)
+    {
+        parent::__construct($InstanceID);
+
+        $this->ModuleDir = __DIR__;
+    }
+
     public function Create()
     {
         parent::Create();
@@ -489,12 +498,6 @@ class DysonDevice extends IPSModule
                 $this->SendDebug(__FUNCTION__, 'Unknown Message' . $Message, 0);
                 break;
         }
-    }
-
-    public function ManualRelogin()
-    {
-        $auth = $this->doLogin(true);
-        echo $this->Translate(($auth == false ? 'Login failed' : 'Login successful'));
     }
 
     public function ManualReloadConfig()

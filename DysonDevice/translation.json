@@ -1,0 +1,123 @@
+{
+	"translations": {
+		"de": {
+			"Dyson device": "Dyson Gerät",
+
+			"__function__": "CheckConfiguration",
+			"Username must be specified": "Benutzer muss angegeben sein",
+			"Password must be specified": "Passwort muss angegeben sein",
+
+			"__elements__": "",
+
+			"Disable instance": "Instanz deaktivieren",
+			"Basic configuration (don't change)": "Basiskonfiguration (nicht ändern)",
+			"User": "Benutzer",
+			"Password": "Passwort",
+			"Country": "Land",
+			"Product type": "Produkt-Typ",
+
+			"Call settings": "Kommunikations-Einstellungen",
+			"Update interval": "Aktualisierungsintervall",
+			"Minutes": "Minuten",
+
+			"__options__": "country",
+			"Germany": "Deutschland",
+			"England": "England",
+			"Austria": "Österreich",
+			"Switzerland": "Schweiz",
+			"Netherlands": "Niederlande",
+			"France": "Frankreich",
+
+			"__variables__": "",
+			"Airflow direction": "Luftstromrichtung",
+			"Airflow distribution": "Luftstromverteilung",
+			"Airflow rate": "Luftstromstärke",
+			"Air purification automatic mode": "Luftreinigung-Automatik",
+			"Air qualitiy target": "Zielwert der Luftqualität",
+			"Carbon filter lifetime": "Aktivkohlefilter Lebensdauer",
+			"Duration until next deep cleaning cycle": "Dauer bis zum nächsten Tiefenreinigungszyklus",
+			"Dust index": "Feinstaub-Index",
+			"Errors": "Fehler",
+			"Filter lifetime": "Filter-Lebensdauer",
+			"Heater mode": "Heizung",
+			"Heating temperature": "Heiztemperatur",
+			"HEPA filter lifetime": "HEPA-Filter Lebensdauer",
+			"Humidification": "Luftbefeuchtung",
+			"Humidify automatic mode": "Luftbefeuchtung-Automatik",
+			"Humidify automatic target value": "Luftbefeuchtung-Automatik-Zielwert",
+			"Humidify target value": "Luftbefeuchtung-Zielwert",
+			"Humidity": "Luftfeuchte",
+			"Last change": "letzte Änderung",
+			"Last update": "letzte Aktualisierung",
+			"Night mode": "Nachtmodus",
+			"Nitrogen oxides (NOx)": "Stickoxide (NOx)",
+			"Particulate matter (PM 10)": "Feinstaub (PM 10)",
+			"Particulate matter (PM 2.5)": "Feinstaub (PM 2.5)",
+			"Power": "Zustand",
+			"Rotation angle": "Drehwinkel",
+			"Rotation mode": "Drehmodus",
+			"Rotation start": "Drehstartpunkt",
+			"Sleep timer": "Timer",
+			"Standby monitoring": "kontinuierliche Überwachung",
+			"Start deep cleaning": "Tiefenreinigung durchführen",
+			"Temperature": "Temperatur",
+			"Volatile organic compounds (VOC)": "Flüchtige Organische Verbindungen (VOC)",
+			"Volatile organic compounds (VOC) index": "Flüchtige Organische Verbindungen (VOC)-Index",
+			"Warnings": "Warnungen",
+			"Wifi signal strenght": "Wifi Signalstärke",
+
+			"__actions__": "",
+			"Convert MQTT-Client": "MQTT-Client anpassen",
+
+			"Update Status": "Status aktualisieren",
+
+			"Reload configuration and log in again if necessary": "Konfiguration neu laden und ggf. neu anmelden",
+			"Reloading configuration is only required if necessary": "Konfiguration neu zu laden ist nur bei Bedarf erforderlich",
+			"This action also adjusts configuration of the MQTT-Client": "Diese Aktion passt auch die Konfiguration des MQTT-Clients an",
+			"Reload Config": "Konfiguration erneut laden",
+			"Re-login is only required if necessary": "Eine Neuanmeldung muss nur durchgeführt werde, wenn erforderlich",
+			"observe dokumentation": "Dokumentation beachten",
+			"Step 1": "Schritt 1",
+			"Request code": "Code anfordern",
+			"Step 2": "Schritt 2",
+			"Code (from mail)": "Code (aus Mail)",
+			"Verify login": "Anmeldung bestätigen",
+
+			"Test own 'SET-STATE' command; the command has to be a JSON-coded string (see documentation)":
+				"Eigene 'SET-STATE'-Kommandos testen; das Kommando muss eine JSON-kodierte Zeichenkette sein (siehe Dokumentation)",
+			"Examine the debug-window for information about 'ExecuteSetState'":
+				"Überprüfen Sie das Debug-Fenster auf Informationen zu 'ExecuteSetState'",
+			"Command": "Kommando",
+			"Execute": "Ausführen",
+
+			"__function__": "ManualReloadConfig",
+			"has no parent instance": "has no parent instance",
+			"Load config failed": "Geräte-Konfiguration konnte nicht geladen werden",
+			"Load config succeeded": "Geräte-Konfiguration erfolgreich geladen",
+
+			"__function__": "ManualRelogin1 / ManualRelogin2",
+			"Unable to authenticate user.": "Benutzer kann nicht authentifiziert werden.",
+			"Login failed": "Anmeldung fehlgeschlagen",
+			"Login successful": "Anmeldung erfolgreich",
+
+			"__function__": "product2name",
+			"Dyson Pure Cool purifier desk fan (DP02)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP02)",
+			"Dyson Pure Cool purifier desk fan (DP04)": "Dyson Pure Cool Tischventilator mit Luftreiniger (DP04)",
+			"Dyson Pure Cool purifier fan tower (TP02)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP02)",
+			"Dyson Pure Cool purifier fan tower (TP04)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP04)",
+			"Dyson Pure Cool purifier fan tower (TP07)": "Dyson Pure Cool Turmventilator mit Luftreiniger (TP07)",
+			"Dyson Pure Hot+Cool purifier fan tower (HP02)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02)",
+			"Dyson Pure Hot+Cool purifying heater + fan (HP04)": "Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04)",
+			"Dyson Pure Humidify+Cool desk fan (PH01)": "Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01)",
+			"Dyson Pure Humidify+Cool desk fan (PH03)": "Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)",
+
+			"__function__": "fault2text",
+			"Tank empty": "Tank leer",
+			"Tank not detected": "Tank nicht erkannt",
+			"Pump error": "Pumpenfehler",
+			"Unknown error code": "Unbekannter Fehlercode",
+
+			"__end__": ""
+		}
+	}
+}

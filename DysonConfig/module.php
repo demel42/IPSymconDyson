@@ -10,6 +10,15 @@ class DysonConfig extends IPSModule
     use Dyson\StubsCommonLib;
     use DysonLocalLib;
 
+    private $ModuleDir;
+
+    public function __construct(string $InstanceID)
+    {
+        parent::__construct($InstanceID);
+
+        $this->ModuleDir = __DIR__;
+    }
+
     public function Create()
     {
         parent::Create();
@@ -265,7 +274,7 @@ class DysonConfig extends IPSModule
         $formElements[] = [
             'name'    => 'ImportCategoryID',
             'type'    => 'SelectCategory',
-            'caption' => 'category'
+            'caption' => 'category for products to be created'
         ];
 
         $entries = $this->getConfiguratorValues();
