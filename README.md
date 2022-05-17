@@ -169,14 +169,30 @@ Das Eingabefeld _Kommando_ muss einen JSON-Encoded-String enthalten, z.B. `{"fpw
 
 Es werden folgende Variablenprofile angelegt:
 * Boolean<br>
-Dyson.AirflowDirection, Dyson.AirflowDistribution
+Dyson.AirflowDirection,
+Dyson.AirflowDistribution
 
 * Integer<br>
-Dyson.AirflowRate, Dyson.AQT, Dyson.RotationMode2, Dyson.NOx, Dyson.Percent, Dyson.PM10, Dyson.PM25, Dyson.Dust-Index,
-Dyson.RotationAngle, Dyson.Rotation, Dyson.RotationStart, Dyson.SleepTimer, Dyson.VOC, Dyson.VOC-Index, Dyson.Wifi
+Dyson.AirflowRate,
+Dyson.AQT,
+Dyson.Dust-Index,
+Dyson.NOx,
+Dyson.Percent,
+Dyson.PM10,
+Dyson.PM25,
+Dyson.Rotation,
+Dyson.RotationAngle,
+Dyson.RotationMode2,
+Dyson.RotationStart,
+Dyson.SleepTimer,
+Dyson.VOC,
+Dyson.VOC-Index,
+Dyson.Wifi
 
 * Float<br>
-Dyson.HeatingTemperature, Dyson.Humidity, Dyson.Temperature
+Dyson.HeatingTemperature,
+Dyson.Humidity,
+Dyson.Temperature
 
 ## 6. Anhang
 
@@ -192,6 +208,10 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.4.4 @ 17.05.2022 15:38
+  - update submodule CommonStubs
+    Fix: Absicherung gegen fehlende Objekte
 
 - 2.4.3 @ 10.05.2022 15:06
   - update submodule CommonStubs
