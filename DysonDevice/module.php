@@ -69,6 +69,29 @@ class DysonDevice extends IPSModule
         return $r;
     }
 
+    private function CheckModuleUpdate(array $oldInfo, array $newInfo)
+    {
+        $r = [];
+
+        if ($this->version2num($oldInfo) < $this->version2num('2.5')) {
+            $r[] = $this->Translate('Spelling error in variableprofile \'Dyson.RotationMode2\'');
+        }
+
+        return $r;
+    }
+
+    private function CompleteModuleUpdate(array $oldInfo, array $newInfo)
+    {
+        if ($this->version2num($oldInfo) < $this->version2num('2.5')) {
+            if (IPS_VariableProfileExists('Dyson.RotationMode2')) {
+                IPS_DeleteVariableProfile('Dyson.RotationMode2');
+            }
+            $this->InstallVarProfiles(false);
+        }
+
+        return '';
+    }
+
     public function ApplyChanges()
     {
         parent::ApplyChanges();
@@ -77,19 +100,19 @@ class DysonDevice extends IPSModule
 
         if ($this->CheckPrerequisites() != false) {
             $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
+            $this->MaintainStatus(self::$IS_INVALIDPREREQUISITES);
             return;
         }
 
         if ($this->CheckUpdate() != false) {
             $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            $this->MaintainStatus(self::$IS_UPDATEUNCOMPLETED);
             return;
         }
 
         if ($this->CheckConfiguration() != false) {
             $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            $this->MaintainStatus(self::$IS_INVALIDCONFIG);
             return;
         }
 
@@ -200,14 +223,14 @@ class DysonDevice extends IPSModule
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
             $this->MaintainTimer('UpdateStatus', 0);
-            $this->SetStatus(IS_INACTIVE);
+            $this->MaintainStatus(IS_INACTIVE);
             return;
         }
 
         $serial = $this->ReadPropertyString('serial');
         $this->SetSummary($product_type . ' (#' . $serial . ')');
 
-        $this->SetStatus(IS_ACTIVE);
+        $this->MaintainStatus(IS_ACTIVE);
 
         $cID = $this->GetConnectionID();
         if ($cID != false) {
@@ -330,13 +353,13 @@ class DysonDevice extends IPSModule
             $formActions[] = [
                 'type'    => 'Button',
                 'caption' => 'Convert MQTT-Client',
-                'onClick' => $this->GetModulePrefix() . '_ConvertSplitter($id);'
+                'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ConvertSplitter", "");',
             ];
         } else {
             $formActions[] = [
                 'type'    => 'Button',
                 'caption' => 'Update Status',
-                'onClick' => $this->GetModulePrefix() . '_ManualUpdateStatus($id);'
+                'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualUpdateStatus", "");',
             ];
 
             $formActions[] = [
@@ -355,7 +378,7 @@ class DysonDevice extends IPSModule
                     [
                         'type'    => 'Button',
                         'caption' => 'Reload Config',
-                        'onClick' => $this->GetModulePrefix() . '_ManualReloadConfig($id);'
+                        'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualReloadConfig", "");',
                     ],
                     [
                         'type'    => 'Label',
@@ -375,7 +398,7 @@ class DysonDevice extends IPSModule
                             [
                                 'type'    => 'Button',
                                 'caption' => 'Request code',
-                                'onClick' => $this->GetModulePrefix() . '_ManualRelogin1($id);'
+                                'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualRelogin1", "");',
                             ],
                         ]
                     ],
@@ -394,7 +417,7 @@ class DysonDevice extends IPSModule
                             [
                                 'type'    => 'Button',
                                 'caption' => 'Verify login',
-                                'onClick' => $this->GetModulePrefix() . '_ManualRelogin2($id, $otpCode);'
+                                'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualRelogin2", json_encode(["otpCode" => $otpCode]));',
                             ]
                         ]
                     ]
@@ -433,16 +456,12 @@ class DysonDevice extends IPSModule
                     [
                         'type'    => 'Button',
                         'caption' => 'Execute',
-                        'onClick' => $this->GetModulePrefix() . '_ExecuteSetState($id, $cmd);'
+                        'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ExecuteSetState", json_encode(["cmd" => $cmd]));',
                     ],
                     [
                         'type'    => 'Label',
                     ],
-                    [
-                        'type'    => 'Button',
-                        'caption' => 'Re-install variable-profiles',
-                        'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
-                    ]
+                    $this->GetInstallVarProfilesFormItem(),
                 ],
             ];
         }
@@ -453,25 +472,28 @@ class DysonDevice extends IPSModule
         return $formActions;
     }
 
-    public function ManualRelogin1()
+    private function ManualRelogin1()
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $msg = '';
         $ret = $this->doLogin_2fa_1(true, $msg);
         $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
         if ($msg != false) {
-            echo $this->Translate($msg);
+            $this->PopupMessage($this->Translate($msg));
         }
     }
 
-    public function ManualRelogin2(string $otpCode)
+    private function ManualRelogin2(string $params)
     {
+        $jparams = json_decode($params, true);
+        $otpCode = isset($jparams['otpCode']) ? $jparams['otpCode'] : '';
+
         $this->SendDebug(__FUNCTION__, 'otpCode=' . $otpCode, 0);
         $msg = '';
         $ret = $this->doLogin_2fa_2($otpCode, $msg);
         $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
         if ($msg != false) {
-            echo $this->Translate($msg);
+            $this->PopupMessage($this->Translate($msg));
         }
     }
 
@@ -500,12 +522,13 @@ class DysonDevice extends IPSModule
         }
     }
 
-    public function ManualReloadConfig()
+    private function ManualReloadConfig()
     {
         $cID = $this->GetConnectionID();
         if ($cID == false) {
             $this->SendDebug(__FUNCTION__, 'has no parent instance', 0);
-            echo $this->Translate('has no parent instance');
+            $msg = $this->Translate('has no parent instance');
+            $this->PopupMessage($msg);
             return;
         }
 
@@ -514,7 +537,8 @@ class DysonDevice extends IPSModule
         $serial = $this->ReadPropertyString('serial');
         $device = $this->getDevice($serial);
         if ($device == false) {
-            echo $this->Translate('Load config failed');
+            $msg = $this->Translate('Load config failed');
+            $this->PopupMessage($msg);
             return;
         }
         $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
@@ -563,7 +587,8 @@ class DysonDevice extends IPSModule
             IPS_ApplyChanges($cID);
         }
 
-        echo $this->Translate('Load config succeeded');
+        $msg = $this->Translate('Load config succeeded');
+        $this->PopupMessage($msg);
     }
 
     private function DecodeState($payload, $changeState)
@@ -1556,10 +1581,10 @@ class DysonDevice extends IPSModule
             }
         }
 
-        $this->SetStatus(IS_ACTIVE);
+        $this->MaintainStatus(IS_ACTIVE);
     }
 
-    public function ManualUpdateStatus()
+    private function ManualUpdateStatus()
     {
         $this->RequestStateCommand();
     }
@@ -1753,8 +1778,11 @@ class DysonDevice extends IPSModule
         return true;
     }
 
-    public function ExecuteSetState(string $cmd)
+    private function ExecuteSetState(string $params)
     {
+        $jparams = json_decode($params, true);
+        $cmd = isset($jparams['cmd']) ? $jparams['cmd'] : '';
+
         $this->SendDebug(__FUNCTION__, 'cmd=' . print_r($cmd, true), 0);
         $data = json_decode($cmd, true);
         if ($data == '') {
@@ -2164,6 +2192,29 @@ class DysonDevice extends IPSModule
             return;
         }
 
+        switch ($ident) {
+            case 'ConvertSplitter':
+                $this->ConvertSplitter();
+                return;
+            case 'ManualUpdateStatus':
+                $this->ManualUpdateStatus();
+                return;
+            case 'ManualReloadConfig':
+                $this->ManualReloadConfig();
+                return;
+            case 'ManualRelogin1':
+                $this->ManualRelogin1();
+                return;
+            case 'ManualRelogin2':
+                $this->ManualRelogin2($value);
+                return;
+            case 'ExecuteSetState':
+                $this->ExecuteSetState($value);
+                return;
+            default:
+                break;
+        }
+
         if ($this->GetStatus() == IS_INACTIVE) {
             $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
             return;
@@ -2566,7 +2617,7 @@ class DysonDevice extends IPSModule
         }
     }
 
-    public function IsInternalMQTTClient()
+    private function IsInternalMQTTClient()
     {
         $inst = IPS_GetInstance($this->InstanceID);
         $cID = $inst['ConnectionID'];
@@ -2578,7 +2629,7 @@ class DysonDevice extends IPSModule
         return $moduleID == '{F7A0DD2E-7684-95C0-64C2-D2A9DC47577B}';
     }
 
-    public function ConvertSplitter()
+    private function ConvertSplitter()
     {
         if ($this->IsInternalMQTTClient()) {
             return;

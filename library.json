@@ -4,9 +4,9 @@
 	"name": "Dyson",
 	"url": "https://github.com/demel42/IPSymconDyson",
 	"compatibility": {
-		"version": "6.0"
+		"version": "6.2"
 	},
-	"version": "2.4.4",
+	"version": "2.5",
 	"build": 0,
-	"date": 1652794739
+	"date": 1657114667
 }

@@ -7,6 +7,9 @@
 			"Username must be specified": "Benutzer muss angegeben sein",
 			"Password must be specified": "Passwort muss angegeben sein",
 
+			"__function__": "CheckModuleUpdate",
+			"Spelling error in variableprofile 'Dyson.RotationMode2'": "Rechtschreibfehler im Variablenprofil 'Dyson.RotationMode2'",
+
 			"__elements__": "",
 			"Disable instance": "Instanz deaktivieren",
 

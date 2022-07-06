@@ -209,6 +209,15 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.5 @ 06.07.2022 15:36
+  - einige Funktionen (GetFormElements, GetFormActions) waren fehlerhafterweise "protected" und nicht "private"
+  - interne Funktionen sind nun private und ggfs nur noch via IPS_RequestAction() erreichbar
+  - Fix: Angabe der Kompatibilität auf 6.2 korrigiert
+  - Fix: Übersetzung ergänzt (Variablenprofil 'Dyson.RotationMode2')
+  - Verbesserung: IPS-Status wird nur noch gesetzt, wenn er sich ändert
+  - update submodule CommonStubs
+    Fix: Ausgabe des nächsten Timer-Zeitpunkts
+
 - 2.4.4 @ 17.05.2022 15:38
   - update submodule CommonStubs
     Fix: Absicherung gegen fehlende Objekte
