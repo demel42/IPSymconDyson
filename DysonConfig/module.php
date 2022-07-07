@@ -326,7 +326,7 @@ class DysonConfig extends IPSModule
                         [
                             'type'    => 'Button',
                             'caption' => 'Request code',
-                            'onClick' => $this->GetModulePrefix() . '_ManualRelogin1($id);'
+                            'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualRelogin1", "");',
                         ],
                     ]
                 ],
@@ -345,7 +345,7 @@ class DysonConfig extends IPSModule
                         [
                             'type'    => 'Button',
                             'caption' => 'Verify login',
-                            'onClick' => $this->GetModulePrefix() . '_ManualRelogin2($id, $otpCode);'
+                            'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "ManualRelogin2", json_encode(["otpCode" => $otpCode]));',
                         ]
                     ]
                 ]
@@ -358,11 +358,33 @@ class DysonConfig extends IPSModule
         return $formActions;
     }
 
+    private function LocalRequestAction($ident, $value)
+    {
+        $r = false;
+        switch ($ident) {
+            case 'ManualRelogin1':
+                $this->ManualRelogin1();
+                $r = true;
+                break;
+            case 'ManualRelogin2':
+                $this->ManualRelogin2($value);
+                $r = true;
+                break;
+            default:
+                break;
+        }
+        return $r;
+    }
+
     public function RequestAction($ident, $value)
     {
+        if ($this->LocalRequestAction($ident, $value)) {
+            return;
+        }
         if ($this->CommonRequestAction($ident, $value)) {
             return;
         }
+
         switch ($ident) {
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
@@ -370,25 +392,28 @@ class DysonConfig extends IPSModule
         }
     }
 
-    public function ManualRelogin1()
+    private function ManualRelogin1()
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $msg = '';
         $ret = $this->doLogin_2fa_1(true, $msg);
         $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
         if ($msg != false) {
-            echo $this->Translate($msg);
+            $this->PopupMessage($this->Translate($msg));
         }
     }
 
-    public function ManualRelogin2(string $otpCode)
+    private function ManualRelogin2(string $params)
     {
+        $jparams = json_decode($params, true);
+        $otpCode = isset($jparams['otpCode']) ? $jparams['otpCode'] : '';
+
         $this->SendDebug(__FUNCTION__, 'otpCode=' . $otpCode, 0);
         $msg = '';
         $ret = $this->doLogin_2fa_2($otpCode, $msg);
         $this->SendDebug(__FUNCTION__, 'ret=' . $ret . ', msg=' . $msg, 0);
         if ($msg != false) {
-            echo $this->Translate($msg);
+            $this->PopupMessage($this->Translate($msg));
         }
     }
 }

@@ -2186,33 +2186,47 @@ class DysonDevice extends IPSModule
         return $this->SetStateCommand(__FUNCTION__, $data);
     }
 
-    public function RequestAction($ident, $value)
+    private function LocalRequestAction($ident, $value)
     {
-        if ($this->CommonRequestAction($ident, $value)) {
-            return;
-        }
-
+        $r = false;
         switch ($ident) {
             case 'ConvertSplitter':
                 $this->ConvertSplitter();
-                return;
+                $r = true;
+                break;
             case 'ManualUpdateStatus':
                 $this->ManualUpdateStatus();
-                return;
+                $r = true;
+                break;
             case 'ManualReloadConfig':
                 $this->ManualReloadConfig();
-                return;
+                $r = true;
+                break;
             case 'ManualRelogin1':
                 $this->ManualRelogin1();
-                return;
+                $r = true;
+                break;
             case 'ManualRelogin2':
                 $this->ManualRelogin2($value);
-                return;
+                $r = true;
+                break;
             case 'ExecuteSetState':
                 $this->ExecuteSetState($value);
-                return;
+                $r = true;
+                break;
             default:
                 break;
+        }
+        return $r;
+    }
+
+    public function RequestAction($ident, $value)
+    {
+        if ($this->LocalRequestAction($ident, $value)) {
+            return;
+        }
+        if ($this->CommonRequestAction($ident, $value)) {
+            return;
         }
 
         if ($this->GetStatus() == IS_INACTIVE) {
