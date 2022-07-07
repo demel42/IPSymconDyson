@@ -2188,33 +2188,28 @@ class DysonDevice extends IPSModule
 
     private function LocalRequestAction($ident, $value)
     {
-        $r = false;
+        $r = true;
         switch ($ident) {
             case 'ConvertSplitter':
                 $this->ConvertSplitter();
-                $r = true;
                 break;
             case 'ManualUpdateStatus':
                 $this->ManualUpdateStatus();
-                $r = true;
                 break;
             case 'ManualReloadConfig':
                 $this->ManualReloadConfig();
-                $r = true;
                 break;
             case 'ManualRelogin1':
                 $this->ManualRelogin1();
-                $r = true;
                 break;
             case 'ManualRelogin2':
                 $this->ManualRelogin2($value);
-                $r = true;
                 break;
             case 'ExecuteSetState':
                 $this->ExecuteSetState($value);
-                $r = true;
                 break;
             default:
+        $r = false;
                 break;
         }
         return $r;

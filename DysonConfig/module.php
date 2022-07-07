@@ -360,17 +360,16 @@ class DysonConfig extends IPSModule
 
     private function LocalRequestAction($ident, $value)
     {
-        $r = false;
+        $r = true;
         switch ($ident) {
             case 'ManualRelogin1':
                 $this->ManualRelogin1();
-                $r = true;
                 break;
             case 'ManualRelogin2':
                 $this->ManualRelogin2($value);
-                $r = true;
                 break;
             default:
+                $r = false;
                 break;
         }
         return $r;
