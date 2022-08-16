@@ -209,6 +209,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.5.2 @ 16.08.2022 10:10
+  - update submodule CommonStubs
+    Fix: in den Konfiguratoren war es nicht möglich, eine Instanz direkt unter dem Wurzelverzeichnis "IP-Symcon" zu erzeugen
+
 - 2.5.1 @ 26.07.2022 10:28
   - update submodule CommonStubs
     Fix: CheckModuleUpdate() nicht mehr aufrufen, wenn das erstmalig installiert wird
