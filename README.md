@@ -32,6 +32,7 @@ Getestet wurde das Modul bisher mit:
 | 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 438E | Dyson Pure Cool Turmventilator mit Luftreiniger (TP07) |
+| 438E | Dyson Pure Cool Turmventilator mit Luftreiniger incl. Formaldehyd (TP09) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
@@ -176,6 +177,7 @@ Dyson.AirflowDistribution
 Dyson.AirflowRate,
 Dyson.AQT,
 Dyson.Dust-Index,
+Dyson.HCHO,
 Dyson.NOx,
 Dyson.Percent,
 Dyson.PM10,
@@ -190,6 +192,7 @@ Dyson.VOC-Index,
 Dyson.Wifi
 
 * Float<br>
+Dyson.HCHO,
 Dyson.HeatingTemperature,
 Dyson.Humidity,
 Dyson.Temperature
@@ -208,6 +211,10 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.5.3 @ 07.10.2022 13:59
+  - update submodule CommonStubs
+    Fix: Update-Prüfung wieder funktionsfähig
 
 - 2.5.2 @ 16.08.2022 10:10
   - update submodule CommonStubs

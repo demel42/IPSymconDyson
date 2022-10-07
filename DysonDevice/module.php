@@ -196,6 +196,7 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
         $this->MaintainVariable('DustIndex', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.DustIndex', $vpos++, $options['dust_index']);
         $this->MaintainVariable('VOCIndex', $this->Translate('Volatile organic compounds (VOC) index'), VARIABLETYPE_INTEGER, 'Dyson.VOCIndex', $vpos++, $options['voc_index']);
+        $this->MaintainVariable('HCHO', $this->Translate('Formaldehyd'), VARIABLETYPE_FLOAT, 'Dyson.HCHO', $vpos++, $options['hcho']);
 
         $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby monitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['standby_monitoring']);
         if ($options['standby_monitoring']) {
@@ -1430,6 +1431,22 @@ class DysonDevice extends IPSModule
             }
         }
 
+        if ($options['hcho']) {
+            // hcho - formaldehyd index
+            $ignored_fields[] = 'data.hcho';
+
+            // hchr - formaldehyd real
+            $hchr = $this->GetArrayElem($payload, 'data.hchr', '');
+            if ($hchr != '') {
+                $used_fields[] = 'data.hchr';
+                $hcho = (int) $hchr / 1000;
+                $this->SendDebug(__FUNCTION__, '... PM10 (hchr)=' . $hcho, 0);
+                $this->SaveValue('HCHO', $hcho, $is_changed);
+            } else {
+                $missing_fields[] = 'data.hchr';
+            }
+        }
+
         if ($options['sleep_timer']) {
             if ($options['sleep_timer_from_sensor']) {
                 // sltm - sleep-timer (OFF|1..539)
@@ -2352,6 +2369,7 @@ class DysonDevice extends IPSModule
         $options['voc'] = false;
         $options['voc_index'] = false;
         $options['nox'] = false;
+        $options['hcho'] = false;
         $options['air_quality_target'] = false;
 
         switch ($product_type) {
@@ -2503,13 +2521,24 @@ class DysonDevice extends IPSModule
         $product2name = [
             '358'   => 'Dyson Pure Humidify+Cool desk fan (PH01)',
             '358E'  => 'Dyson Pure Humidify+Cool desk fan (PH03)',
+            // Dyson Purifier Humidify+Cool Formaldehyde (PH04)
+            // Dyson Purifier Humidify+Cool Autoreact Luftbefeuchter (PH3A)
+
+            // Dyson Pure Cool TP00 fan tower (TP00)
+            '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',
             '438'   => 'Dyson Pure Cool purifier fan tower (TP04)',
             '438E'  => 'Dyson Pure Cool purifier fan tower (TP07)',
+            // Dyson Purifier Cool Formaldehyde purifier fan tower (TP09)
+            // Dyson Purifier Cool Autoreact purifier fan tower (TP7A)
+
+            // Dyson Pure Hot+Cool (HP00)
             '455'   => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
-            '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
-            '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',
-            '520'   => 'Dyson Pure Cool purifier desk fan (DP04)',
             '527'   => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
+            // Dyson Purifier Hot+Cool (HP07)
+            // Dyson Purifier Hot+Cool Formaldehyde (HP09)
+
+            '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
+            '520'   => 'Dyson Pure Cool purifier desk fan (DP04)',
         ];
 
         if (isset($product2name[$product_type])) {

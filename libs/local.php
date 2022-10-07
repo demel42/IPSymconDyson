@@ -202,6 +202,8 @@ trait DysonLocalLib
             ['Wert' => 70, 'Name' => '%.0f %%', 'Farbe' => -1],
         ];
         $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
+
+        $this->CreateVarProfile('Dyson.HCHO', VARIABLETYPE_FLOAT, ' mg/m³', 0, 0, 0, 2, '', [], $reInstall);
     }
 
     private static $api_host = 'appapi.cp.dyson.com';
