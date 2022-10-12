@@ -127,6 +127,10 @@ class DysonConfig extends IPSModule
                     }
                 }
 
+                if ($instanceID && IPS_GetProperty($instanceID, 'user') != $user) {
+                    continue;
+                }
+
                 $entry = [
                     'instanceID'           => $instanceID,
                     'serial'               => $serial,
@@ -178,6 +182,10 @@ class DysonConfig extends IPSModule
                 }
             }
             if ($fnd) {
+                continue;
+            }
+
+            if (IPS_GetProperty($instID, 'user') != $user) {
                 continue;
             }
 
