@@ -318,7 +318,7 @@ class DysonConfig extends IPSModule
         $formActions[] = [
             'type'      => 'ExpansionPanel',
             'caption'   => 'perform login',
-            'expanded ' => false,
+            'expanded'  => false,
             'items'     => [
                 [
                     'type'    => 'Label',

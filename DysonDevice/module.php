@@ -366,7 +366,7 @@ class DysonDevice extends IPSModule
             $formActions[] = [
                 'type'      => 'ExpansionPanel',
                 'caption'   => 'Reload configuration and log in again if necessary',
-                'expanded ' => false,
+                'expanded'  => false,
                 'items'     => [
                     [
                         'type'    => 'Label',
@@ -428,7 +428,7 @@ class DysonDevice extends IPSModule
             $formActions[] = [
                 'type'      => 'ExpansionPanel',
                 'caption'   => 'Test area',
-                'expanded ' => false,
+                'expanded'  => false,
                 'items'     => [
                     [
                         'type'    => 'TestCenter',
@@ -439,7 +439,7 @@ class DysonDevice extends IPSModule
             $formActions[] = [
                 'type'      => 'ExpansionPanel',
                 'caption'   => 'Expert area',
-                'expanded ' => false,
+                'expanded'  => false,
                 'items'     => [
                     [
                         'type'    => 'Label',
