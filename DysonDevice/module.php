@@ -42,6 +42,7 @@ class DysonDevice extends IPSModule
         $this->RegisterAttributeString('Auth', '');
 
         $this->RegisterAttributeString('Faults', '');
+        $this->RegisterAttributeString('Specs', json_encode([]));
 
         $this->RegisterAttributeString('UpdateInfo', '');
 
@@ -196,7 +197,7 @@ class DysonDevice extends IPSModule
         $this->MaintainVariable('NOx', $this->Translate('Nitrogen oxides (NOx)'), VARIABLETYPE_INTEGER, 'Dyson.NOx', $vpos++, $options['nox']);
         $this->MaintainVariable('DustIndex', $this->Translate('Dust index'), VARIABLETYPE_INTEGER, 'Dyson.DustIndex', $vpos++, $options['dust_index']);
         $this->MaintainVariable('VOCIndex', $this->Translate('Volatile organic compounds (VOC) index'), VARIABLETYPE_INTEGER, 'Dyson.VOCIndex', $vpos++, $options['voc_index']);
-        $this->MaintainVariable('HCHO', $this->Translate('Formaldehyd'), VARIABLETYPE_FLOAT, 'Dyson.HCHO', $vpos++, $options['hcho']);
+        $this->MaintainVariable('HCHO', $this->Translate('Formaldehyde'), VARIABLETYPE_FLOAT, 'Dyson.HCHO', $vpos++, $options['hcho']);
 
         $this->MaintainVariable('StandbyMonitoring', $this->Translate('Standby monitoring'), VARIABLETYPE_BOOLEAN, '~Switch', $vpos++, $options['standby_monitoring']);
         if ($options['standby_monitoring']) {
@@ -707,9 +708,16 @@ class DysonDevice extends IPSModule
             }
         }
 
+        if (isset($payload['product-state']['oson'])) {
+            $specs = json_decode($this->ReadAttributeString('Specs'), true);
+            $specs['oson_version'] = in_array($payload['product-state']['oson'], ['OION', 'OIOF']) ? 'V2' : 'V1';
+            $this->SendDebug(__FUNCTION__, 'specs=' . print_r($specs, true), 0);
+            $this->WriteAttributeString('Specs', json_encode($specs));
+        }
+
         if ($options['rotation_mode']) {
             if ($options['rotation_mode_use_oson']) {
-                // oson - oscillation on (OFF|ON)
+                // oson - oscillation on (OFF|ON) / V2: (OIOF/OION)
                 $oson = $this->GetArrayElem($payload, 'product-state.oson', '');
                 if ($oson != '') {
                     $used_fields[] = 'product-state.oson';
@@ -729,7 +737,7 @@ class DysonDevice extends IPSModule
                     $missing_fields[] = 'product-state.oson';
                 }
             } else {
-                // oson - oscillation on (OFF|ON)
+                // oson - oscillation on (OFF|ON) / V2: (OIOF/OION)
                 $ignored_fields[] = 'product-state.oson';
 
                 // oscs - oscillation state (OFF|ON)
@@ -755,7 +763,7 @@ class DysonDevice extends IPSModule
         }
 
         if ($options['rotation_mode2']) {
-            // oson - oscillation on (OFF|ON)
+            // oson - oscillation on (OFF|ON) / V2: (OIOF/OION)
             $oson = $this->GetArrayElem($payload, 'product-state.oson', '');
             if ($oson != '') {
                 $used_fields[] = 'product-state.oson';
@@ -780,7 +788,7 @@ class DysonDevice extends IPSModule
                     $do = true;
                 }
                 if ($do) {
-                    if ($oson == 'OFF') {
+                    if ($this->str2bool($oson) == false) {
                         $mode = 0;
                     } else {
                         switch ($ancp) {
@@ -1967,6 +1975,15 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
+        $specs = json_decode($this->ReadAttributeString('Specs'), true);
+        if (isset($specs['oson_version']) && $specs['oson_version'] == 'V2') {
+            $oson_on = 'OION';
+            $oson_off = 'OIOF';
+        } else {
+            $oson_on = 'ON';
+            $oson_off = 'OFF';
+        }
+
         if ($options['rotation_angle']) {
             $start = (int) $this->GetValue('RotationStart');
             $angle = (int) $this->GetValue('RotationAngle');
@@ -1974,14 +1991,14 @@ class DysonDevice extends IPSModule
             $this->adjust_rotation($angle, $start, $end);
 
             $data = [
-                'oson' => ($mode ? 'ON' : 'OFF'),
+                'oson' => ($mode ? $oson_on : $oson_off),
                 'ancp' => 'CUST',
                 'osal' => sprintf('%04d', $start),
                 'osau' => sprintf('%04d', $end),
             ];
         } else {
             $data = [
-                'oson' => ($mode ? 'ON' : 'OFF'),
+                'oson' => ($mode ? $oson_on : $oson_off),
             ];
         }
 
@@ -1997,21 +2014,30 @@ class DysonDevice extends IPSModule
         $product_type = $this->ReadPropertyString('product_type');
         $options = $this->product2options($product_type);
 
+        $specs = json_decode($this->ReadAttributeString('Specs'), true);
+        if (isset($specs['oson_version']) && $specs['oson_version'] == 'V2') {
+            $oson_on = 'OION';
+            $oson_off = 'OIOF';
+        } else {
+            $oson_on = 'ON';
+            $oson_off = 'OFF';
+        }
+
         switch ($mode) {
             case 0:
                 $data = [
-                    'oson' => 'OFF',
+                    'oson' => $oson_off,
                 ];
                 break;
             case 360:
                 $data = [
-                    'oson' => 'ON',
+                    'oson' => $oson_on,
                     'ancp' => 'BRZE',
                 ];
                 break;
             default:
                 $data = [
-                    'oson' => 'ON',
+                    'oson' => $oson_on,
                     'ancp' => sprintf('%04d', $mode),
                 ];
                 break;
@@ -2328,7 +2354,7 @@ class DysonDevice extends IPSModule
 
     private function str2bool($s)
     {
-        return $s != 'OFF';
+        return in_array($s, ['ON', 'OION']);
     }
 
     private function product2options($product_type)

@@ -212,6 +212,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.6 @ 31.10.2022 15:48
+  - es gibt Versionen von Dyson-Modellen, bei denen die Oscillation ('oson') per 'OION'/'OIOF' statt 'ON'/'OFF' gesteuert wird. Das wird nun vom Modul selbsttätig ermittelt.
+
 - 2.5.4 @ 12.10.2022 14:44
   - Konfigurator betrachtet nun nur noch Geräte, die entweder noch nicht angelegt wurden oder mit dem gleichen I/O verbunden sind
   - update submodule CommonStubs
