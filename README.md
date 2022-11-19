@@ -30,6 +30,8 @@ Getestet wurde das Modul bisher mit:
 | Typ | Bezeichnung |
 | :-- | :---------- |
 | 358 | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH01) |
+| 358E | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03) |
+| 358K | Dyson Luftreiniger Humidify+Cool Formaldehyd (PH04) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 438E | Dyson Pure Cool Turmventilator mit Luftreiniger (TP07) |
 | 438E | Dyson Pure Cool Turmventilator mit Luftreiniger incl. Formaldehyd (TP09) |
@@ -38,7 +40,6 @@ Getestet wurde das Modul bisher mit:
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
-| 358E | Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -211,6 +212,10 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.7 @ 19.11.2022 16:38
+  - Modell 358K (Dyson Luftreiniger Humidify+Cool Formaldehyd (PH04)) hinzugefügt
+  - update submodule CommonStubs
 
 - 2.6 @ 31.10.2022 15:48
   - es gibt Versionen von Dyson-Modellen, bei denen die Oscillation ('oson') per 'OION'/'OIOF' statt 'ON'/'OFF' gesteuert wird. Das wird nun vom Modul selbsttätig ermittelt.

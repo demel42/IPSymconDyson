@@ -2446,6 +2446,7 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 break;
             case '358E':
+            case '358K':
                 $options['rssi'] = true;
                 $options['power'] = true;
                 $options['airflow_rate'] = true;
@@ -2547,7 +2548,7 @@ class DysonDevice extends IPSModule
         $product2name = [
             '358'   => 'Dyson Pure Humidify+Cool desk fan (PH01)',
             '358E'  => 'Dyson Pure Humidify+Cool desk fan (PH03)',
-            // Dyson Purifier Humidify+Cool Formaldehyde (PH04)
+            '358K'  => 'Dyson Purifier Humidify+Cool Formaldehyde (PH04)',
             // Dyson Purifier Humidify+Cool Autoreact Luftbefeuchter (PH3A)
 
             // Dyson Pure Cool TP00 fan tower (TP00)
