@@ -213,6 +213,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.7.1 @ 21.11.2022 19:35
+  - Fix: Korrektur zu 2.6
+
 - 2.7 @ 19.11.2022 16:38
   - Modell 358K (Dyson Luftreiniger Humidify+Cool Formaldehyd (PH04)) hinzugefügt
   - update submodule CommonStubs

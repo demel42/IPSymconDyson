@@ -2354,7 +2354,7 @@ class DysonDevice extends IPSModule
 
     private function str2bool($s)
     {
-        return in_array($s, ['ON', 'OION']);
+        return in_array($s, ['OFF', 'OIOF']) == false;
     }
 
     private function product2options($product_type)
