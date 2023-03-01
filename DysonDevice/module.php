@@ -2446,6 +2446,26 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 break;
             case '358E':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode2'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+                $options['humidify'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['hepa_filter'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['voc'] = true;
+                $options['nox'] = true;
+                break;
             case '358K':
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -2466,6 +2486,7 @@ class DysonDevice extends IPSModule
                 $options['pm10'] = true;
                 $options['voc'] = true;
                 $options['nox'] = true;
+                $options['hcho'] = true;
                 break;
             case '527':
                 $options['rssi'] = true;

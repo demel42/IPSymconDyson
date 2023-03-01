@@ -213,6 +213,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.8 @ 01.03.2023 08:50
+  - Fix: Modell 358K (PH04) ergänzt um die Übernahme des Formaldehyd
+
 - 2.7.1 @ 21.11.2022 19:35
   - Fix: Korrektur zu 2.6
 
