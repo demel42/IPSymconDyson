@@ -25,6 +25,8 @@ class DysonDevice extends IPSModule
 
         $this->RegisterPropertyBoolean('module_disable', false);
 
+        $this->RegisterPropertyBoolean('log_no_parent', true);
+
         $this->RegisterPropertyString('user', '');
         $this->RegisterPropertyString('password', '');
         $this->RegisterPropertyString('country', '');
@@ -335,6 +337,12 @@ class DysonDevice extends IPSModule
                 ],
             ],
             'caption' => 'Call settings',
+        ];
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'log_no_parent',
+            'caption' => 'Generate message when the gateway is inactive',
         ];
 
         return $formElements;
@@ -1661,7 +1669,7 @@ class DysonDevice extends IPSModule
             'QualityOfService' => 0,
             'Retain'           => false,
             'Topic'            => $topic,
-            'Payload'          => utf8_encode($payload)
+            'Payload'          => mb_convert_encoding($payload, 'UTF-8', 'ISO-8859-1'),
         ];
 
         $this->SendDebug(__FUNCTION__, 'func=' . $func . ', cmd=' . print_r($json, true), 0);

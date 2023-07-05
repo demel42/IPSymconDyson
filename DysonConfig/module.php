@@ -121,7 +121,7 @@ class DysonConfig extends IPSModule
                 $instanceID = 0;
                 foreach ($instIDs as $instID) {
                     if (IPS_GetProperty($instID, 'serial') == $serial) {
-                        $this->SendDebug(__FUNCTION__, 'device found: ' . utf8_decode(IPS_GetName($instID)) . ' (' . $instID . ')', 0);
+                        $this->SendDebug(__FUNCTION__, 'device found: ' . IPS_GetName($instID) . ' (' . $instID . ')', 0);
                         $instanceID = $instID;
                         break;
                     }

@@ -213,6 +213,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.9 @ 05.07.2023 17:02
+  - Vorbereitung auf IPS 7 / PHP 8.2
+  - Neu: Schalter, um die Meldung eines inaktiven Gateway zu steuern
+  - update submodule CommonStubs
+    - Absicherung bei Zugriff auf Objekte und Inhalte
+
 - 2.8 @ 01.03.2023 08:50
   - Fix: Modell 358K (PH04) ergänzt um die Übernahme des Formaldehyd
   - update submodule CommonStubs

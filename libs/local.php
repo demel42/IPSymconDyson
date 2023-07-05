@@ -371,7 +371,7 @@ trait DysonLocalLib
         $pw = base64_decode($encrypted_password);
         $data = openssl_decrypt($pw, 'AES-256-CBC', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
         if ($data != false) {
-            $data = utf8_decode($data);
+            $data = mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8');
 
             // unpad
             $pad = ord(substr($data, strlen($data) - 1, 1));
