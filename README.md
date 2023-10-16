@@ -213,6 +213,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.10 @ 19.09.2023 09:11
+  - Neu: Ermittlung von Speicherbedarf und Laufzeit (aktuell und für 31 Tage) und Anzeige im Panel "Information"
+  - update submodule CommonStubs
+
 - 2.9 @ 05.07.2023 17:02
   - Vorbereitung auf IPS 7 / PHP 8.2
   - Neu: Schalter, um die Meldung eines inaktiven Gateway zu steuern
