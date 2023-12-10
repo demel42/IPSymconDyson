@@ -26,7 +26,9 @@ class DysonConfig extends IPSModule
     {
         parent::Create();
 
-        $this->RegisterPropertyInteger('ImportCategoryID', 0);
+        if (IPS_GetKernelVersion() < 7.0) {
+            $this->RegisterPropertyInteger('ImportCategoryID', 0);
+        }
 
         $this->RegisterPropertyString('user', '');
         $this->RegisterPropertyString('password', '');
@@ -61,7 +63,10 @@ class DysonConfig extends IPSModule
     {
         parent::ApplyChanges();
 
-        $propertyNames = ['ImportCategoryID'];
+        $propertyNames = [];
+        if (IPS_GetKernelVersion() < 7.0) {
+            $propertyNames[] = 'ImportCategoryID';
+        }
         $this->MaintainReferences($propertyNames);
 
         if ($this->CheckPrerequisites() != false) {
@@ -97,7 +102,12 @@ class DysonConfig extends IPSModule
 
         $this->MaintainStatus(IS_ACTIVE);
 
-        $catID = $this->ReadPropertyInteger('ImportCategoryID');
+        if (IPS_GetKernelVersion() < 7.0) {
+            $catID = $this->ReadPropertyInteger('ImportCategoryID');
+            $location = $this->GetConfiguratorLocation($catID);
+        } else {
+            $location = '';
+        }
 
         $devices = $this->getDeviceList();
         $this->SendDebug(__FUNCTION__, 'devices=' . print_r($devices, true), 0);
@@ -143,7 +153,7 @@ class DysonConfig extends IPSModule
                     'create'               => [
                         [
                             'moduleID'      => $guid,
-                            'location'      => $this->GetConfiguratorLocation($catID),
+                            'location'      => $location,
                             'info'          => 'Dyson ' . $product_type . ' (#' . $serial . ')',
                             'configuration' => [
                                 'user'          => $user,
@@ -266,11 +276,13 @@ class DysonConfig extends IPSModule
             'caption' => 'Dyson Account-Details',
         ];
 
-        $formElements[] = [
-            'name'    => 'ImportCategoryID',
-            'type'    => 'SelectCategory',
-            'caption' => 'category for products to be created'
-        ];
+        if (IPS_GetKernelVersion() < 7.0) {
+            $formElements[] = [
+                'name'    => 'ImportCategoryID',
+                'type'    => 'SelectCategory',
+                'caption' => 'category for products to be created'
+            ];
+        }
 
         $entries = $this->getConfiguratorValues();
         $configurator = [
