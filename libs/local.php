@@ -140,16 +140,16 @@ trait DysonLocalLib
         $associations = [
             ['Wert' => -1, 'Name' => $this->Translate('Auto'), 'Farbe' => -1],
             ['Wert' => 0, 'Name' => $this->Translate('Off'), 'Farbe' => -1],
-            ['Wert' => 1, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 2, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 3, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 4, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 5, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 6, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 7, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 8, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 9, 'Name' => '%d', 'Farbe' => -1],
-            ['Wert' => 10, 'Name' => '%d', 'Farbe' => -1],
+            ['Wert' => 1, 'Name' => '1', 'Farbe' => -1],
+            ['Wert' => 2, 'Name' => '2', 'Farbe' => -1],
+            ['Wert' => 3, 'Name' => '3', 'Farbe' => -1],
+            ['Wert' => 4, 'Name' => '4', 'Farbe' => -1],
+            ['Wert' => 5, 'Name' => '5', 'Farbe' => -1],
+            ['Wert' => 6, 'Name' => '6', 'Farbe' => -1],
+            ['Wert' => 7, 'Name' => '7', 'Farbe' => -1],
+            ['Wert' => 8, 'Name' => '8', 'Farbe' => -1],
+            ['Wert' => 9, 'Name' => '9', 'Farbe' => -1],
+            ['Wert' => 10, 'Name' => '10', 'Farbe' => -1],
         ];
         $this->CreateVarProfile('Dyson.AirflowRate', VARIABLETYPE_INTEGER, '', 0, 9, 0, 0, '', $associations, $reInstall);
 

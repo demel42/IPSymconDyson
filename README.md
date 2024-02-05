@@ -215,6 +215,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.12 @ 05.02.2024 15:13
+  - Fix: Darstellungsfehler im Variablenprofil "Dyson.AirflowRate" behoben
+  - update submodule CommonStubs
+
 - 2.11 @ 09.12.2023 17:23
   - Neu: ab IPS-Version 7 ist im Konfigurator die Angabe einer Import-Kategorie integriert, daher entfällt die bisher vorhandene separate Einstellmöglichkeit
 
