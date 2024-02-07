@@ -215,6 +215,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.13 @ 07.02.2024 17:38
+  - Fix: Absicherung von Zugriffen auf andere Instanzen in Konfiguratoren
+
 - 2.12 @ 05.02.2024 15:13
   - Fix: Darstellungsfehler im Variablenprofil "Dyson.AirflowRate" behoben
   - update submodule CommonStubs
