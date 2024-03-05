@@ -88,6 +88,10 @@ class DysonDevice extends IPSModule
             $r[] = $this->Translate('Display error in variableprofile \'Dyson.AirflowRate\'');
         }
 
+        if ($this->version2num($oldInfo) < $this->version2num('2.14')) {
+            $r[] = $this->Translate('Display error in variableprofile \'Dyson.Humidify\'');
+        }
+
         return $r;
     }
 
@@ -103,6 +107,13 @@ class DysonDevice extends IPSModule
         if ($this->version2num($oldInfo) < $this->version2num('2.12')) {
             if (IPS_VariableProfileExists('Dyson.AirflowRate')) {
                 IPS_DeleteVariableProfile('Dyson.AirflowRate');
+            }
+            $this->InstallVarProfiles(false);
+        }
+
+        if ($this->version2num($oldInfo) < $this->version2num('2.14')) {
+            if (IPS_VariableProfileExists('Dyson.Humidify')) {
+                IPS_DeleteVariableProfile('Dyson.Humidify');
             }
             $this->InstallVarProfiles(false);
         }

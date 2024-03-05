@@ -215,6 +215,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.14 @ 05.03.2024 15:12
+  - Fix: Darstellungsfehler im Variablenprofil "Dyson.Humidify" behoben
+  - update submodule CommonStubs
+
 - 2.13 @ 07.02.2024 17:38
   - Fix: Absicherung von Zugriffen auf andere Instanzen in Konfiguratoren
 

@@ -195,13 +195,13 @@ trait DysonLocalLib
         $this->CreateVarProfile('Dyson.Humidity', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
 
         $associations = [
-            ['Wert' => 30, 'Name' => '%.0f %%', 'Farbe' => -1],
-            ['Wert' => 40, 'Name' => '%.0f %%', 'Farbe' => -1],
-            ['Wert' => 50, 'Name' => '%.0f %%', 'Farbe' => -1],
-            ['Wert' => 60, 'Name' => '%.0f %%', 'Farbe' => -1],
-            ['Wert' => 70, 'Name' => '%.0f %%', 'Farbe' => -1],
+            ['Wert' => 30, 'Name' => '30', 'Farbe' => -1],
+            ['Wert' => 40, 'Name' => '40', 'Farbe' => -1],
+            ['Wert' => 50, 'Name' => '50', 'Farbe' => -1],
+            ['Wert' => 60, 'Name' => '60', 'Farbe' => -1],
+            ['Wert' => 70, 'Name' => '70', 'Farbe' => -1],
         ];
-        $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, '', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
+        $this->CreateVarProfile('Dyson.Humidify', VARIABLETYPE_FLOAT, ' %', 0, 0, 0, 0, 'Drops', $associations, $reInstall);
 
         $this->CreateVarProfile('Dyson.HCHO', VARIABLETYPE_FLOAT, ' mg/m³', 0, 0, 0, 2, '', [], $reInstall);
     }
