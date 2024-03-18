@@ -40,6 +40,7 @@ Getestet wurde das Modul bisher mit:
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
+| 664 ] Dyson Luftreiniger Big+Quiet Formaldehyd (BP03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -214,6 +215,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.15 @ 18.03.2024 17:00
+  - Modell 664 (Dyson Luftreiniger Big+Quiet Formaldehyd (BP03)) hinzugefügt
 
 - 2.14 @ 05.03.2024 15:12
   - Fix: Darstellungsfehler im Variablenprofil "Dyson.Humidify" behoben

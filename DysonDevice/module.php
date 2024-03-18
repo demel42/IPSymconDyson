@@ -2594,6 +2594,24 @@ class DysonDevice extends IPSModule
 
                 $options['air_quality_target'] = true;
                 break;
+            case '664':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+                $options['standby_monitoring'] = true;
+                $options['hepa_filter'] = true;
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['voc'] = true;
+                $options['nox'] = true;
+                $options['hcho'] = true;
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);
                 break;
@@ -2607,23 +2625,14 @@ class DysonDevice extends IPSModule
             '358'   => 'Dyson Pure Humidify+Cool desk fan (PH01)',
             '358E'  => 'Dyson Pure Humidify+Cool desk fan (PH03)',
             '358K'  => 'Dyson Purifier Humidify+Cool Formaldehyde (PH04)',
-            // Dyson Purifier Humidify+Cool Autoreact Luftbefeuchter (PH3A)
-
-            // Dyson Pure Cool TP00 fan tower (TP00)
-            '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',
             '438'   => 'Dyson Pure Cool purifier fan tower (TP04)',
             '438E'  => 'Dyson Pure Cool purifier fan tower (TP07)',
-            // Dyson Purifier Cool Formaldehyde purifier fan tower (TP09)
-            // Dyson Purifier Cool Autoreact purifier fan tower (TP7A)
-
-            // Dyson Pure Hot+Cool (HP00)
             '455'   => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
-            '527'   => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
-            // Dyson Purifier Hot+Cool (HP07)
-            // Dyson Purifier Hot+Cool Formaldehyde (HP09)
-
             '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
+            '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',
             '520'   => 'Dyson Pure Cool purifier desk fan (DP04)',
+            '527'   => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
+            '664'   => 'Dyson Purifier Big+Quiet Formaldehyde (BP03)',
         ];
 
         if (isset($product2name[$product_type])) {
