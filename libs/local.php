@@ -207,7 +207,7 @@ trait DysonLocalLib
     }
 
     private static $api_host = 'appapi.cp.dyson.com';
-    private static $user_agent = 'DysonLink/32531 CFNetwork/1240.0.4 Darwin/20.5.0';
+    private static $user_agent = 'android client'; // 'DysonLink/32531 CFNetwork/1240.0.4 Darwin/20.5.0';
     private static $cainfo = __DIR__ . '/certs/DigiCert-chain.crt';
 
     private function getDeviceList()
@@ -475,14 +475,62 @@ trait DysonLocalLib
             }
         }
 
+        $user = $this->ReadPropertyString('user');
+        $password = $this->ReadPropertyString('password');
+        $country = strtoupper($this->ReadPropertyString('country'));
+
+        $func = '/v1/provisioningservice/application/Android/version';
+
+        $headers = [
+            'User-Agent: ' . self::$user_agent,
+            'Accept: */*',
+        ];
+
+        $this->do_HttpRequest($func, false, $headers, false, 'GET', $cdata, $cerrno, $cerror, $httpcode);
+
+        $statuscode = 0;
+        $err = '';
+        $msg = '';
+        if ($cerrno) {
+            $statuscode = self::$IS_SERVERERROR;
+            $err = 'got curl-errno ' . $cerrno . ' (' . $cerror . ')';
+        } elseif ($httpcode != 200) {
+            if ($httpcode == 401) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (unauthorized)';
+            } elseif ($httpcode == 403) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (forbidden)';
+            } elseif ($httpcode == 429) {
+                $statuscode = self::$IS_UNAUTHORIZED;
+                $err = 'got http-code ' . $httpcode . ' (too many requests)';
+            } elseif ($httpcode >= 500 && $httpcode <= 599) {
+                $statuscode = self::$IS_SERVERERROR;
+                $err = 'got http-code ' . $httpcode . ' (server error)';
+            } else {
+                $statuscode = self::$IS_HTTPERROR;
+                $err = 'got http-code ' . $httpcode;
+            }
+            if ($cdata != '') {
+                $jdata = json_decode($cdata, true);
+                if (isset($jdata['Message'])) {
+                    $msg = $jdata['Message'];
+                }
+            }
+        }
+
+        if ($statuscode != 0) {
+            $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
+            $this->SetStatus($statuscode);
+            if ($msg == '') {
+                $msg = 'Login failed (initialize)';
+            }
+            return false;
+        }
+
         $authData = [
             'lastLogin' => time(),
         ];
-
-        $user = $this->ReadPropertyString('user');
-        $password = $this->ReadPropertyString('password');
-        $country = $this->ReadPropertyString('country');
-        $country = strtoupper($country);
 
         $func = '/v3/userregistration/email/userstatus';
 
@@ -558,11 +606,10 @@ trait DysonLocalLib
         $this->WriteAttributeString('Auth', $auth);
 
         if ($statuscode != 0) {
-            // $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
             $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
             $this->SetStatus($statuscode);
             if ($msg == '') {
-                $msg = 'Login failed';
+                $msg = 'Login failed (userstatus)';
             }
             return false;
         }
@@ -638,9 +685,11 @@ trait DysonLocalLib
         $this->WriteAttributeString('Auth', $auth);
 
         if ($statuscode != 0) {
-            // $this->LogMessage('url=' . $url . ' => statuscode=' . $statuscode . ', err=' . $err, KL_WARNING);
             $this->SendDebug(__FUNCTION__, ' => statuscode=' . $statuscode . ', err=' . $err . ', msg=' . $msg, 0);
             $this->SetStatus($statuscode);
+            if ($msg == '') {
+                $msg = 'Login failed (auth)';
+            }
             return false;
         }
 

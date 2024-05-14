@@ -127,7 +127,7 @@ _[1]_: nur bis IPS-Version 7 vorhanden, danach ist eine Einstellmöglichkeit Bes
 | Anmeldung durchführen      | Anmeldung an der Dyson-Cloud |
 
 
-Die 2FA-Anmeldung funktioniert nur zusammen mit der Dyson-App auf dem Mobilgerät.
+Die 2FA-Anmeldung funktioniert unter Umständen nur zusammen mit der Dyson-App auf dem Mobilgerät.
 Manchmal reicht es aus, einfach die Dyson-App zu starten, manchmal muss man etwas mehr machen:
 - in der App vom Dyson-Konto abmelden
 - erneut Anmeldung beginnen mit Eingabe vom Land un der Mail-Adresse - nicht abschliessen!
@@ -135,6 +135,7 @@ Manchmal reicht es aus, einfach die Dyson-App zu starten, manchmal muss man etwa
 - Postfach prüfen auf Mail von Dyson mit Code
 - Code eingeben und bestätigen (Schritt 2)
 War das erfolgreich, kann man sich in der Dyson-App wieder vollständig anmelden.
+**Ab der Modul-Version 2.16 sollte die Einbeziehung der Dyson-App nicht mehr zwingend erforderlich sein.**
 
 ### DysonDevice
 
@@ -216,8 +217,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.16 @ 14.05.2024 14:36
+  - Fix: Verbesserung der 2FA-Loginprozedur
+
 - 2.15 @ 18.03.2024 17:00
-  - Modell 664 (Dyson Luftreiniger Big+Quiet Formaldehyd (BP03)) hinzugefügt
+  - Neu: Modell 664 (Dyson Luftreiniger Big+Quiet Formaldehyd (BP03)) hinzugefügt
 
 - 2.14 @ 05.03.2024 15:12
   - Fix: Darstellungsfehler im Variablenprofil "Dyson.Humidify" behoben
