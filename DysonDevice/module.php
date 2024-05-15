@@ -2525,6 +2525,29 @@ class DysonDevice extends IPSModule
                 $options['nox'] = true;
                 $options['hcho'] = true;
                 break;
+            case '438K':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode'] = true;
+                $options['rotation_angle'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+                $options['humidify'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['hepa_filter'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['voc'] = true;
+                $options['nox'] = true;
+                $options['hcho'] = true;
+                break;
             case '527':
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -2627,6 +2650,7 @@ class DysonDevice extends IPSModule
             '358K'  => 'Dyson Purifier Humidify+Cool Formaldehyde (PH04)',
             '438'   => 'Dyson Pure Cool purifier fan tower (TP04)',
             '438E'  => 'Dyson Pure Cool purifier fan tower (TP07)',
+            '438K'  => 'Dyson Purifier Cool Formaldehyde (TP09)',
             '455'   => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
             '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
             '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',

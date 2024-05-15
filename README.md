@@ -34,7 +34,7 @@ Getestet wurde das Modul bisher mit:
 | 358K | Dyson Luftreiniger Humidify+Cool Formaldehyd (PH04) |
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 438E | Dyson Pure Cool Turmventilator mit Luftreiniger (TP07) |
-| 438E | Dyson Pure Cool Turmventilator mit Luftreiniger incl. Formaldehyd (TP09) |
+| 438K | Dyson Purifier Cool Formaldehyde (TP09) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
@@ -217,7 +217,8 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.16 @ 14.05.2024 14:36
+- 2.16 @ 15.05.2024 10:48
+  - Neu: Modell 438K (Dyson Purifier Cool Formaldehyde (TP09)) hinzugefügt
   - Fix: Verbesserung der 2FA-Loginprozedur
 
 - 2.15 @ 18.03.2024 17:00
