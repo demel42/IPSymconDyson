@@ -40,7 +40,7 @@ Getestet wurde das Modul bisher mit:
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
-| 664 ] Dyson Luftreiniger Big+Quiet Formaldehyd (BP03) |
+| 664 | Dyson Luftreiniger Big+Quiet Formaldehyd (BP03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
 Mit einigen Anpassungen sollte das auch bei anderen Modellen funktionieren. Bei Bedarf bitte an den Autor wenden.
@@ -217,7 +217,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.16 @ 15.05.2024 10:48
+- 2.16 @ 17.05.2024 16:53
   - Neu: Modell 438K (Dyson Purifier Cool Formaldehyde (TP09)) hinzugefügt
   - Fix: Verbesserung der 2FA-Loginprozedur
 
