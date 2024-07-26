@@ -14,7 +14,7 @@ class DysonDevice extends IPSModule
     {
         parent::__construct($InstanceID);
 
-        $this->CommonContruct(__DIR__);
+        $this->CommonConstruct(__DIR__);
     }
 
     public function __destruct()
@@ -1717,7 +1717,6 @@ class DysonDevice extends IPSModule
                 if ($options['power']) {
                     $enabled = true;
                 }
-                $this->SendDebug(__FUNCTION__, 'field[\'power\']=' . $this->bool2str($options['power']) . ', enabled=' . $this->bool2str($enabled), 0);
                 break;
             case 'SwitchAutomaticMode':
                 if ($options['automatic_mode']) {
@@ -1810,20 +1809,10 @@ class DysonDevice extends IPSModule
         }
 
         $this->SendDebug(__FUNCTION__, 'action "' . $func . '" is ' . ($enabled ? 'enabled' : 'disabled'), 0);
-        if ($verbose && !$enabled) {
+        if ($verbose && $enabled == false) {
             $this->LogMessage(__FUNCTION__ . ': action "' . $func . '" is not enabled for ' . IPS_GetName($this->InstanceID), KL_WARNING);
         }
         return $enabled;
-    }
-
-    private function CallAction($func, $action)
-    {
-        if ($this->GetStatus() == IS_INACTIVE) {
-            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
-            return;
-        }
-
-        $this->SendDebug(__FUNCTION__, 'func=' . $func . ', action=' . print_r($action, true), 0);
     }
 
     private function SetStateCommand($func, $data)

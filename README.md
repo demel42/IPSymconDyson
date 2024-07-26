@@ -217,9 +217,11 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.16 @ 17.05.2024 16:53
+- 2.16 @ 26.07.2024 11:22
   - Neu: Modell 438K (Dyson Purifier Cool Formaldehyde (TP09)) hinzugefügt
   - Fix: Verbesserung der 2FA-Loginprozedur
+  - Fix: ungenutze Funktion entfernt
+  - update submodule CommonStubs
 
 - 2.15 @ 18.03.2024 17:00
   - Neu: Modell 664 (Dyson Luftreiniger Big+Quiet Formaldehyd (BP03)) hinzugefügt
