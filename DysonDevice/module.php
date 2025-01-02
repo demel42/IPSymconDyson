@@ -2524,7 +2524,7 @@ class DysonDevice extends IPSModule
                 $options['automatic_mode'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
-                $options['humidify'] = true;
+                // $options['humidify'] = true;
 
                 $options['standby_monitoring'] = true;
                 $options['hepa_filter'] = true;

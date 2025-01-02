@@ -217,6 +217,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.17 @ 02.01.2025 14:28
+  - Fix: Type 438K (Dyson Purifier Cool Formaldehyde (TP09)) ist nicht mit einem Luftbefeuchter ausgestattet
+  - update submodule CommonStubs
+
 - 2.16 @ 26.07.2024 11:22
   - Neu: Modell 438K (Dyson Purifier Cool Formaldehyde (TP09)) hinzugefügt
   - Fix: Verbesserung der 2FA-Loginprozedur
