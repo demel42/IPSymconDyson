@@ -40,6 +40,7 @@ Getestet wurde das Modul bisher mit:
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
+| 527K | Dyson Purifier Hot+Cool Formaldehyde Luftreiniger mit Heizfunktion (HP09) |
 | 664 | Dyson Luftreiniger Big+Quiet Formaldehyd (BP03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
@@ -216,6 +217,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.18 @ 11.07.2025 14:15
+  - Neu: Modell 527K (Dyson Purifier Hot+Cool Formaldehyde Luftreiniger mit Heizfunktion (HP09)) hinzugefügt
 
 - 2.17 @ 02.01.2025 14:28
   - Fix: Type 438K (Dyson Purifier Cool Formaldehyde (TP09)) ist nicht mit einem Luftbefeuchter ausgestattet
