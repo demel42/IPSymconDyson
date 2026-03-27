@@ -218,6 +218,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.19 @ 21.03.2026 10:38
+  - Fix: Anpassung für IPS 9: Reihenfolge der Anlage von Parents hat sich geändert
+  - update submodule CommonStubs
+
 - 2.18 @ 11.07.2025 14:15
   - Neu: Modell 527K (Dyson Purifier Hot+Cool Formaldehyde Luftreiniger mit Heizfunktion (HP09)) hinzugefügt
 

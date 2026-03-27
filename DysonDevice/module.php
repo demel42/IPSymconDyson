@@ -535,7 +535,13 @@ class DysonDevice extends IPSModule
 
     public function GetConfigurationForParent()
     {
-        $r = IPS_GetConfiguration($this->GetConnectionID());
+        $cID = $this->GetConnectionID();
+        if (IPS_InstanceExists($cID) == false) {
+            $this->SendDebug(__FUNCTION__, 'no parent', 0);
+            return;
+        }
+
+        $r = IPS_GetConfiguration($cID);
         $this->SendDebug(__FUNCTION__, print_r($r, true), 0);
         return $r;
     }
@@ -561,10 +567,8 @@ class DysonDevice extends IPSModule
     private function ManualReloadConfig()
     {
         $cID = $this->GetConnectionID();
-        if ($cID == false) {
-            $this->SendDebug(__FUNCTION__, 'has no parent instance', 0);
-            $msg = $this->Translate('has no parent instance');
-            $this->PopupMessage($msg);
+        if (IPS_InstanceExists($cID) == false) {
+            $this->SendDebug(__FUNCTION__, 'no parent', 0);
             return;
         }
 
