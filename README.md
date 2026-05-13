@@ -218,6 +218,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.20 @ 09.05.2026 11:36
+  - Fix: Änderung von deprecated php code
+  - update submodule CommonStubs
+
 - 2.19 @ 21.03.2026 10:38
   - Fix: Anpassung für IPS 9: Reihenfolge der Anlage von Parents hat sich geändert
   - update submodule CommonStubs

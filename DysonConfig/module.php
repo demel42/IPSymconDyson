@@ -113,7 +113,7 @@ class DysonConfig extends IPSModule
         $this->SendDebug(__FUNCTION__, 'devices=' . print_r($devices, true), 0);
 
         $guid = '{D1A42861-0280-E373-A07E-EC51D3B43951}';
-        $instIDs = IPS_GetInstanceListByModuleID($guid);
+        $instIDs = (array) IPS_GetInstanceListByModuleID($guid);
 
         if (is_array($devices) && count($devices)) {
             foreach ($devices as $device) {
