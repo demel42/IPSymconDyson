@@ -212,8 +212,13 @@ class DysonConfig extends IPSModule
                 }
                 $this->SendDebug(__FUNCTION__, 'type=' . $device['type'] . ', variant=' . $device['variant'] . ' => ' . $product_type, 0);
 
-                $local_credentials = $device['connectedConfiguration']['mqtt']['localBrokerCredentials'];
+                if (isset($device['connectedConfiguration']['mqtt']['localBrokerCredentials'])) {
+                    $local_credentials = $device['connectedConfiguration']['mqtt']['localBrokerCredentials'];
+                } else {
+                    $local_credentials = false;
+                }
                 $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
+
                 $this->SendDebug(__FUNCTION__, 'local_password=' . $local_password, 0);
                 $topics = [];
                 foreach (['current', 'faults', 'connection', 'software', 'summary'] as $sub) {
