@@ -35,6 +35,7 @@ Getestet wurde das Modul bisher mit:
 | 438 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP04) |
 | 438E | Dyson Pure Cool Turmventilator mit Luftreiniger (TP07) |
 | 438K | Dyson Purifier Cool Formaldehyde (TP09) |
+| 438M | Dyson Purifier Cool PC1 (TP11) |
 | 455 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP02) |
 | 469 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP02) |
 | 475 | Dyson Pure Cool Turmventilator mit Luftreiniger (TP02) |
@@ -217,6 +218,9 @@ GUIDs
   - DysonDevice: `{D1A42861-0280-E373-A07E-EC51D3B43951}`
 
 ## 7. Versions-Historie
+
+- 2.21 @ 03.07.2026 17:21
+  - Neu: Modell 438M (Dyson Purifier Cool PC1 Luftreiniger) hinzugefügt
 
 - 2.20 @ 09.05.2026 11:36
   - Fix: Änderung von deprecated php code

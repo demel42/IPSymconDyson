@@ -230,7 +230,7 @@ trait DysonLocalLib
             return false;
         }
 
-        $url = 'https://' . self::$api_host . '/v2/provisioningservice/manifest';
+        $url = 'https://' . self::$api_host . '/v3/manifest';
 
         $headers = [
             'User-Agent: ' . self::$user_agent,

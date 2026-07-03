@@ -2431,6 +2431,7 @@ class DysonDevice extends IPSModule
         switch ($product_type) {
             case '438':
             case '438E':
+            case '438M':
             case '520':
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -2665,6 +2666,7 @@ class DysonDevice extends IPSModule
             '438'   => 'Dyson Pure Cool purifier fan tower (TP04)',
             '438E'  => 'Dyson Pure Cool purifier fan tower (TP07)',
             '438K'  => 'Dyson Purifier Cool Formaldehyde (TP09)',
+            '438M'  => 'Dyson Purifier Cool PC1 (TP11)',
             '455'   => 'Dyson Pure Hot+Cool purifier fan tower (HP02)',
             '469'   => 'Dyson Pure Cool purifier desk fan (DP02)',
             '475'   => 'Dyson Pure Cool purifier fan tower (TP02)',

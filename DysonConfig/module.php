@@ -119,10 +119,53 @@ class DysonConfig extends IPSModule
             foreach ($devices as $device) {
                 $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
 
-                $serial = $device['Serial'];
-                $name = $device['Name'];
-                $product_type = $device['ProductType'];
-                $local_credentials = $device['LocalCredentials'];
+/*
+03.07.2026, 17:16:42 | getConfiguratorValues | device=Array
+(
+    [serialNumber] => VS9-EU-NAB1633A
+    [name] => Wohnzimmer
+    [type] => 438
+    [connectedConfiguration] => Array
+        (
+            [mqtt] => Array
+                (
+                    [remoteBrokerType] => wss
+                    [localBrokerCredentials] => BTYMObU8l2+aFG9tpv0F+aJMJ3717rHd252UjAACs4c51SktS71n21vngx4Sy0rqJe6PmvBgpj4GHc2Y2ydUdKSH2frxM/oxK2EzMasSoZBQ/zovqdzsPyymxrC1F030GRSwGhQ5JlQpyE/DnAiFJs4gOH6vWmE60OuR/RkP4u1oLkyP1YCrDT0c2N+xASoi
+                    [mqttRootTopicLevel] => 438
+                )
+
+            [firmware] => Array
+                (
+                    [version] => ECG2PF.02.06.003.0002
+                    [autoUpdateEnabled] => 1
+                    [newVersionAvailable] =>
+                    [capabilities] => Array
+                        (
+                            [0] => AdvanceOscillationDay1
+                            [1] => Scheduling
+                            [2] => EnvironmentalData
+                            [3] => ExtendedAQ
+                            [4] => ChangeWifi
+                        )
+
+                    [minimumAppVersion] => 4.1.8
+                )
+
+        )
+
+    [variant] =>
+    [model] => TP04
+    [category] => ec
+    [connectionCategory] => lecAndWifi
+    [productName] => Dyson Pure Cool™
+)
+
+*/
+
+                $serial = $device['serialNumber'];
+                $name = $device['name'];
+                $product_type = $device['type'];
+                $local_credentials = $device['connectedConfiguration']['mqtt']['localBrokerCredentials'];
                 $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
                 $this->SendDebug(__FUNCTION__, 'local_password=' . $local_password, 0);
                 $topics = [];
