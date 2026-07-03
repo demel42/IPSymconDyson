@@ -119,52 +119,99 @@ class DysonConfig extends IPSModule
             foreach ($devices as $device) {
                 $this->SendDebug(__FUNCTION__, 'device=' . print_r($device, true), 0);
 
-/*
-03.07.2026, 17:16:42 | getConfiguratorValues | device=Array
-(
-    [serialNumber] => VS9-EU-NAB1633A
-    [name] => Wohnzimmer
-    [type] => 438
-    [connectedConfiguration] => Array
-        (
-            [mqtt] => Array
+                /*
+                03.07.2026, 17:16:42 | getConfiguratorValues | device=Array
                 (
-                    [remoteBrokerType] => wss
-                    [localBrokerCredentials] => BTYMObU8l2+aFG9tpv0F+aJMJ3717rHd252UjAACs4c51SktS71n21vngx4Sy0rqJe6PmvBgpj4GHc2Y2ydUdKSH2frxM/oxK2EzMasSoZBQ/zovqdzsPyymxrC1F030GRSwGhQ5JlQpyE/DnAiFJs4gOH6vWmE60OuR/RkP4u1oLkyP1YCrDT0c2N+xASoi
-                    [mqttRootTopicLevel] => 438
-                )
-
-            [firmware] => Array
-                (
-                    [version] => ECG2PF.02.06.003.0002
-                    [autoUpdateEnabled] => 1
-                    [newVersionAvailable] =>
-                    [capabilities] => Array
+                    [serialNumber] => VS9-EU-NAB1633A
+                    [name] => Wohnzimmer
+                    [type] => 438
+                    [connectedConfiguration] => Array
                         (
-                            [0] => AdvanceOscillationDay1
-                            [1] => Scheduling
-                            [2] => EnvironmentalData
-                            [3] => ExtendedAQ
-                            [4] => ChangeWifi
+                            [mqtt] => Array
+                                (
+                                    [remoteBrokerType] => wss
+                                    [localBrokerCredentials] => BTYMObU8l2+aFG9tpv0F+aJMJ3717rHd252UjAACs4c51SktS71n21vngx4Sy0rqJe6PmvBgpj4GHc2Y2ydUdKSH2frxM/oxK2EzMasSoZBQ/zovqdzsPyymxrC1F030GRSwGhQ5JlQpyE/DnAiFJs4gOH6vWmE60OuR/RkP4u1oLkyP1YCrDT0c2N+xASoi
+                                    [mqttRootTopicLevel] => 438
+                                )
+
+                            [firmware] => Array
+                                (
+                                    [version] => ECG2PF.02.06.003.0002
+                                    [autoUpdateEnabled] => 1
+                                    [newVersionAvailable] =>
+                                    [capabilities] => Array
+                                        (
+                                            [0] => AdvanceOscillationDay1
+                                            [1] => Scheduling
+                                            [2] => EnvironmentalData
+                                            [3] => ExtendedAQ
+                                            [4] => ChangeWifi
+                                        )
+
+                                    [minimumAppVersion] => 4.1.8
+                                )
+
                         )
 
-                    [minimumAppVersion] => 4.1.8
+                    [variant] =>
+                    [model] => TP04
+                    [category] => ec
+                    [connectionCategory] => lecAndWifi
+                    [productName] => Dyson Pure Cool™
                 )
 
-        )
 
-    [variant] =>
-    [model] => TP04
-    [category] => ec
-    [connectionCategory] => lecAndWifi
-    [productName] => Dyson Pure Cool™
-)
+                03.07.2026, 17:26:53 | getConfiguratorValues | device=Array
+                (
+                    [serialNumber] => Y5D-EU-TDA6115A
+                    [name] => Esszimmer
+                    [type] => 438K
+                    [connectedConfiguration] => Array
+                        (
+                            [mqtt] => Array
+                                (
+                                    [remoteBrokerType] => wss
+                                    [localBrokerCredentials] => e5Fy772RbR4YvghZfMKemrFhz38GEgGAOiTOCTUzpCZCMJvPm/kjy457OBzXIQPVvdHjv1kY18abdPM2RLOHFDdWxspOmiNAVxBsXPNSwoH3CJNsBlPGQ1m4Q/WCxcs/wrIbmDEQL/NOgBeLDSJ4qzLpwhS5kqdRrK0Bd0HG8WD6hZDGwhJ6IYliPKXlXeY1
+                                    [mqttRootTopicLevel] => 438K
+                                )
 
-*/
+                            [firmware] => Array
+                                (
+                                    [version] => ECG2PF.07.03.000.0020
+                                    [autoUpdateEnabled] => 1
+                                    [newVersionAvailable] =>
+                                    [capabilities] => Array
+                                        (
+                                            [0] => AdvanceOscillationDay1
+                                            [1] => Scheduling
+                                            [2] => EnvironmentalData
+                                            [3] => ExtendedAQ
+                                            [4] => ChangeWifi
+                                        )
+
+                                    [minimumAppVersion] =>
+                                )
+
+                        )
+
+                    [variant] => K
+                    [model] => TP09
+                    [category] => ec
+                    [connectionCategory] => lecAndWifi
+                    [productName] => Dyson Purifier Cool™ Formaldehyde
+                )
+
+                 */
 
                 $serial = $device['serialNumber'];
                 $name = $device['name'];
                 $product_type = $device['type'];
+                $product_variant = $device['variant'];
+                if (strlen($product_type) == 3 && $product_variant != '') {
+                    $product_type .= $product_variant;
+                }
+                $this->SendDebug(__FUNCTION__, 'type=' . $device['type'] . ', variant=' . $device['variant'] . ' => ' . $product_type, 0);
+
                 $local_credentials = $device['connectedConfiguration']['mqtt']['localBrokerCredentials'];
                 $local_password = $local_credentials ? $this->decryptPassword($local_credentials) : false;
                 $this->SendDebug(__FUNCTION__, 'local_password=' . $local_password, 0);
