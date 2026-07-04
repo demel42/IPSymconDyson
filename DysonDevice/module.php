@@ -2655,13 +2655,11 @@ class DysonDevice extends IPSModule
                 $options['airflow_rate'] = true;
                 $options['rotation_mode'] = true;
                 $options['rotation_angle'] = true;
-                $options['airflow_direction'] = true;
                 $options['automatic_mode'] = true;
                 $options['night_mode'] = true;
                 $options['sleep_timer'] = true;
 
                 $options['standby_monitoring'] = true;
-                $options['carbon_filter'] = true;
                 $options['hepa_filter'] = true;
 
                 $options['pm25'] = true;
