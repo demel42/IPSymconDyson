@@ -2431,7 +2431,6 @@ class DysonDevice extends IPSModule
         switch ($product_type) {
             case '438':
             case '438E':
-            case '438M':
             case '520':
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -2649,6 +2648,25 @@ class DysonDevice extends IPSModule
                 $options['voc'] = true;
                 $options['nox'] = true;
                 $options['hcho'] = true;
+                break;
+            case '438M':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode'] = true;
+                $options['rotation_angle'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['carbon_filter'] = true;
+                $options['hepa_filter'] = true;
+
+                $options['pm25'] = true;
+                $options['pm10'] = true;
+                $options['nox'] = true;
                 break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);

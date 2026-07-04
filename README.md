@@ -219,7 +219,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.21 @ 03.07.2026 18:18
+- 2.21 @ 04.07.2026 12:00
   - Neu: Modell 438M (Dyson Purifier Cool PC1 Luftreiniger) hinzugefügt
 
 - 2.20 @ 09.05.2026 11:36

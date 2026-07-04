@@ -210,7 +210,7 @@ class DysonConfig extends IPSModule
                 if (strlen($product_type) == 3 && $product_variant != '') {
                     $product_type .= $product_variant;
                 }
-                $this->SendDebug(__FUNCTION__, 'type=' . $device['type'] . ', variant=' . $device['variant'] . ' => ' . $product_type, 0);
+                $this->SendDebug(__FUNCTION__, 'type="' . $device['type'] . '", variant="' . $device['variant'] . '" => ' . $product_type, 0);
 
                 if (isset($device['connectedConfiguration']['mqtt']['localBrokerCredentials'])) {
                     $local_credentials = $device['connectedConfiguration']['mqtt']['localBrokerCredentials'];
