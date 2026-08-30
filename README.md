@@ -220,7 +220,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.22 @ 30.08.2026 09:17
+- 2.22 @ 30.08.2026 14:37
   - Verbesserung: die Config-Instanz kann inaktiv geschaltet werden, da diese eigenständig mit der Dyson-Cloud kommuniziert
   - Neu: Modell 527M (Dyson Luftreiniger Hot+Cool (HP1/HP11)) hinzugefügt
 
