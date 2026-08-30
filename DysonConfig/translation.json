@@ -3,6 +3,8 @@
 		"de": {
 			"Dyson configurator": "Dyson Konfigurator",
 
+			"Disable instance": "Instanz deaktivieren",
+
 			"__function__": "CheckConfiguration",
 			"Username must be specified": "Benutzer muss angegeben sein",
 			"Password must be specified": "Passwort muss angegeben sein",

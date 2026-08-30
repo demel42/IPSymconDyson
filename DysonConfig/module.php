@@ -26,6 +26,8 @@ class DysonConfig extends IPSModule
     {
         parent::Create();
 
+        $this->RegisterPropertyBoolean('module_disable', false);
+
         if (IPS_GetKernelVersion() < 7.0) {
             $this->RegisterPropertyInteger('ImportCategoryID', 0);
         }
@@ -84,6 +86,12 @@ class DysonConfig extends IPSModule
             return;
         }
 
+        $module_disable = $this->ReadPropertyBoolean('module_disable');
+        if ($module_disable) {
+            $this->SetStatus(IS_INACTIVE);
+            return;
+        }
+
         $this->MaintainStatus(IS_ACTIVE);
     }
 
@@ -97,6 +105,11 @@ class DysonConfig extends IPSModule
 
         if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);
+            return $entries;
+        }
+
+        if ($this->GetStatus() == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
             return $entries;
         }
 
@@ -317,6 +330,12 @@ class DysonConfig extends IPSModule
         if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
             return $formElements;
         }
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'module_disable',
+            'caption' => 'Disable instance'
+        ];
 
         $formElements[] = [
             'type'    => 'ExpansionPanel',

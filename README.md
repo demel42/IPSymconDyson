@@ -42,6 +42,7 @@ Getestet wurde das Modul bisher mit:
 | 520 | Dyson Pure Cool Tischventilator mit Luftreiniger (DP04) |
 | 527 | Dyson Pure Hot+Cool Turmventilator mit Heizung und Luftreiniger (HP04) |
 | 527K | Dyson Purifier Hot+Cool Formaldehyde Luftreiniger mit Heizfunktion (HP09) |
+| 527M | Dyson Luftreiniger Hot+Cool (HP1/HP11) |
 | 664 | Dyson Luftreiniger Big+Quiet Formaldehyd (BP03) |
 
 Es sollten alle der genannten Geräte das grundlegende Protokoll beherrschen, jedoch gibt es einige kleinere Unterschiede.
@@ -219,8 +220,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 2.22 @ 30.08.2026 09:17
+  - Verbesserung: die Config-Instanz kann inaktiv geschaltet werden, da diese eigenständig mit der Dyson-Cloud kommuniziert
+  - Neu: Modell 527M (Dyson Luftreiniger Hot+Cool (HP1/HP11)) hinzugefügt
+
 - 2.21 @ 04.07.2026 14:05
-  - Neu: Modell 438M (Dyson Purifier Cool PC1 Luftreiniger) hinzugefügt
+  - Neu: Modell 438M (Dyson Purifier Cool PC1 Luftreiniger (TP11)) hinzugefügt
 
 - 2.20 @ 09.05.2026 11:36
   - Fix: Änderung von deprecated php code
@@ -271,7 +276,7 @@ GUIDs
     - Absicherung bei Zugriff auf Objekte und Inhalte
 
 - 2.8 @ 01.03.2023 08:50
-  - Fix: Modell 358K (PH04) ergänzt um die Übernahme des Formaldehyd
+  - Fix: Modell 358K ergänzt um die Übernahme des Formaldehyd
   - update submodule CommonStubs
 
 - 2.7.1 @ 21.11.2022 19:35

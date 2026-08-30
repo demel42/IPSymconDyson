@@ -2582,6 +2582,27 @@ class DysonDevice extends IPSModule
                 $options['humidity'] = true;
                 $options['voc'] = true;
                 break;
+            case '527M':
+                $options['rssi'] = true;
+                $options['power'] = true;
+                $options['airflow_rate'] = true;
+                $options['rotation_mode'] = true;
+                $options['rotation_angle'] = true;
+                $options['airflow_direction'] = true;
+                $options['automatic_mode'] = true;
+                $options['night_mode'] = true;
+                $options['sleep_timer'] = true;
+
+                $options['heating'] = true;
+
+                $options['standby_monitoring'] = true;
+                $options['carbon_filter'] = true;
+                $options['hepa_filter'] = true;
+
+                $options['temperature'] = true;
+                $options['humidity'] = true;
+                $options['voc'] = true;
+                break;
             case '455':
                 $options['rssi'] = true;
                 $options['power'] = true;
@@ -2689,6 +2710,7 @@ class DysonDevice extends IPSModule
             '520'   => 'Dyson Pure Cool purifier desk fan (DP04)',
             '527'   => 'Dyson Pure Hot+Cool purifying heater + fan (HP04)',
             '527K'  => 'Dyson Purifier Hot+Cool Formaldehyde purifier with heater (HP09)',
+            '527M'  => 'Dyson Purifier Hot+Cool (HP1/HP11)',
             '664'   => 'Dyson Purifier Big+Quiet Formaldehyde (BP03)',
         ];
 
