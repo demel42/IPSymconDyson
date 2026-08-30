@@ -239,7 +239,7 @@ GUIDs
   - Neu: Modell 527K (Dyson Purifier Hot+Cool Formaldehyde Luftreiniger mit Heizfunktion (HP09)) hinzugefügt
 
 - 2.17 @ 02.01.2025 14:28
-  - Fix: Type 438K (Dyson Purifier Cool Formaldehyde (TP09)) ist nicht mit einem Luftbefeuchter ausgestattet
+  - Fix: Type 438K ist nicht mit einem Luftbefeuchter ausgestattet
   - update submodule CommonStubs
 
 - 2.16 @ 26.07.2024 11:22
