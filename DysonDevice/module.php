@@ -1580,9 +1580,11 @@ class DysonDevice extends IPSModule
             $faults = [];
         }
         foreach (['errors', 'warnings'] as $lvl) {
-            $txt = '';
+            $txt = [];
             foreach (['product', 'module'] as $typ) {
                 $fld = $typ . '-' . $lvl;
+                $o = 'ignore_' . $fld;
+                $ign = [];
                 foreach ($payload[$fld] as $var => $val) {
                     if ($changeState) {
                         $val = $val[1];
@@ -1591,11 +1593,19 @@ class DysonDevice extends IPSModule
                     if ($val == 'OK') {
                         continue;
                     }
-                    $txt .= $this->fault2text($var) . PHP_EOL;
+                    if (isset($options[$o]) && in_array($val, $options[$o])) {
+                        $i[] = $var . '=' . $val;
+                        continue;
+                    }
+                    $txt[] = $this->fault2text($var);
+                }
+                if (count($ign)) {
+                    $this->SendDebug(__FUNCTION__, '... ignored ' . $fld . '=' . implode(', ', $ign), 0);
                 }
             }
-            $this->SendDebug(__FUNCTION__, '... ' . $lvl . '=' . $txt, 0);
-            $this->SaveValue($lvl, $txt, $is_changed);
+            $s = implode(PHP_EOL, $txt);
+            $this->SendDebug(__FUNCTION__, '... ' . $lvl . '=' . $s, 0);
+            $this->SaveValue($lvl, $s, $is_changed);
         }
         $this->WriteAttributeString('Faults', json_encode($faults));
         $this->SendDebug(__FUNCTION__, 'faults=' . print_r($faults, true), 0);
@@ -2601,6 +2611,8 @@ class DysonDevice extends IPSModule
                 $options['temperature'] = true;
                 $options['humidity'] = true;
                 $options['voc'] = true;
+
+                $options['ignore_product-errors'] = ['fs06'];
                 break;
             case '455':
                 $options['rssi'] = true;
@@ -2732,7 +2744,7 @@ class DysonDevice extends IPSModule
         if (isset($fault2text[$val])) {
             $s = $this->Translate($fault2text[$val]);
         } else {
-            $s = $this->Translate('Unknown error code') . ' "' . $val . '"';
+            $s = $val;
         }
         return $s;
     }
