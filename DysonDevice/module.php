@@ -2697,6 +2697,8 @@ class DysonDevice extends IPSModule
                 $options['pm25'] = true;
                 $options['pm10'] = true;
                 $options['nox'] = true;
+
+                $options['ignore_product-errors'] = ['fs06'];
                 break;
             default:
                 $this->SendDebug(__FUNCTION__, 'unknown product ' . $product_type, 0);

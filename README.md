@@ -220,9 +220,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 2.22 @ 01.09.2026 13:05
+- 2.22 @ 02.09.2026 12:55
   - Verbesserung: die Config-Instanz kann inaktiv geschaltet werden, da diese eigenständig mit der Dyson-Cloud kommuniziert
   - Neu: Modell 527M (Dyson Luftreiniger Hot+Cool (HP1/HP11)) hinzugefügt
+  - Verbesserung: bei Modell 438M (TP11) wird nun Fehler "fs06" ignoriert
 
 - 2.21 @ 04.07.2026 14:05
   - Neu: Modell 438M (Dyson Purifier Cool PC1 Luftreiniger (TP11)) hinzugefügt
@@ -276,7 +277,7 @@ GUIDs
     - Absicherung bei Zugriff auf Objekte und Inhalte
 
 - 2.8 @ 01.03.2023 08:50
-  - Fix: Modell 358K ergänzt um die Übernahme des Formaldehyd
+  - Fix: Modell 358K (PH04) ergänzt um die Übernahme des Formaldehyd
   - update submodule CommonStubs
 
 - 2.7.1 @ 21.11.2022 19:35
@@ -359,14 +360,14 @@ GUIDs
   - Anpassungen an IPS 6.2 (Prüfung auf ungültige ID's)
 
 - 2.2.3 @ 05.02.2022 12:49
-  - Korrektur Luftfeuchte für Modell 358E
+  - Korrektur Luftfeuchte für Modell 358E (PH03)
   - Korrektur Luftstromstärke = AUS
 
 - 2.2.2 @ 01.02.2022 17:15
   - Korrektur Luftstromstärke "Auto"
 
 - 2.2.1 @ 31.01.2022 10:16
-  - Korrektur Drehmodus für Modell 358E
+  - Korrektur Drehmodus für Modell 358E (PH03)
 
 - 2.2 @ 04.01.2022 13:46
   - Modell 358E (Dyson Pure Cool Turmventilator mit Luftreiniger und Luftbefeuchter (PH03)) hinzugefügt
